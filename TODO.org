@@ -1,0 +1,9 @@
+* Todo [2/5]
+ - [X] Implement new marginal table function
+ - [X] Implement new slice function
+ - [ ] Handle empty separators
+ - [ ] Run the outlier_model on ONE graph - so ONLY 10.000 simulations are needed.
+ - [ ] Implement for parrallel for both Windows and Linux! library(parallel) ?
+
+
+
