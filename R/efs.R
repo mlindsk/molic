@@ -15,13 +15,13 @@ efs <- function(df, x = efs_init(df), d = 3, thres = 3, trace = TRUE, log_mdl = 
   k <- k + 1L
   if( curr_mdl > prev_mdl || k == complete) return(x)  
   while( curr_mdl <= prev_mdl ) {
-    if( trace ) cat(paste(" Edges:", k, "of", complete, "- mdl =", round(curr_mdl, 6L)), "\n")
-    x    <- efs_step(df, x, thres)
-    k    <- k + 1L
     if( k == complete ) {
       if( trace ) cat(paste(" Edges:", k, "of", complete, "- mdl =", round(curr_mdl, 6L)), "\n")
       return(x)
     } 
+    if( trace ) cat(paste(" Edges:", k, "of", complete, "- mdl =", round(curr_mdl, 6L)), "\n")
+    x    <- efs_step(df, x, thres)
+    k    <- k + 1L
     prev_mdl <- curr_mdl
     curr_mdl <- mdl(x$G_A, df, d, thres)
   }
