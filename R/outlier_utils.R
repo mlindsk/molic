@@ -1,13 +1,11 @@
-.expand_grid <- function(...) expand.grid(..., stringsAsFactors = FALSE)
+## .expand_grid <- function(...) expand.grid(..., stringsAsFactors = FALSE)
 
 log_lik_pval <- function(x) {
   # x : 2-dimensional array (matrix)
   if(!is.matrix(x)) x <- as.matrix(x)
-    
   # helpers:
   ps <- function(n, m) if(m == 0) return(0) else return(n / m)
   npl <- function(n, p) sum( ifelse(p == 0, 0, n*log(p)) )
-  
   rr <- nrow(x); cc <- ncol(x); M  <- sum(x)
   n_row <- apply(x, 1, sum); n_col <- apply(x, 2, sum); n_x <- c(x)
   p_row <- ps(n_row, M); p_col <- ps(n_col, M); p_x <- ps(n_x, M)
@@ -32,7 +30,6 @@ weight_matrix <- function(df) {
   A
 }
 
-
 na <- function(df, a) {
   # The a- marginal table
   if( !neq_empt_chr(a) ) return(nrow(df)) # vars = NULL
@@ -43,10 +40,10 @@ na <- function(df, a) {
 .split_chars <- function(x) unlist(strsplit(x, ""))
 
 na_b <- function(na, b) {
-  # The b'th slice in the a marginal table
+  # The b'th slice in the a-marginal table
   # - b is a __NAMED__ vector of indexes pointing to the positions of the b levels
-  # - ATCGTT where (ATCGTT) is the clique and (ACG) is the separator
-  if( !neq_empt_num(b) ) return(na)
+  # - ATCGTT  b = (ACG)(1,3,4)
+  if( !neq_empt_num(b) ) stop("b is empty")
   cells    <- names(na)
   vars     <- attr(na, "vars")
   .nc      <- length(vars)
@@ -97,36 +94,35 @@ TY <- function(y, C_marginals, S_marginals) {
 simulate_TY <- function(df,
                   C_marginals,
                   S_marginals,
-                  n.sim = 1000,
+                  nsim = 1000,
                   ncores = 1,
                   verbose = TRUE) {
-  # OUTPUT:
-  # A simulated profile from the database df
-  y <- replicate(n.sim, vector("character", ncol(df)), simplify = FALSE)
+  # OUTPUT: Simulated TY values of cells from the database df
+  y <- replicate(nsim, vector("character", ncol(df)), simplify = FALSE)
   M <- nrow(df)
   Delta   <- colnames(df)
   C1_vars <- attr(C_marginals[[1]], "vars")
   C1_idx  <- match(C1_vars, Delta)
   p_nC1   <- C_marginals[[1]] / M
-  yC1_sim <- sample(names(p_nC1), n.sim, replace = TRUE, prob = p_nC1)
-  ## importFrom(foreach, "%dopar%")
-  ## import::from(foreach, "%dopar%")
-  library(doParallel)
+  yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1)
+  if(!( length(C_marginals) - 1L)) {
+    # The complete graph
+    yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
+    return( sapply(yC1_sim, TY, C_marginals, S_marginals) )
+  } 
   doParallel::registerDoParallel(ncores)
-  y <- foreach::foreach(z = 1:n.sim, .combine = 'c') %dopar% {
+  y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = 'c'), {
     y_sim_z <- y[[z]]
     y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
-    # The complete graph
-    if( length(S_marginals) == 1L ) return(y_sim_z)
     for( k in 2:length(C_marginals) ) {
       nCk     <- C_marginals[[k]]
       Ck_vars <- attr(nCk, "vars")     # Clique names
       Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
       nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
       Sk_vars <- attr(nSk, "vars")     # Separator names
-      # For empty separators
       if( is.null(Sk_vars) ) {
-        p_nCk_minus_nSk <- nCk / nSk
+        # For empty separators
+        p_nCk_minus_nSk <- nCk / nSk # nSk = M !
         y_sim_z[Ck_idx] <- .split_chars(sample(names(p_nCk_minus_nSk), 1L, prob = p_nCk_minus_nSk))
       } else {
         Sk_idx              <- match(Sk_vars, Delta)
@@ -139,21 +135,8 @@ simulate_TY <- function(df,
         y_sim_z[Ck_idx_minus_Sk_idx] <- .split_chars(sample(names( p_nCk_given_Sk_ySk), 1L, prob =  p_nCk_given_Sk_ySk))
       }
     }
-    # structure(y_sim_z, names = Delta)
-    TY(structure(y_sim_z, names = Delta), C_marginals, S_marginals)
-  }
+    TY(structure(y_sim_z, names = Delta), C_marginals, S_marginals)    
+  })
   doParallel::stopImplicitCluster()
   y
 }
-
-## simulate_TY <- function(df,
-##                    C_marginals,
-##                    S_marginals,
-##                    n.sim = 1000,
-##                    ncores = 1,
-##                    verbose = TRUE) {
-##   # OUTPUT:
-##   # Simulated values of T(Y) from the database df
-##   sim_cell <- simulate_cell(df, C_marginals, S_marginals, n.sim, ncores, verbose)
-##   sapply(sim_cell, TY, C_marginals, S_marginals) 
-## }

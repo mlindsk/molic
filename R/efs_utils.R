@@ -11,6 +11,8 @@ vs_to_es     <- function(e) lapply(e, paste0, collapse = "|")
 rev_es       <- function(e) sapply(es_to_vs(e), function(x) paste0(rev(x), collapse = "|"))
 sort_        <- function(x) paste0(sort(x), collapse = "|")
 is_Cx        <- function(m, Cx) sapply(m, function(x) setequal(x$C1, Cx) || setequal(x$C2, Cx))
+
+## OPTMIZE THESE - MAYBE IN RCPP!
 is_Ca_or_Cb  <- function(m, x, y) {  # m: msi object
   sapply(m, function(z) {
     is_CaCb <- setequal(z$C1, x) || setequal(z$C2, y)
@@ -25,7 +27,7 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
     is_CaCb || is_CbCa
   })
 }
-na <- function(df, a) {
+na_efs <- function(df, a) {
   ct <- table(df[, a])
   names(dimnames(ct)) <- a # Needed for the onedimensional separators
   ct
@@ -35,7 +37,7 @@ na <- function(df, a) {
 ##                                  METRICS
 ## -----------------------------------------------------------------------------
 entropy <- function(df) {
-  x  <- na(df, colnames(df))
+  x  <- na_efs(df, colnames(df))
   Nx <- sum(x)
   ## -sum(x/Nx * log(x/Nx))
   entropy_table <- apply(x, seq_along(dim(x)), function(y) {
@@ -109,6 +111,7 @@ efs_init <- function(df) {
   CG    <- as.list(nodes)
   CG_A  <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
   diag(CG_A) <- 0L
+  ## Just convert combn to pcomb c++ ?
   pairs     <- combn(nodes, 2,  simplify = FALSE)
   max_dst   <- 0L
   max_edge  <- ""
@@ -140,14 +143,14 @@ efs_init <- function(df) {
 }
 
 ## -----------------------------------------------------------------------------
-##                  STOPPING CRITERIA ( MINIMUM DESCRIPTION LENGTH)
+##                  STOPPING CRITERIA ( MINIMUM DESCRIPTION LENGTH )
 ## -----------------------------------------------------------------------------
-mdl <- function(G, df, d = 3, thres = 7) {
-  RIP    <- rip(G)
+mdl <- function(G_A, df, d = 3, thres = 7) {
+  RIP    <- rip(G_A)
   cliqs  <- RIP$C
   seps   <- RIP$S
   Nobs   <- nrow(df)
-  Nvars   <- ncol(df)
+  Nvars  <- ncol(df)
   logNvars <- log(Nvars)
   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
@@ -242,7 +245,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
     eligs_Cab   <- setdiff(Cab, Cp)
     eligs_Cp    <- setdiff(Cp, Cab)
     eligs       <- expand.grid(eligs_Cp, eligs_Cab)
-    eligs       <- apply(eligs, 1, paste, collapse = "|")
+    eligs       <- apply(eligs, 1, sort_) # apply(eligs, 1, paste, collapse = "|")
     eligs_names <- eligs
     dst  <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
     H_Sp <- 0L
@@ -343,9 +346,10 @@ efs_step <- function(df, x, thres = 7) {
   prone_to_deletion <- msi[Sabs]
   MSab <- sapply(prone_to_deletion, function(x) { # See Altmueller
     es <- names(x$e)
-    eab %in% es || rev_es(eab) %in% es ## Do we need to test the reverted ones, if they are always sorted?
+    eab %in% es
   })
 
+  ## OPTIMIZE etd FUNCTION - MAYBE IMPLEMENT IT WITH RCPP!!!
   etd <- edges_to_delete(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) 
   delete_edges <- etd$del
   TVL <- etd$TVL

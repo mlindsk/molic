@@ -1,0 +1,141 @@
+#+TITLE: Design and Flow of The molic Package
+#+OPTIONS: ^:nil
+# #+HTML_HEAD_EXTRA: <style>body{font-size: 10px}</style>
+#+HTML_HEAD: <style>pre.src{background:#343131;color:white;} </style>
+
+
+* C++ Sandbox
+
+#+BEGIN_SRC C++ -n :includes '(<vector> <string> <iostream>) :exports both :results output
+  std::vector<std::string> x;
+  x.push_back("This\n");
+  x.push_back("is\n");
+  x.push_back("Carsten!");
+  for( int i = 0; i<= 2; i++ ) {
+    std::cout << x[i];
+  }
+#+END_SRC
+
+
+#+BEGIN_SRC C++ -n :includes '(<vector> <string> <iostream> <boost>) :exports both :results output
+typedef boost::adjacency_matrix<boost::directedS> Graph;
+const char* name = "BC";
+Graph g(N);
+add_edge("B","C", g);
+std::cout << "vertex set: ";
+boost::print_vertices(g, name);
+std::cout << std::endl;
+#+END_SRC
+
+* Boost
+
+ - From boost graph to matrix : https://stackoverflow.com/questions/15545877/extract-the-adjacency-matrix-from-a-bgl-graph
+ - Getting edges and vertices : https://dgtal.org/doc/0.8/moduleBoostGraphWrapping.html
+** Graph
+  - https://www.youtube.com/watch?v=GSp2531Wti4
+  - https://stackoverflow.com/questions/8812466/using-c-boosts-graph-library
+  - https://www.technical-recipes.com/2015/getting-started-with-the-boost-graph-library/
+  - https://stackoverflow.com/questions/2218322/what-is-better-adjacency-lists-or-adjacency-matrices-for-graph-problems-in-c
+  - https://stackoverflow.com/questions/8812466/using-c-boosts-graph-library
+  - https://www.boost.org/doc/libs/1_48_0/libs/graph/doc/table_of_contents.html
+  - components : https://www.boost.org/doc/libs/1_65_1/libs/graph/doc/connected_components.html
+  - neighbors : https://stackoverflow.com/questions/49898415/boost-library-how-to-get-neighbouring-nodes
+** Sets
+  - STL : http://www.cplusplus.com/reference/algorithm/set_union/
+  - BOOST : 
+
+** Boost / Rcpp
+  - http://gallery.rcpp.org/articles/a-first-boost-example/
+
+
+
+* Lookup in containers
+The point where maps become faster than vectors depends on the implementation, on your processor, what data is in the map, and subtle things like what memory is in the processor's cache. Typically, the point where map becomes faster would be about 5-30 elements. 
+ - https://stackoverflow.com/questions/454762/vector-or-map-which-one-to-use
+
+* Special Non-trivial R functions
+
+** Make use of Rcpp syntax
+   Tell g++ where the Rcpp header is
+  - http://mazamascience.com/WorkingWithData/?p=1125
+   
+   For more complicated parts, consider using Rcpp.
+  - for ~table~, ~math~ etc: http://adv-r.had.co.nz/Rcpp.html
+  #+BEGIN_SRC R -n
+  std::unordered_map< int, std::string > my_map;
+  #+END_SRC
+  - named vectors (if not implemented myself): https://cran.r-project.org/web/packages/Rcpp/vignettes/Rcpp-quickref.pdf
+  - string vectors: http://gallery.rcpp.org/articles/working-with-Rcpp-StringVector/
+  - sort strings: http://gallery.rcpp.org/articles/strings_with_rcpp/
+
+** ~efs_init_.cpp~
+   
+*** Named matrix
+    Use ~Armadillo~ with ~pair~. Make a struct called ~name_mat~ or ~efs_mat~.
+
+*** Entropy2
+    We need a function to paste all rows, and make a table of counts.
+  #+BEGIN_SRC R -n
+  # https://thecoatlessprofessor.com/programming/porting-rs-table-function-to-c--/
+  #+END_SRC
+
+*** Hashtable (entropies)
+    #+BEGIN_SRC cpp -n
+    std::unordered_map< int, std::string > my_map;
+    #+END_SRC
+
+** Connectivity components
+
+* All Funtions
+
+#+ATTR_HTML: :border 2 :rules all :frame border
+| func         | file            | C++      | func                              | file        | C++            |
+|--------------+-----------------+----------+-----------------------------------+-------------+----------------|
+|--------------+-----------------+----------+-----------------------------------+-------------+----------------|
+| /            | <               |          | <                                 | <           |                |
+| na           | outlier_utils.R | $\div$   | na_efs                            | efs_utils.R |                |
+| na_b         | outlier_utils.R | $\vee$   | entropy                           | efs_utils.R |                |
+| na_ya        | outlier_utils.R | $\vee$   | entropy2                          | efs_utils.R | Make it use na |
+| a_marginals  | outlier_utils.R | $(\vee)$ | metric                            | efs_utils.R |                |
+| xlogx        | outlier_utils.R | $\div$   | current_eligible_edges            | efs_utils.R |                |
+| x1logx1      | outlier_utils.R | $\div$   | edges_to_delete                   | efs_utils.R | $\vee$         |
+| TY           | outlier_utils.R | $\div$   | update_edges_from_C_primes_to_Cab | efs_utils.R | If possible    |
+| simulate_TY  | outlier_utils.R | $\vee$   | which_Cp_from_Cx_to_Cab           | efs_utils.R | $\vee$         |
+| neq_empt_chr | efs_utils.R     | $\div$   | make_G_dbl_prime                  | efs_utils.R | If possible    |
+| neq_empt_int | efs_utils.R     | $\div$   | is_all_eligibles_present          | efs_utils.R |                |
+| neq_empt_lst | efs_utils.R     | $\div$   | mdl                               | efs_utils.R | $\vee$         |
+| neq_empt_num | efs_utils.R     | $\div$   | efs_init                          | efs_utils.R | If possible    |
+| neq_null     | efs_utils.R     | $\div$   | efs_step                          | efs_utils.R | If possible    |
+| es_to_vs     | efs_utils.R     | $\div$   | nhood                             | rip.R       | $\vee$         |
+| rev_es       | efs_utils.R     | $\div$   | mcs                               | rip.R       | $\vee$         |
+| vs_to_es     | efs_utils.R     | $\div$   | perfect_sequence                  | rip.R       | $\vee$         |
+| sort_        | efs_utils.R     | $\div$   | cliques                           | rip.R       | $\vee$         |
+| is_Cx        | efs_utils.R     | $(\vee)$ | separators                        | rip.R       | $\vee$         |
+| is_Ca_and_Cb | efs_utils.R     | $(\vee)$ | rip                               | rip.R       | $\vee$         |
+| is_Ca_or_Cb  | efs_utils.R     | $(\vee)$ |                                   |             |                |
+
+
+# http://tonyballantyne.com/graphs.html
+# #+BEGIN_SRC dot :file flow.png :cmdline -Kdot -Tpng
+# digraph graphname{
+#   T [label="na
+#            \n na_b
+#            \n na_ya
+#            \n a_marginals
+#            \n xlogx
+#            \n x1logx1
+#            \n TY"]
+#   P [label="Pupil"]  // node P
+#   T->P [label="Instructions", fontcolor=darkgreen] // edge T->P
+# }
+# #+END_SRC
+
+# #+BEGIN_SRC dot :file TMP.png :cmdline -Kdot -Tpng
+#   digraph {
+#       a -> b;
+#       b -> c;
+#       b -> d;
+#       d -> e;
+#       d -> f;
+#   }
+# #+END_SRC
