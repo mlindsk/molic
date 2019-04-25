@@ -13,14 +13,14 @@ mcs <- function(A, init_node = 1L) {
   used_nodes      <- vector(mode = "character", length = n)
   used_nodes[1]   <- nodes[init_node] # Choose another starting vertex?
   v               <- used_nodes[init_node]
-  remaining_nodes <- setdiff(nodes, used_nodes)
+  remaining_nodes <- nodes[-(nodes == v)]
   for( k in 2:n ) {
     ne          <- nhood(A,v)
     nodes_in_ne <- which(names(labels) %in% ne)
     labels[nodes_in_ne] <- labels[nodes_in_ne] + 1L
     v               <- names(which.max(labels[remaining_nodes]))
     used_nodes[k]   <- v
-    remaining_nodes <- setdiff(nodes, used_nodes)
+    remaining_nodes <- remaining_nodes[-(remaining_nodes == v)] 
   }
   used_nodes
 }
@@ -70,16 +70,25 @@ rip <- function(A) {
 
 
 ## library(igraph)
-## nods <- c(7, 2, 2, 3, 3, 4, 2, 5, 5, 3)
-## nods <- as.character(nods)
+## N <- 1000
+## q <- vector(length = 0L)
+## for(i in 2:N) q <- c(q, rep(i, 2))
+## nods <- as.character(q[1:(length(q)-3)])
+## nods <- c("1", nods)
+## ## nods <- c(7, 2, 2, 3, 3, 4, 2, 5, 5, 3)
+## ## nods <- as.character(nods)
 ## G <- make_graph(nods, directed = FALSE)
-## separators(cliques(perfect_sequence(G, mcs(G))))
 ## plot(G)
-## mcs(G)
-## rip(G)
+## ## separators(cliques(perfect_sequence(G, mcs(G))))
+## A <- igraph::as_adjacency_matrix(G)
+## mcs(A)
+## rip(A)
 
-## https://github.com/cran/gRbase
-## https://rdrr.io/cran/gRbase/man/graph-mcs.html
+## ## https://github.com/cran/gRbase
+## ## https://rdrr.io/cran/gRbase/man/graph-mcs.html
 ## library(gRbase)
 ## gRbase::rip(G)
 ## gRbase::mcs(G)
+
+## library(microbenchmark)
+## microbenchmark(gRbase::rip(G), rip(A), times = 2)

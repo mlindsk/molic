@@ -170,11 +170,11 @@ mdl <- function(G, df, d = 3, thres = 7) {
   logNvars <- log(Nvars)
   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
-      if( i == 1L ) return( length(cliqs[[i]]) - 1 )
-      Ci <- cliqs[[i]]
-      Si <- seps[[i]]
-      Ci_Si <- setdiff(Ci, Si)
-      length(Si) * (length(Ci_Si) - 1)
+    if( i == 1L ) return( length(cliqs[[i]]) - 1 )
+    Ci <- cliqs[[i]]
+    Si <- seps[[i]]
+    Ci_Si <- setdiff(Ci, Si)
+    length(Si) * (length(Ci_Si) - 1)
   }))
   HM_C <- sum(sapply(cliqs, function(z) {
     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")

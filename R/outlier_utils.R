@@ -51,7 +51,7 @@ na_b <- function(na, b) {
   fix_b[b] <- names(b)
   fix_b    <- paste0(fix_b, collapse = "")
   .na_b    <- na[grepl(fix_b, cells)]
-  N        <- names(.na_b)
+  N        <- names(.na_b) 
   names(.na_b) <- sapply(N, function(f) paste0(.split_chars(f)[-b], collapse = ""))
   attr(.na_b, "vars") <- vars[-b]
   .na_b

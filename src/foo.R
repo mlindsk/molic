@@ -1,1 +1,0 @@
-Rcpp::sourceCpp("fooling.cpp")
