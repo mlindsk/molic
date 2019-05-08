@@ -13,14 +13,14 @@ mcs <- function(A, init_node = 1L) {
   used_nodes      <- vector(mode = "character", length = n)
   used_nodes[1]   <- nodes[init_node] # Choose another starting vertex?
   v               <- used_nodes[init_node]
-  remaining_nodes <- nodes[-(nodes == v)]
+  remaining_nodes <- setdiff(nodes, used_nodes)
   for( k in 2:n ) {
     ne          <- nhood(A,v)
     nodes_in_ne <- which(names(labels) %in% ne)
     labels[nodes_in_ne] <- labels[nodes_in_ne] + 1L
     v               <- names(which.max(labels[remaining_nodes]))
     used_nodes[k]   <- v
-    remaining_nodes <- remaining_nodes[-(remaining_nodes == v)] 
+    remaining_nodes <- setdiff(nodes, used_nodes)
   }
   used_nodes
 }

@@ -1,5 +1,17 @@
 #+STARTUP: showall
-* Todo [8/14]
+* Todo Cpp
+ - [ ] Implement as_mat and as_adj
+
+* Todo Outliers [8/15]
+ - [ ] In outlier_model handle na_b when names in b are longer than one char!
+   + Just assumme or convert these!
+ - [ ] Benchmark the two mdl approaches and AIC;
+   + how many false edges (edges between haps especially)
+   + in how many component/haps are all SNPs included; take into account the independent singletons.
+ - [ ] Implement outlier_test function
+ - [ ] Sensitivity analysis of paramter ~d~ in efs
+ - [ ] Benchmark speed to Altmueller on the same datasets
+ - [ ] Implement backward search and update eligibles accordingly
  - [X] Implement new marginal table function
  - [X] Implement new slice function
  - [X] Handle empty separators
@@ -8,15 +20,12 @@
  - [X] Implement that the union of componentlist into a single graph
  - [X] Redesign maximum cardinality to input the neighbor matrix G_A
  - [X] The new neighborhood function is easy implementet with G_A
- - [ ] In efs: Convert colnames to x1 - xn and back again and bench runningtime (to increase speed!
-   + Also, is it safe to split edges, x1|x2, on "|". What if a variable is called abc|def?
- - [ ] In outlier_model handle na_b when names in b are longer than one char!
- - [ ] Implement outlier_test function
- - [ ] Sensitivity analysis of paramter ~d~ in efs
- - [ ] Benchmark speed to Altmueller on the same datasets
- - [ ] Implement backward search and update eligibles accordingly
 
 * COMPREX (Another outlierdetection method for discrete data)
  - https://github.com/HamedMP/CompreX
  - http://eda.mmci.uni-saarland.de/pubs/
 
+* STRUCTURE
+ - https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html
+ - https://youtu.be/YdN2bWG5ZZs
+ - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3665925/

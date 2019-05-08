@@ -44,19 +44,20 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
     is_CaCb || is_CbCa
   })
 }
-na <- function(df, a) {
-  ct <- table(df[, a])
-  names(dimnames(ct)) <- a # Needed for the onedimensional separators
-  ct
-}
+
+## na <- function(df, a) {
+##   ct <- table(df[, a])
+##   names(dimnames(ct)) <- a # Needed for the onedimensional separators
+##   ct
+## }
 
 ## -----------------------------------------------------------------------------
 ##                                  METRICS
 ## -----------------------------------------------------------------------------
 entropy <- function(df) {
+  ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
   x  <- na(df, colnames(df))
   Nx <- sum(x)
-  ## -sum(x/Nx * log(x/Nx))
   entropy_table <- apply(x, seq_along(dim(x)), function(y) {
     ifelse(y == 0 , 0, y/Nx * log(y/Nx) )
   })
@@ -136,11 +137,11 @@ efs_init <- function(df) {
   # https://www.r-bloggers.com/hash-table-performance-in-r-part-i/
   dst <-metric("entropy")
   ht  <-  new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
-  for( j in 1:n ) ht[[nodes[j]]] <-  dst(df[, nodes[j]])
+  for( j in 1:n ) ht[[nodes[j]]] <-  dst(df[nodes[j]])
   msi_S <- lapply(seq_along(pairs), function(p) {
     x  <- pairs[[p]]
     edge_x <- sort_(x)
-    ht[[edge_x]] <<- dst(df[, x])
+    ht[[edge_x]] <<- dst(df[x])
     dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
     if( dst_x > max_dst ) {
       max_dst   <<- dst_x
@@ -161,8 +162,9 @@ efs_init <- function(df) {
 ## -----------------------------------------------------------------------------
 ##                  STOPPING CRITERIA ( MINIMUM DESCRIPTION LENGTH)
 ## -----------------------------------------------------------------------------
-mdl <- function(G, df, d = 3, thres = 7) {
-  RIP    <- rip(G)
+mdl1 <- function(A, df, d = 3, thres = 7) {
+  # A: Neighbor matrix
+  RIP    <- rip(A)
   cliqs  <- RIP$C
   seps   <- RIP$S
   Nobs   <- nrow(df)
@@ -178,18 +180,75 @@ mdl <- function(G, df, d = 3, thres = 7) {
   }))
   HM_C <- sum(sapply(cliqs, function(z) {
     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-    dst(df[, z])
+    dst(df[z])
   }))
   HM_S <- 0L
   if( length(seps[-1]) ) {
     HM_S <- sum(sapply(seps[-1], function(z) {
       if( !neq_empt_chr(z)) return(0L)
       dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-      dst(df[, z])
+      dst(df[z])
     }))    
   }
   DL_data <- Nobs * (HM_C - HM_S)
   return( log(DL_graph + DL_prob + DL_data) )
+}
+
+mdl2 <- function(A, df, d = 3, thres = 7) {
+  # A: Neighbor matrix
+  # lv: Levelvector
+  lv = sapply(df, function(x) length(unique(x)))
+  RIP    <- rip(A)
+  cliqs  <- RIP$C
+  seps   <- RIP$S
+  Nobs   <- nrow(df)
+  Nvars   <- ncol(df)
+  logNvars <- log(Nvars)
+  DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
+  ## DL_prob need to be corrected
+  DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
+    if( i == 1L ) return( prod(lv[cliqs[[i]]]) - 1 )
+    Ci <- cliqs[[i]]
+    Si <- seps[[i]]
+    Ci_Si <- setdiff(Ci, Si)
+    prod(lv[Si]) * ( prod(lv[Ci_Si]) - 1)
+  }))
+  HM_C <- sum(sapply(cliqs, function(z) {
+    dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+    dst(df[z])
+  }))
+  HM_S <- 0L
+  if( length(seps[-1]) ) {
+    HM_S <- sum(sapply(seps[-1], function(z) {
+      if( !neq_empt_chr(z)) return(0L)
+      dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+      dst(df[z])
+    }))    
+  }
+  DL_data <- Nobs * (HM_C - HM_S)
+  return( log(DL_graph + DL_prob + DL_data) )
+}
+
+mdl_ <- function(type) {
+  switch(type,
+    "mdl1" = mdl1,
+    "mdl2" = mdl2,
+    "aic"  = delta_aic)
+}
+
+delta_aic <- function(x, level_vec) {
+  # x : efs object
+  n           <- length(level_vec) # ncol(df)
+  complete    <- n * (n-1L) / 2L
+  local_info  <- x$MSI$S[[x$MSI$max$idx]]
+  e           <- local_info$e[x$MSI$max$e]
+  S           <- local_info$S
+  vs          <- es_to_vs(names(e))[[1]]
+  HM_HM_prime <- unname(e)
+  dev         <- -2*n*HM_HM_prime
+  d_parms     <- prod(level_vec[vs] - 1) * prod(level_vec[S])
+  d_aic       <- 2 * (dev + d_parms)
+  return(d_aic)
 }
 
 ## -----------------------------------------------------------------------------
@@ -274,7 +333,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
         if( exists(Spx, envir = ht) ) {
           H_Sp_x <- ht[[Spx]]
         } else {
-          H_Sp_x  <- dst(df[,c(Sp, v[1])])
+          H_Sp_x  <- dst(df[c(Sp, v[1])])
           ht[[Spx]] <<- H_Sp_x 
         }
         H_Sp_y <- 0L
@@ -282,7 +341,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
         if( exists(Spy, envir = ht) ) {
           H_Sp_y <- ht[[Spy]]
         } else {
-          H_Sp_y  <- dst(df[,c(Sp, v[2])])
+          H_Sp_y  <- dst(df[c(Sp, v[2])])
           ht[[Spy]] <<- H_Sp_y 
         }
         H_Sp_x_y <- 0L
@@ -290,7 +349,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
         if( exists(Spxy, envir = ht) ) {
           H_Sp_xy <- ht[[Spxy]]
         } else {
-          H_Sp_xy  <- dst(df[,c(Sp, v)])
+          H_Sp_xy  <- dst(df[c(Sp, v)])
           ht[[Spxy]] <<- H_Sp_xy  
         }
         return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )

@@ -34,7 +34,7 @@ na <- function(df, a) {
   # The a- marginal table
   if( !neq_empt_chr(a) ) return(nrow(df)) # vars = NULL
   # Keep "a" as an attribute for lookup possibility
-  structure(table(apply(df[, a], 1, paste0, collapse = "")), vars = a)
+  structure(table(apply(df[a], 1, paste0, collapse = "")), vars = a)
 }
 
 .split_chars <- function(x) unlist(strsplit(x, ""))
@@ -65,7 +65,7 @@ na_ya <- function(na, ya) {
 
 a_marginals <- function(df, am) {
   # INPUT:
-  # am: A list with all cliques / separators retrived from graphical_model.R
+  # am: A list with all cliques / separators retrived from rip.R
   # OUTPUT:
   # A list with all marginal contingency tables
   lapply( am, function(x) if(is.null(x)) return(x)  else return(na(df, x)) )  
@@ -94,9 +94,9 @@ TY <- function(y, C_marginals, S_marginals) {
 simulate_TY <- function(df,
                   C_marginals,
                   S_marginals,
-                  nsim = 1000,
-                  ncores = 1,
-                  verbose = TRUE) {
+                  nsim            = 1000,
+                  ncores          = 1,
+                  verbose         = TRUE) {
   # OUTPUT: Simulated TY values of cells from the database df
   y <- replicate(nsim, vector("character", ncol(df)), simplify = FALSE)
   M <- nrow(df)
@@ -136,6 +136,55 @@ simulate_TY <- function(df,
       }
     }
     TY(structure(y_sim_z, names = Delta), C_marginals, S_marginals)    
+  })
+  doParallel::stopImplicitCluster()
+  y
+}
+
+simulate_Y <- function(df,
+                  C_marginals,
+                  S_marginals,
+                  nsim            = 1000,
+                  ncores          = 1,
+                  verbose         = TRUE) {
+  # OUTPUT: Simulated TY values of cells from the database df
+  y <- replicate(nsim, vector("character", ncol(df)), simplify = FALSE)
+  M <- nrow(df)
+  Delta   <- colnames(df)
+  C1_vars <- attr(C_marginals[[1]], "vars")
+  C1_idx  <- match(C1_vars, Delta)
+  p_nC1   <- C_marginals[[1]] / M
+  yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1)
+  if(!( length(C_marginals) - 1L)) {
+    # The complete graph
+    return(yC1_sim)
+  } 
+  doParallel::registerDoParallel(ncores)
+  y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim), {
+    y_sim_z <- y[[z]]
+    y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
+    for( k in 2:length(C_marginals) ) {
+      nCk     <- C_marginals[[k]]
+      Ck_vars <- attr(nCk, "vars")     # Clique names
+      Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
+      nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
+      Sk_vars <- attr(nSk, "vars")     # Separator names
+      if( is.null(Sk_vars) ) {
+        # For empty separators
+        p_nCk_minus_nSk <- nCk / nSk # nSk = M !
+        y_sim_z[Ck_idx] <- .split_chars(sample(names(p_nCk_minus_nSk), 1L, prob = p_nCk_minus_nSk))
+      } else {
+        Sk_idx              <- match(Sk_vars, Delta)
+        Sk_idx_in_Ck        <- match(Sk_vars, Ck_vars)
+        Ck_idx_minus_Sk_idx <- Ck_idx[-Sk_idx_in_Ck]
+        ySk                 <- y_sim_z[Sk_idx]
+        nSk_ySk             <- na_ya(nSk, ySk)
+        nCk_given_Sk        <- na_b(nCk, structure(Sk_idx_in_Ck, names = ySk) )
+        p_nCk_given_Sk_ySk  <- nCk_given_Sk / nSk_ySk # Cant be Inf, since ySk MUST be present since we simulated it
+        y_sim_z[Ck_idx_minus_Sk_idx] <- .split_chars(sample(names( p_nCk_given_Sk_ySk), 1L, prob =  p_nCk_given_Sk_ySk))
+      }
+    }
+    y_sim_z
   })
   doParallel::stopImplicitCluster()
   y

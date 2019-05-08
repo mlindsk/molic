@@ -8,6 +8,6 @@
 #' @section Foo functions:
 #' The foo functions ...
 #'
-#' @docType package
-#' @name molic
-NULL
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib abc
+"_PACKAGE"
