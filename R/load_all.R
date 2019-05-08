@@ -1,7 +1,0 @@
-source(file = "/home/mads/Documents/phd/publications/molic/R/default_graphs.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/efs.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/efs_utils.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/outlier_generics.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/outlier_model.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/outlier_utils.R")
-source(file = "/home/mads/Documents/phd/publications/molic/R/rip.R")

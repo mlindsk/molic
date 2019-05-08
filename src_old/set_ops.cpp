@@ -9,7 +9,7 @@ using VS  = std::vector<std::string>;
 // THESE SET OPERATIONS ARE TEMPORARY - THEY ARE SLOW BECAUSE OF "sort"
 // --------------------------------------------------------------------
 // [[Rcpp::export]]
-VS set_intersect(VS &v1, VS &v2) {
+VS set_intersect(VS &v1, VS &v2){
   VS v;
   std::sort(v1.begin(), v1.end());
   std::sort(v2.begin(), v2.end());
@@ -20,7 +20,7 @@ VS set_intersect(VS &v1, VS &v2) {
 }
 
 // [[Rcpp::export]]
-VS set_union(VS &v1, VS &v2) {
+VS set_union(VS &v1, VS &v2){
   VS v;
   std::sort(v1.begin(), v1.end());
   std::sort(v2.begin(), v2.end());
@@ -31,7 +31,7 @@ VS set_union(VS &v1, VS &v2) {
 }
 
 // [[Rcpp::export]]
-VS set_diff(VS &v1, VS &v2) {
+VS set_diff(VS &v1, VS &v2){
   VS v;
   std::sort(v1.begin(), v1.end());
   std::sort(v2.begin(), v2.end());
