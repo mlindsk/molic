@@ -1,13 +1,11 @@
-#include <numeric>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <stack>
-#include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
-using namespace Rcpp;
-using VS  = std::vector<std::string>;
-using VVS = std::vector<std::vector<std::string>>;
+/*****************************************
+                   TODO
+ * Implement:
+ * - as_mat
+ * - as_adj
+ ***************************************/
+
+#include "misc_utils.h"
 
 // [[Rcpp::export]]
 bool any_true(std::vector<bool> &v) {
@@ -16,6 +14,11 @@ bool any_true(std::vector<bool> &v) {
 
 // [[Rcpp::export]]
 Rcpp::CharacterMatrix pairwise_comb(VS x) {
+  /*****************************************
+   * In:
+   * - x: Vector of strings
+   * Out: All pairwise combinations (i, j) for i != j
+   ***************************************/
   const int N = x.size();
   const int  n_complete = N * (N - 1) / 2;
   Rcpp::CharacterMatrix A(n_complete, 2);
@@ -31,7 +34,13 @@ Rcpp::CharacterMatrix pairwise_comb(VS x) {
 }
 
 // [[Rcpp::export]]
-std::map<std::string, int> table_count(VS  x) {
+std::map<std::string, int> count_unique(VS  x) {
+  /*****************************************
+   * In:
+   * - x: Vector of strings
+   * Out: A namedvector of counts of all unique
+   *      elements in x
+   ***************************************/
   std::map<std::string, int> tab;
   int n = x.size();
   for (int i = 0; i < n; i++) {
@@ -43,7 +52,13 @@ std::map<std::string, int> table_count(VS  x) {
 
 // [[Rcpp::export]]
 VS matpr(Rcpp::CharacterMatrix A) {
-  // Concatenate rows in a character matrix
+  /*****************************************
+   * In:
+   * - A:
+   * Out: A vector of length nrow(A) with i'th
+   *      element being a concatenation of all
+   *      cells in row i
+   ***************************************/
   int n = A.nrow();
   VS  x(n);
   for( int i = 0; i < n; i++ ) {
@@ -55,17 +70,15 @@ VS matpr(Rcpp::CharacterMatrix A) {
   return x;
 }
 
-// -----------
-// IMPLEMENT!!
-// -----------
-// as_mat
-// as_adj
-// ...........
-
 // [[Rcpp::export]]
-VS dfs(Rcpp::List adjList, std::string root) {
-  // See: http://web.cs.unlv.edu/larmore/Courses/CSC477/bfsDfs.pdf
-  VS nodes = adjList.names();
+VS dfs(Rcpp::List adj, std::string root) {
+  /*****************************************
+   * In:
+   * - adj: A named adjacency list
+   * - root: The rooth node
+   * Out: All nodes connected to the root
+   ***************************************/
+  VS nodes = adj.names();
   int n = nodes.size();
   std::unordered_map<std::string, bool> visited;
   std::vector<std::string> connected_to_root;
@@ -80,7 +93,7 @@ VS dfs(Rcpp::List adjList, std::string root) {
     if( !visited[u] ) {
       visited[u] = true;
       connected_to_root.push_back(u);
-      VS adj_u = adjList[u];
+      VS adj_u = adj[u];
       for ( auto & w : adj_u ) {
       	if( !visited[w] ) {
       	  S.push(w);

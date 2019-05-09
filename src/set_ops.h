@@ -1,13 +1,13 @@
 #ifndef SETOPS_H
 #define SETOPS_H
 
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
-
-using VS  = std::vector<std::string>;
+// #include <vector>
+// #include <string>
+// #include <algorithm>
+// #include <Rcpp.h>
+// // [[Rcpp::plugins(cpp11)]]
+// using VS  = std::vector<std::string>;
+#include "molic_types.h"
 
 VS set_intersect(VS &v1, VS &v2);
 VS set_union(VS &v1, VS &v2);

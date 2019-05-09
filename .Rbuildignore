@@ -1,0 +1,12 @@
+data
+tests
+^LICENSE\.md$
+R_old
+src_old
+examples
+flow
+junk
+src/GPATH
+src/GRTAGS
+src/GTAGS
+TODO\.org

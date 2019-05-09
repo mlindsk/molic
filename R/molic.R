@@ -9,5 +9,5 @@
 #' The foo functions ...
 #'
 #' @importFrom Rcpp sourceCpp
-#' @useDynLib abc
+#' @useDynLib molic
 "_PACKAGE"

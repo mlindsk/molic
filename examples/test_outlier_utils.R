@@ -1,4 +1,4 @@
-source("../R/load_all.R")
+source("../R_old/load_all.R")
 load("../data/tgp_dat.rda")
 load("../data/tgp_haps.rda")
 library(dplyr)

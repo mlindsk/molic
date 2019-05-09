@@ -1,10 +1,4 @@
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
-using VS  = std::vector<std::string>;
-
+#include "molic_types.h"
 // --------------------------------------------------------------------
 // THESE SET OPERATIONS ARE TEMPORARY - THEY ARE SLOW BECAUSE OF "sort"
 // --------------------------------------------------------------------
