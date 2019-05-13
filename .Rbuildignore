@@ -1,8 +1,7 @@
 data
 tests
 ^LICENSE\.md$
-R_old
-src_old
+old
 examples
 flow
 junk

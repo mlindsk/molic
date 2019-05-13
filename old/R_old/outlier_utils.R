@@ -91,6 +91,8 @@ TY <- function(y, C_marginals, S_marginals) {
   sum(x1logx1(Cs) - c(0L, x1logx1(Ss))) # H(C_yk) - H(S_yk)
 }
 
+
+## LET df BE A MATRIX WITH DIMNAMES = list(NULL, c(colnames))
 simulate_TY <- function(df,
                   C_marginals,
                   S_marginals,

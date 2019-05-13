@@ -9,16 +9,52 @@ pairwise_comb <- function(x) {
     .Call('_molic_pairwise_comb', PACKAGE = 'molic', x)
 }
 
-table_count <- function(x) {
-    .Call('_molic_table_count', PACKAGE = 'molic', x)
+count_unique <- function(x) {
+    .Call('_molic_count_unique', PACKAGE = 'molic', x)
 }
 
 matpr <- function(A) {
     .Call('_molic_matpr', PACKAGE = 'molic', A)
 }
 
-dfs <- function(adjList, root) {
-    .Call('_molic_dfs', PACKAGE = 'molic', adjList, root)
+dfs <- function(adj, root) {
+    .Call('_molic_dfs', PACKAGE = 'molic', adj, root)
+}
+
+n_a <- function(A) {
+    .Call('_molic_n_a', PACKAGE = 'molic', A)
+}
+
+na_ya <- function(na, ya) {
+    .Call('_molic_na_ya', PACKAGE = 'molic', na, ya)
+}
+
+n_b <- function(na, b) {
+    .Call('_molic_n_b', PACKAGE = 'molic', na, b)
+}
+
+subtract_one <- function(x) {
+    .Call('_molic_subtract_one', PACKAGE = 'molic', x)
+}
+
+xlogx <- function(x) {
+    .Call('_molic_xlogx', PACKAGE = 'molic', x)
+}
+
+Hx_ <- function(x) {
+    .Call('_molic_Hx_', PACKAGE = 'molic', x)
+}
+
+subM <- function(A, x) {
+    .Call('_molic_subM', PACKAGE = 'molic', A, x)
+}
+
+a_marginals <- function(A, am) {
+    .Call('_molic_a_marginals', PACKAGE = 'molic', A, am)
+}
+
+TY <- function(y, C_marginals, S_marginals) {
+    .Call('_molic_TY', PACKAGE = 'molic', y, C_marginals, S_marginals)
 }
 
 #' Minimum Cardinality Search

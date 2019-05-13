@@ -28,14 +28,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// table_count
-std::map<std::string, int> table_count(VS x);
-RcppExport SEXP _molic_table_count(SEXP xSEXP) {
+// count_unique
+RIV count_unique(VS x);
+RcppExport SEXP _molic_count_unique(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< VS >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(table_count(x));
+    rcpp_result_gen = Rcpp::wrap(count_unique(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -51,14 +51,119 @@ BEGIN_RCPP
 END_RCPP
 }
 // dfs
-VS dfs(Rcpp::List adjList, std::string root);
-RcppExport SEXP _molic_dfs(SEXP adjListSEXP, SEXP rootSEXP) {
+VS dfs(Rcpp::List adj, std::string root);
+RcppExport SEXP _molic_dfs(SEXP adjSEXP, SEXP rootSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type adjList(adjListSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type adj(adjSEXP);
     Rcpp::traits::input_parameter< std::string >::type root(rootSEXP);
-    rcpp_result_gen = Rcpp::wrap(dfs(adjList, root));
+    rcpp_result_gen = Rcpp::wrap(dfs(adj, root));
+    return rcpp_result_gen;
+END_RCPP
+}
+// n_a
+RIV n_a(RCM& A);
+RcppExport SEXP _molic_n_a(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RCM& >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(n_a(A));
+    return rcpp_result_gen;
+END_RCPP
+}
+// na_ya
+int na_ya(RIV& na, std::string ya);
+RcppExport SEXP _molic_na_ya(SEXP naSEXP, SEXP yaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RIV& >::type na(naSEXP);
+    Rcpp::traits::input_parameter< std::string >::type ya(yaSEXP);
+    rcpp_result_gen = Rcpp::wrap(na_ya(na, ya));
+    return rcpp_result_gen;
+END_RCPP
+}
+// n_b
+RIV n_b(RIV& na, RIV& b);
+RcppExport SEXP _molic_n_b(SEXP naSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RIV& >::type na(naSEXP);
+    Rcpp::traits::input_parameter< RIV& >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(n_b(na, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// subtract_one
+VD subtract_one(VD x);
+RcppExport SEXP _molic_subtract_one(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VD >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(subtract_one(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// xlogx
+VD xlogx(VD x);
+RcppExport SEXP _molic_xlogx(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VD >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(xlogx(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Hx_
+VD Hx_(VD x);
+RcppExport SEXP _molic_Hx_(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VD >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(Hx_(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// subM
+RCM subM(RCM& A, RCV& x);
+RcppExport SEXP _molic_subM(SEXP ASEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RCM& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< RCV& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(subM(A, x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// a_marginals
+RL a_marginals(RCM A, RL& am);
+RcppExport SEXP _molic_a_marginals(SEXP ASEXP, SEXP amSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RCM >::type A(ASEXP);
+    Rcpp::traits::input_parameter< RL& >::type am(amSEXP);
+    rcpp_result_gen = Rcpp::wrap(a_marginals(A, am));
+    return rcpp_result_gen;
+END_RCPP
+}
+// TY
+double TY(RCV y, RL& C_marginals, RL& S_marginals);
+RcppExport SEXP _molic_TY(SEXP ySEXP, SEXP C_marginalsSEXP, SEXP S_marginalsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RCV >::type y(ySEXP);
+    Rcpp::traits::input_parameter< RL& >::type C_marginals(C_marginalsSEXP);
+    Rcpp::traits::input_parameter< RL& >::type S_marginals(S_marginalsSEXP);
+    rcpp_result_gen = Rcpp::wrap(TY(y, C_marginals, S_marginals));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -182,9 +287,18 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_molic_any_true", (DL_FUNC) &_molic_any_true, 1},
     {"_molic_pairwise_comb", (DL_FUNC) &_molic_pairwise_comb, 1},
-    {"_molic_table_count", (DL_FUNC) &_molic_table_count, 1},
+    {"_molic_count_unique", (DL_FUNC) &_molic_count_unique, 1},
     {"_molic_matpr", (DL_FUNC) &_molic_matpr, 1},
     {"_molic_dfs", (DL_FUNC) &_molic_dfs, 2},
+    {"_molic_n_a", (DL_FUNC) &_molic_n_a, 1},
+    {"_molic_na_ya", (DL_FUNC) &_molic_na_ya, 2},
+    {"_molic_n_b", (DL_FUNC) &_molic_n_b, 2},
+    {"_molic_subtract_one", (DL_FUNC) &_molic_subtract_one, 1},
+    {"_molic_xlogx", (DL_FUNC) &_molic_xlogx, 1},
+    {"_molic_Hx_", (DL_FUNC) &_molic_Hx_, 1},
+    {"_molic_subM", (DL_FUNC) &_molic_subM, 2},
+    {"_molic_a_marginals", (DL_FUNC) &_molic_a_marginals, 2},
+    {"_molic_TY", (DL_FUNC) &_molic_TY, 3},
     {"_molic_mcs", (DL_FUNC) &_molic_mcs, 1},
     {"_molic_perfect_sequence", (DL_FUNC) &_molic_perfect_sequence, 2},
     {"_molic_perfect_cliques", (DL_FUNC) &_molic_perfect_cliques, 1},

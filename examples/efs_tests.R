@@ -1,4 +1,4 @@
-source("../R_old/load_all.R")
+source("../old/R_old/load_all.R")
 load("../data/tgp_dat.rda")
 load("../data/tgp_haps.rda")
 library(dplyr)
@@ -13,6 +13,9 @@ df
 ## save(E, file = "eds_all_eur.rda")
 ## t2 <- Sys.time() - t1
 ## t2
+
+X <- efs(df)
+plot(X$G)
 
 load(file = "eds_all_eur.rda")
 plot(E$G, vertex.size = 1)
