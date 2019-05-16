@@ -3,5 +3,6 @@
 export(efs)
 export(mcs)
 export(rip)
+export(sim_TY)
 importFrom(Rcpp,sourceCpp)
 useDynLib(molic)

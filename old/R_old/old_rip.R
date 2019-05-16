@@ -1,6 +1,6 @@
 nhood <- function(A, a) dimnames(A)[[1]][as.logical(A[, a])]
 
-mcs <- function(A, init_node = 1L) {
+old_mcs <- function(A, init_node = 1L) {
   # A: Neighbormatrix of a decomposable/triangulated graph G
   # - It does NOT give a warning if it is not (it is just not a perfect sq)!
   nodes <- dimnames(A)[[1]]
@@ -57,10 +57,10 @@ separators <- function(C) {
   })
 }
 
-rip <- function(A) {
+old_rip <- function(A) {
   # See Graphical Models, Lemma 2.13 by Steffen Lauritzen
   # if(!igraph::is_chordal(G)$chordal) stop("Graph is not triangulated")
-  z  <- mcs(A)
+  z  <- old_mcs(A)
   # Handling singletons:
   if( !(length(z) - 1L) ) return(list(C = list(z), S = list(NULL)))
   C <- cliques(perfect_sequence(A, z))

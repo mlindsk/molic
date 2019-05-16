@@ -16,7 +16,9 @@ LinkingTo:
 Imports: 
     Rcpp,
     igraph,
-    Matrix
+    Matrix,
+    doParallel,
+    foreach
 Suggests: 
     testthat
 RoxygenNote: 6.1.1

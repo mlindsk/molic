@@ -1,6 +1,8 @@
 #+STARTUP: showall
 * Todo Cpp
- - [ ] Implement as_mat and as_adj
+ - [ ] Use adjacency lists in ~efs_step~
+ - [ ] Implement as_mat and
+ - [X] Implement as_adj (R version)
 
 * Todo Outliers [8/15]
  - [ ] In outlier_model handle na_b when names in b are longer than one char!

@@ -1,21 +1,30 @@
 msg <- function(k, complete, curr_mdl) cat(paste(" Edges:", k, "of", complete, "- mdl =", round(curr_mdl, 6L)), "\n")
 
+#' Efficient Forward Selection in Decomposable Graphical Models
+#'
+#' Efficient Forward Selection in Decomposable Graphical Models
+#' 
+#' @param df Dataframe
+#' @param x An efs object
+#' @param d Number of bits to encode a single parameter
+#' @param trace Logical indidcating whether or not to trace the procedure
+#' @param mdl_type Temporary parameter
 #' @export
-efs <- function(df, x = efs_init(df), d = 3, thres = 3, trace = TRUE, log_mdl = TRUE, mdl_type = "mdl1", method = "forward") {
+efs <- function(df, x = efs_init(df), d = 3, trace = TRUE, mdl_type = "mdl1") {
   # INPUT:
   # df: dataframe
   # x: efs object. Default is the null-graph
   # d: number needed to encode a single paramter (see Altmueller)
   # thres: When the size of a set is larger than thres, entropy2 is used for speed
   # - For binary data the "optimal" value of thres is closer to 7
-  mdl <- mdl_(mdl_type)
+  mdl      <- mdl_(mdl_type)
   n        <- ncol(df)
   complete <- n * (n-1L) / 2L
   k        <- length(igraph::E(x$G))
   if( k == complete ) stop("The graph is already complete!")
-  prev_mdl <- mdl(x$G_A, df, d, thres)
-  x        <- efs_step(df, x, thres)
-  curr_mdl <- mdl(x$G_A, df, d, thres)
+  prev_mdl <- mdl(as_adj_lst(x$G_A), df, d)
+  x        <- efs_step(df, x)
+  curr_mdl <- mdl(as_adj_lst(x$G_A), df, d)
   k <- k + 1L
   if( curr_mdl > prev_mdl || k == complete) return(x)
   while( curr_mdl <= prev_mdl ) {
@@ -25,10 +34,10 @@ efs <- function(df, x = efs_init(df), d = 3, thres = 3, trace = TRUE, log_mdl = 
       return(x)
     } 
     if( trace ) msg(k, complete, curr_mdl)
-    x <- efs_step(df, x, thres)
+    x <- efs_step(df, x)
     k <- k + 1L
     prev_mdl <- curr_mdl
-    curr_mdl <- mdl(x$G_A, df, d, thres)
+    curr_mdl <- mdl(as_adj_lst(x$G_A), df, d)
   }
   if( trace ) msg(k, complete, curr_mdl)
   return(x)

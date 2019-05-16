@@ -37,8 +37,8 @@ subtract_one <- function(x) {
     .Call('_molic_subtract_one', PACKAGE = 'molic', x)
 }
 
-xlogx <- function(x) {
-    .Call('_molic_xlogx', PACKAGE = 'molic', x)
+Gx_ <- function(x) {
+    .Call('_molic_Gx_', PACKAGE = 'molic', x)
 }
 
 Hx_ <- function(x) {

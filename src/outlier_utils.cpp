@@ -31,11 +31,9 @@ RIV n_b(RIV & na, RIV & b) {
    * -  b: Named vector with positions of the b's
    * Out:  The b'th slice of the a-marginal table
    ***************************************/
-
   /**
    *  - Assert that max(b) <= nv. Otherwise an error is produced.
    */
-  
   RIV  n_b_out;
   VS   cells    = na.names();
   VS   vars     = na.attr("vars");
@@ -88,10 +86,10 @@ VD subtract_one(VD x) {
 }
 
 // [[Rcpp::export]]
-VD xlogx(VD x) {
+VD Gx_(VD x) {
   std::transform(x.begin(), x.end(), x.begin(), [](int j) {
     if ( j > 0 ) {
-      return log(j);
+      return j*log(j);
     } else {
       return 0.0;
     }
@@ -106,7 +104,7 @@ VD Hx_(VD x) {
    * - : 
    * Out: G(x-1) - G(x) := (x-1)log(x-1) - xlog(x)
    ***************************************/
-  VD v1 = xlogx(subtract_one(x)), v2 = xlogx(x), v;
+  VD v1 = Gx_(subtract_one(x)), v2 = Gx_(x), v;
   std::transform(v1.begin(), v1.end(), v2.begin(), std::back_inserter(v),
     [](double i, double j) { return i-j; });
   return v;
@@ -148,7 +146,6 @@ RL a_marginals( RCM A, RL & am ) {
   return out;
 }
 
-
 // [[Rcpp::export]]
 double TY(RCV y, RL & C_marginals, RL & S_marginals) {
   int nC = C_marginals.size();
@@ -176,12 +173,17 @@ double TY(RCV y, RL & C_marginals, RL & S_marginals) {
 
     // Separators
     RIV nSi = S_marginals[i];
-    RCV nSi_Delta = nSi.attr("vars");
-    RIV yS_idx = Rcpp::match(nSi_Delta, y_names);
-    RCV ySi = y[yS_idx - 1];
-    std::string ySi_;
-    ySi_ = std::accumulate(ySi.begin(), ySi.end(), ySi_);
-    SS[i] = nSi[ySi_];
+    // Handling the empty separator = M = |n| with no vars attribute
+    if ( Rf_isNull(nSi.attr("vars")) ) {
+      SS[i] = 0.0;
+    } else {
+      RCV nSi_Delta = nSi.attr("vars");
+      RIV yS_idx = Rcpp::match(nSi_Delta, y_names);
+      RCV ySi = y[yS_idx - 1];
+      std::string ySi_;
+      ySi_ = std::accumulate(ySi.begin(), ySi.end(), ySi_);
+      SS[i] = nSi[ySi_];
+    }
   }
   VD H_CS = Hx_(CS), H_SS = Hx_(SS);
   double sum_HCS = std::accumulate(H_CS.begin(), H_CS.end(), 0.0);

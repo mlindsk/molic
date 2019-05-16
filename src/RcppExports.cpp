@@ -108,14 +108,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// xlogx
-VD xlogx(VD x);
-RcppExport SEXP _molic_xlogx(SEXP xSEXP) {
+// Gx_
+VD Gx_(VD x);
+RcppExport SEXP _molic_Gx_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< VD >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(xlogx(x));
+    rcpp_result_gen = Rcpp::wrap(Gx_(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -294,7 +294,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_molic_na_ya", (DL_FUNC) &_molic_na_ya, 2},
     {"_molic_n_b", (DL_FUNC) &_molic_n_b, 2},
     {"_molic_subtract_one", (DL_FUNC) &_molic_subtract_one, 1},
-    {"_molic_xlogx", (DL_FUNC) &_molic_xlogx, 1},
+    {"_molic_Gx_", (DL_FUNC) &_molic_Gx_, 1},
     {"_molic_Hx_", (DL_FUNC) &_molic_Hx_, 1},
     {"_molic_subM", (DL_FUNC) &_molic_subM, 2},
     {"_molic_a_marginals", (DL_FUNC) &_molic_a_marginals, 2},

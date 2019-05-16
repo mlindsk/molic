@@ -104,6 +104,7 @@ Rcpp::List perfect_separators(VVS & x) {
   return ps;
 }
 
+
 //' Runnining Intersection Property
 //'
 //' Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
@@ -112,9 +113,9 @@ Rcpp::List perfect_separators(VVS & x) {
 //' @export
 // [[Rcpp::export]]
 Rcpp::List rip(Rcpp::List & adj) {
-  VS z = mcs(adj);
+  VS  z    = mcs(adj);
   VVS pseq = perfect_sequence(adj, z);
-  VVS pc = perfect_cliques(pseq);
+  VVS pc   = perfect_cliques(pseq);
   Rcpp::List ps = perfect_separators(pc);
   return List::create(_["C"] = pc , _["S"] = ps);
 }
