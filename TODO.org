@@ -1,6 +1,31 @@
 #+STARTUP: showall
+
+* Todo stop criteria
+ - Make a document that benchmark the three approaches on various datasets!!!
+   + IS IT ALWAYS BETTER TO HAVE MORE EDGES FOR PREDICTING?
+   + FIND A WAY TO BENCHMARK A TRUE GRAPH
+     * Simulate using sim_Y !
+   + Fit the graph that Edwards fit?
+
+* Todo Cpp (containers)
+ - use unordered_set for the cliques and separators
+   + No sorting required then!
+   + THEREFOR IMPLEMENT THIS IN THE RIP FUNCTION ALSO!!!
+ - Use a graph class as in already in the src folder
+ - Also use a efs class with members
+   + the graph class
+   + adj
+   + ht
+   + CG
+   + etc...
+
 * Todo Cpp
  - [ ] Use adjacency lists in ~efs_step~
+ - [ ] Make it independent of ~igraph~
+   * That is, use ~dfs~ and adj lists
+   * Removal of nodes can be done by traversing adj - slow?
+ - [ ] Let G_A and GC_A be logical matrices!
+ - [ ] In ad_adj - REMOVE as.logical!
  - [ ] Implement as_mat and
  - [X] Implement as_adj (R version)
 

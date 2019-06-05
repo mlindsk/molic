@@ -1,49 +1,84 @@
-msg <- function(k, complete, curr_mdl) cat(paste(" Edges:", k, "of", complete, "- mdl =", round(curr_mdl, 6L)), "\n")
+msg <- function(k, complete, val, stop_crit) cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)), "\n")
 
-#' Efficient Forward Selection in Decomposable Graphical Models
+efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
+  sf       <- stop_func(stop_crit)
+  n        <- ncol(df)
+  complete <- n * (n-1L) / 2L
+  k        <- length(igraph::E(x$G))
+  if( k == complete ) stop("The graph is already complete!")
+  prev_val <- sf(x$G_adj, df, d, thres)
+  x       <- efs_step(df, x, thres)
+  curr_val <- sf(x$G_adj, df, d, thres)
+  k <- k + 1L
+  if( curr_val > prev_val || k == complete) return(x)
+  while( curr_val <= prev_val ) {
+    if( k == complete ) {
+      if( trace ) msg(k, complete, curr_val, stop_crit)
+      return(x)
+    } 
+    if( trace ) msg(k, complete, curr_val, stop_crit)
+    x <- efs_step(df, x, thres)
+    k <- k + 1L
+    prev_val <- curr_val
+    curr_val <- sf(x$G_adj, df, d, thres)
+  }
+  if( trace ) msg(k, complete, curr_val, stop_crit)
+  return(x)
+}
+
+efs_ic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres = 5) {
+  sf       <- stop_func(stop_crit)
+  n        <- ncol(df)
+  M        <- nrow(df)
+  lv       <- sapply(df, function(x) length(unique(x)))
+  complete <- n * (n-1L) / 2L
+  k        <- length(igraph::E(x$G))
+  if( k == complete ) stop("The graph is already complete!")
+  x     <- efs_step(df, x, thres)
+  stop_val    <- sf(x, lv, M)
+  k     <- k + 1L
+  if( stop_val >= 0 || k == complete) return(x)
+  while( stop_val < 0 ) {
+    if( k == complete ) {
+      if( trace ) msg(k, complete, stop_val, stop_crit)
+      return(x)
+    } 
+    if( trace ) msg(k, complete, stop_val, stop_crit)
+    x_old <- x
+    x  <- efs_step(df, x, thres)
+    k  <- k + 1L
+    stop_val <- sf(x, lv, M)
+    if( stop_val >= 0 ) return(x_old)
+  }
+  if( trace ) msg(k, complete, stop_val, stop_crit)
+  return(x)
+}
+
+#' EFS
 #'
 #' Efficient Forward Selection in Decomposable Graphical Models
 #' 
 #' @param df Dataframe
 #' @param x An efs object
-#' @param d Number of bits to encode a single parameter
 #' @param trace Logical indidcating whether or not to trace the procedure
-#' @param mdl_type Temporary parameter
+#' @param stop_crit Stopping criterion (mdl1, mdl2, aic or bic)
+#' @param d Number of bits to encode a single parameter
+#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy
 #' @export
-efs <- function(df, x = efs_init(df), d = 3, trace = TRUE, mdl_type = "mdl1") {
-  # INPUT:
-  # df: dataframe
-  # x: efs object. Default is the null-graph
-  # d: number needed to encode a single paramter (see Altmueller)
-  # thres: When the size of a set is larger than thres, entropy2 is used for speed
-  # - For binary data the "optimal" value of thres is closer to 7
-  mdl      <- mdl_(mdl_type)
-  n        <- ncol(df)
-  complete <- n * (n-1L) / 2L
-  k        <- length(igraph::E(x$G))
-  if( k == complete ) stop("The graph is already complete!")
-  prev_mdl <- mdl(as_adj_lst(x$G_A), df, d)
-  x        <- efs_step(df, x)
-  curr_mdl <- mdl(as_adj_lst(x$G_A), df, d)
-  k <- k + 1L
-  if( curr_mdl > prev_mdl || k == complete) return(x)
-  while( curr_mdl <= prev_mdl ) {
-    ## print(delta_aic(x, sapply(df, function(x) length(unique(x)))))
-    if( k == complete ) {
-      if( trace ) msg(k, complete, curr_mdl)
-      return(x)
-    } 
-    if( trace ) msg(k, complete, curr_mdl)
-    x <- efs_step(df, x)
-    k <- k + 1L
-    prev_mdl <- curr_mdl
-    curr_mdl <- mdl(as_adj_lst(x$G_A), df, d)
-  }
-  if( trace ) msg(k, complete, curr_mdl)
-  return(x)
+efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
+  if( grepl("mdl", stop_crit) ) return(efs_mdl(df, x, trace, stop_crit, d, thres))
+  else return(efs_ic(df, x, trace, stop_crit, thres))
 }
 
-print.efs <- function(x, ...) {
+
+#' Print
+#'
+#' A print method for \code{efs} objects
+#'
+#' @param x A \code{efs} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+efs.print <- function(x, ...) {
   nv <- ncol(x$G_A)
   ne <- length(igraph::E(x$G))
   print(ne)
@@ -66,10 +101,10 @@ print.efs <- function(x, ...) {
 ## df   <- tgp_dat
 ## df   <- df %>% filter(pop_meta == "EUR") %>% select(unname(unlist(haps)))
 ## df
-## lv <- sapply(df, function(x) length(unique(x))) 
-## y1 <- efs(df, trace = TRUE, mdl_type = "mdl1")
-## y2 <- efs(df, trace = TRUE, mdl_type = "mdl2")
-## # y3 <- efs(df, trace = TRUE, mdl_type = "aic")
-## par(mfrow = c(1,2))
-## plot(y1$G)
-## plot(y2$G)
+## y1 <- efs(df, trace = TRUE, stop_crit = "mdl1")
+## y2 <- efs(df, trace = TRUE, stop_crit = "mdl2")
+## y3 <- efs(df, trace = TRUE, stop_crit = "aic")
+## y4 <- efs(df, trace = TRUE, stop_crit = "bic")
+
+## par(mfrow = c(2,2))
+## plot(y4$G)

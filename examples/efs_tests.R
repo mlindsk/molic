@@ -14,8 +14,6 @@ df
 ## t2 <- Sys.time() - t1
 ## t2
 
-X <- efs(df)
-plot(X$G)
 
 load(file = "eds_all_eur.rda")
 plot(E$G, vertex.size = 1)

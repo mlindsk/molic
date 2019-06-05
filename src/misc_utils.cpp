@@ -34,7 +34,7 @@ Rcpp::CharacterMatrix pairwise_comb(VS x) {
 }
 
 // [[Rcpp::export]]
-RIV count_unique(VS  x) { // std::map<std::string, int>
+RIV count_unique(VS  x) { // std::unordered_map<std::string, int>
   /*****************************************
    * In:
    * - x: Vector of strings
@@ -50,40 +50,9 @@ RIV count_unique(VS  x) { // std::map<std::string, int>
   return Rcpp::wrap(tab);
 }
 
-// // [[Rcpp::export]]
-// VS get_row(Rcpp::DataFrame df, int i) {
-//   int nCols = df.size();
-//   VS  row(nCols);
-//   for (int j = 0; j < nCols; j++) {
-//     VS column = df[j];
-//     row[j] = column[i];
-//   }
-//   return row;
-// }
-
-// // [[Rcpp::export]]
-// VS matpr(Rcpp::DataFrame df) {
-//   /*****************************************
-//    * In:
-//    * - df: A data.frame
-//    * Out: A vector of length nrow(A) with i'th
-//    *      element being a concatenation of all
-//    *      cells in row i
-//    ***************************************/
-//   int n = df.nrow();
-//   VS  x(n);
-//   for( int i = 0; i < n; i++ ) {
-//     VS row = get_row(df, i);
-//     std::string s;
-//     s = std::accumulate(row.begin(),row.end(), s);
-//     x[i] = s;
-//   }
-//   return x;
-// }
-
 // [[Rcpp::export]]
 VS matpr(Rcpp::CharacterMatrix A) {
-  // Concatenate rows in a character matrix
+  // Paste rows in a character matrix
   int n = A.nrow();
   VS  x(n);
   for( int i = 0; i < n; i++ ) {
@@ -97,6 +66,7 @@ VS matpr(Rcpp::CharacterMatrix A) {
 
 // [[Rcpp::export]]
 VS dfs(Rcpp::List adj, std::string root) {
+  // std::unordered_map<std::unordered_set, int>
   /*****************************************
    * In:
    * - adj: A named adjacency list

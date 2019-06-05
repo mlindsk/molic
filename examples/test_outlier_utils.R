@@ -8,10 +8,9 @@ df   <- tgp_dat
 df   <- df %>% filter(pop_meta == "EUR") %>% select(unname(unlist(haps)))
 
 t1 <- Sys.time()
-gg <- haps[5]
-efs(df[, unlist(gg)])
-om <- outlier_model(df[, unlist(gg)], gg, 10000, 3)
-
+gg <- haps[1:50]
+ee <- efs(df[, unlist(gg)])
+oo <- outlier_model(df[, unlist(gg)], ee$G_adj, nsim = 5000)
 t2 <- Sys.time()
 t2 - t1
 

@@ -19,7 +19,7 @@ RIV n_a(RCM & A) {
 int na_ya(RIV & na, std::string ya) {
   RCV na_names = na.names();
   bool in_na = std::find(na_names.begin(), na_names.end(), ya) != na_names.end();
-  if (in_na) return na[ya];
+  if (in_na ) return na[ya];
   else return 0;
 }
 
@@ -121,18 +121,18 @@ RCM subM( RCM & A, RCV & x ) {
   Rcpp::colnames(A_sub) = x;
   return A_sub;
 }
-
+//' Marginal Tables
+//'
+//' Returns a list with sparse marginal tables corresponding to variables in list \code{am}
+//'
+//' @param A Character Matrix (the data)
+//' @param am A list of variables (typically cliques or separators with RIP ordering)
+//'
+//' @export
 // [[Rcpp::export]]
 RL a_marginals( RCM A, RL & am ) {
-  /*****************************************
-   * In:
-   * - am : A list with all clique / separators
-            retrived from a RIP ordering
-   * Out: A list with all (sparse) marginal
-          contingency tables
-   ***************************************/
   int n = am.size();
-  RL out(n);
+  RL  out(n);
   for (int i = 0; i < n; i++) {
     if ( am[i] == R_NilValue ) {
       out[i] = (am[i]);      
@@ -146,6 +146,15 @@ RL a_marginals( RCM A, RL & am ) {
   return out;
 }
 
+//' T(y)
+//'
+//' Calculate the affine value T(y) of -2log likelihood-ratio statistic
+//'
+//' @param y A named (according to data) vector
+//' @param C_marginals Clique marginal tables (use a_marginals function)
+//' @param S_marginals Separator marginal tables (use a_marginals function)
+//'
+//' @export
 // [[Rcpp::export]]
 double TY(RCV y, RL & C_marginals, RL & S_marginals) {
   int nC = C_marginals.size();
@@ -159,7 +168,7 @@ double TY(RCV y, RL & C_marginals, RL & S_marginals) {
   RCV yC0 = y[yC_idx - 1];  // -1 to account for the R side
   std::string yC0_;
   yC0_ = std::accumulate(yC0.begin(), yC0.end(), yC0_);
-  CS[0] = nC0[yC0_];
+  CS[0] = na_ya(nC0, yC0_); //nC0[yC0_];
 
   for (int i = 1; i < nC; i++) {
     // Cliques
@@ -169,7 +178,7 @@ double TY(RCV y, RL & C_marginals, RL & S_marginals) {
     RCV yCi = y[yC_idx - 1];
     std::string yCi_;
     yCi_ = std::accumulate(yCi.begin(), yCi.end(), yCi_);
-    CS[i] = nCi[yCi_];
+    CS[i] = na_ya(nCi, yCi_); // nCi[yCi_];
 
     // Separators
     RIV nSi = S_marginals[i];
@@ -182,9 +191,10 @@ double TY(RCV y, RL & C_marginals, RL & S_marginals) {
       RCV ySi = y[yS_idx - 1];
       std::string ySi_;
       ySi_ = std::accumulate(ySi.begin(), ySi.end(), ySi_);
-      SS[i] = nSi[ySi_];
+      SS[i] = na_ya(nSi, ySi_); // nSi[ySi_];
     }
   }
+  
   VD H_CS = Hx_(CS), H_SS = Hx_(SS);
   double sum_HCS = std::accumulate(H_CS.begin(), H_CS.end(), 0.0);
   double sum_HSS = std::accumulate(H_SS.begin(), H_SS.end(), 0.0);

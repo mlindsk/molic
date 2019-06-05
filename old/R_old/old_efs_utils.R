@@ -45,11 +45,11 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
   })
 }
 
-## na <- function(df, a) {
-##   ct <- table(df[, a])
-##   names(dimnames(ct)) <- a # Needed for the onedimensional separators
-##   ct
-## }
+na <- function(df, a) {
+  ct <- table(df[, a])
+  names(dimnames(ct)) <- a # Needed for the onedimensional separators
+  ct
+}
 
 ## -----------------------------------------------------------------------------
 ##                                  METRICS

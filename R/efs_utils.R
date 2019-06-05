@@ -36,16 +36,10 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
   })
 }
 
-## na <- function(df, a) {
-##   ct <- table(df[, a])
-##   names(dimnames(ct)) <- a # Needed for the onedimensional separators
-##   ct
-## }
-
 as_adj_lst <- function(A) { # For the RIP function
   Delta <- colnames(A)
   out <- lapply(seq_along(Delta), function(r) {
-    Delta[A[, r]]
+    Delta[as.logical(A[, r])] # FIX!!! in efs_init matrices should be BOOLEAN!!!
   })
   names(out) <- Delta
   out
@@ -60,95 +54,67 @@ as_adj_lst <- function(A) { # For the RIP function
 ## -----------------------------------------------------------------------------
 ##                                  METRICS
 ## -----------------------------------------------------------------------------
-
-## THIS SHOULD BE DEPRECATED
-## entropy <- function(df) {
-##   ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
-##   x  <- na(df, colnames(df))
-##   Nx <- sum(x)
-##   entropy_table <- apply(x, seq_along(dim(x)), function(y) {
-##     ifelse(y == 0 , 0, y/Nx * log(y/Nx) )
-##   })
-##   -sum(entropy_table)
-## }
+na_tab <- function(df, a) {
+  ct <- table(df[, a])
+  names(dimnames(ct)) <- a # Needed for the onedimensional separators
+  ct
+}
 
 entropy <- function(df) {
-  A  <- apply(df, 1, paste0, collapse = "") ## SHOULD BE matpr!!!
-  x  <- table(A)                            ## SHOUOD BE count_unique!!!
+  ## Use matpr and count_unique !!!
+  ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
+  x  <- na_tab(df, colnames(df))
+  Nx <- sum(x)
+  entropy_table <- apply(x, seq_along(dim(x)), function(y) {
+    ifelse(y == 0 , 0, y/Nx * log(y/Nx) )
+  })
+  -sum(entropy_table)
+}
+
+entropy2 <- function(df) {
+  A  <- apply(df, 1, paste0, collapse = "")
+  x  <- table(A)
   Nx <- sum(x)
   -sum(x/Nx * log(x/Nx))
 }
 
-## metric <- function(m) {
-##   # x : character
-##   switch(m,
-##     "entropy"  = entropy,
-##     "entropy2" = entropy2,
-##     "pval"     = NULL,
-##     "etc..."   = NULL
-##   )
-## }
+metric <- function(m) {
+  # x : character
+  switch(m,
+    "entropy"  = entropy,
+    "entropy2" = entropy2,
+    "pval"     = NULL,
+    "etc..."   = NULL
+  )
+}
 
-## -----------------------------------------------------------------------------
-##                                 TESTING
-## -----------------------------------------------------------------------------
-## current_eligible_edges <- function(S) {
-##   # Remove dublicates!
-##   x <- unique(names(unlist(lapply(S, "[[", "e"))))
-##   y <- rev_es(x)
-##   setdiff(x,y)
-## }
-
-## is_all_eligibles_present <- function(G, A, S) {
-##   # A : G_A
-##   # S : msi$S
-##   current_eligibles <- unique(names(unlist(lapply(S, "[[", "e"))))
-##   current_eligibles <- c(current_eligibles, rev_es(current_eligibles))
-##   current_edges     <- attributes(igraph::E(G))$vnames
-##   current_edges     <- c(current_edges, rev_es(current_edges))
-##   if( neq_empt_chr(intersect(current_eligibles, current_edges)) ) stop("Overlap")
-##   A_lgc    <- A == 0L
-##   vertices <- dimnames(A)[[1]]
-##   all_edges_not_in_G <- unlist(unique(lapply( seq_along(vertices) , function(x) {
-##     v <- A_lgc[vertices[x],]
-##     to_v <- names(v[v == TRUE])
-##     to_v <- to_v[-which(to_v == vertices[x])]
-##     unname(sapply(to_v, function(y) paste(vertices[x], y, sep = "|") ))
-##   })))
-##   edges_maybe_not_captured_by_efs <- setdiff(all_edges_not_in_G, current_eligibles)
-##   if( setequal(edges_maybe_not_captured_by_efs, character(0)) ) return( TRUE )
-##   present <- sapply(edges_maybe_not_captured_by_efs, function(e) {
-##     vs <- unlist(es_to_vs(e))
-##     is_decomposable(igraph::add_edges(G, c(vs[1], vs[2])))
-##   })
-##   out <- !all(present)
-##   if( !isTRUE(out) ) print(present)
-##   return(out)
-## }
 
 ## -----------------------------------------------------------------------------
 ##                             INITIALIZATION
 ## -----------------------------------------------------------------------------
-efs_init <- function(df) {
-  nodes <- colnames(df)
-  n     <- length(nodes)
-  G_A   <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
-  G     <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
-  CG    <- as.list(nodes)
-  CG_A  <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
+efs_init <- function(df) { ## Should be a character matrix in the future
+  nodes   <- colnames(df)
+  n       <- length(nodes)
+  G_A     <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
+  G_adj   <- as_adj_lst(G_A)
+  G       <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
+  CG      <- as.list(nodes)
+  CG_A    <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
+  ## CG_adj  <- as_adj_lst(CG_A) unordered_map<something>
   diag(CG_A) <- 0L
   pairs     <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
   max_dst   <- 0L
   max_edge  <- ""
   max_nodes <- 0L
   max_idx   <- 0L
+  dst       <- metric("entropy")
   # https://www.r-bloggers.com/hash-table-performance-in-r-part-i/
   ht  <-  new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
-  for( j in 1:n ) ht[[nodes[j]]] <- entropy(df[nodes[j]])
+  for( j in 1:n ) ht[[nodes[j]]] <- dst(df[nodes[j]])
   msi_S <- lapply(seq_along(pairs), function(p) {
     x  <- pairs[[p]]
     edge_x <- sort_(x)
-    ht[[edge_x]] <<- entropy(df[x])
+    ht[[edge_x]] <<- dst(df[x])
     dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
     if( dst_x > max_dst ) {
       max_dst   <<- dst_x
@@ -160,27 +126,33 @@ efs_init <- function(df) {
     list(S = character(0L), e = structure(dst_x, names = edge_x), C1 = x[1], C2 = x[2])
   })
   # max_ins <- match(max_nodes, CG) ## A better name might be "max_clique_CG_index"
-  ## adj <- as_adj_lst(G_A)
   msi <- list(S = msi_S, max = list(e = max_edge, idx = max_idx, ins = match(max_nodes, CG)))
-  out <- list(G = G, G_A = G_A, CG = CG, CG_A = CG_A, MSI = msi, ht = ht)
+  out <- list(G_adj = G_adj,
+    G        = G,
+    G_A      = G_A,
+    CG       = CG,
+    CG_A     = CG_A,
+    MSI      = msi,
+    ht       = ht
+  )
   class(out) <- c("efs")
   return(out)
 }
 
 ## -----------------------------------------------------------------------------
-##                  STOPPING CRITERIA ( MINIMUM DESCRIPTION LENGTH)
+##                         STOPPING CRITERIAS
 ## -----------------------------------------------------------------------------
 
-mdl1 <- function(adj, df, d = 3) {
+mdl1 <- function(adj, df, d = 3, thres = 5)  {
   # adj: Adjacency list
-  RIP    <- rip(adj)
-  cliqs  <- RIP$C
-  seps   <- RIP$S
-  Nobs   <- nrow(df)
-  Nvars   <- ncol(df)
+  RIP      <- rip(adj)
+  cliqs    <- RIP$C
+  seps     <- RIP$S
+  Nobs     <- nrow(df)
+  Nvars    <- ncol(df)
   logNvars <- log(Nvars)
   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-  DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
+  DL_prob  <- d * sum(sapply(seq_along(cliqs), function(i) {
     if( i == 1L ) return( length(cliqs[[i]]) - 1 )
     Ci <- cliqs[[i]]
     Si <- seps[[i]]
@@ -188,26 +160,23 @@ mdl1 <- function(adj, df, d = 3) {
     length(Si) * (length(Ci_Si) - 1)
   }))
   HM_C <- sum(sapply(cliqs, function(z) {
-    ## dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-    ## dst(df[z])
-    entropy(df[z])
+    dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+    dst(df[z])
   }))
   HM_S <- 0L
   if( length(seps[-1]) ) {
     HM_S <- sum(sapply(seps[-1], function(z) {
       if( !neq_empt_chr(z)) return(0L)
-      ## dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-      ## dst(df[z])
-      entropy(df[z])
+      dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+      dst(df[z])
     }))    
   }
   DL_data <- Nobs * (HM_C - HM_S)
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-mdl2 <- function(adj, df, d = 3) {
+mdl2 <- function(adj, df, d = 3, thres = 5) {
   # adj: Adjacency list
-  # lv: Levelvector
   lv = sapply(df, function(x) length(unique(x)))
   RIP    <- rip(adj)
   cliqs  <- RIP$C
@@ -216,7 +185,6 @@ mdl2 <- function(adj, df, d = 3) {
   Nvars   <- ncol(df)
   logNvars <- log(Nvars)
   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-  ## DL_prob need to be corrected
   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
     if( i == 1L ) return( prod(lv[cliqs[[i]]]) - 1 )
     Ci <- cliqs[[i]]
@@ -225,31 +193,24 @@ mdl2 <- function(adj, df, d = 3) {
     prod(lv[Si]) * ( prod(lv[Ci_Si]) - 1)
   }))
   HM_C <- sum(sapply(cliqs, function(z) {
-    ## dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-    ## dst(df[z])
-    entropy(df[z])
+    dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+    dst(df[z])
   }))
   HM_S <- 0L
   if( length(seps[-1]) ) {
     HM_S <- sum(sapply(seps[-1], function(z) {
       if( !neq_empt_chr(z)) return(0L)
-      ## dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-      ## dst(df[z])
-      entropy(df[z])
+      dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+      dst(df[z])
     }))    
   }
   DL_data <- Nobs * (HM_C - HM_S)
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-mdl_ <- function(type) {
-  switch(type,
-    "mdl1" = mdl1,
-    "mdl2" = mdl2,
-    "daic"  = delta_aic)
-}
 
-delta_aic <- function(x, level_vec) {
+
+delta_aic <- function(x, level_vec, M) {
   # x : efs object
   n           <- length(level_vec) # ncol(df)
   complete    <- n * (n-1L) / 2L
@@ -258,11 +219,36 @@ delta_aic <- function(x, level_vec) {
   S           <- local_info$S
   vs          <- es_to_vs(names(e))[[1]]
   HM_HM_prime <- unname(e)
-  dev         <- -2*n*HM_HM_prime
+  dev         <- -2*M*HM_HM_prime
   d_parms     <- prod(level_vec[vs] - 1) * prod(level_vec[S])
-  d_aic       <- 2 * (dev + d_parms)
+  d_aic       <- dev + 2 * d_parms
   return(d_aic)
 }
+
+delta_bic <- function(x, level_vec, M) {
+  # x : efs object
+  n           <- length(level_vec) # ncol(df)
+  complete    <- n * (n-1L) / 2L
+  local_info  <- x$MSI$S[[x$MSI$max$idx]]
+  e           <- local_info$e[x$MSI$max$e]
+  S           <- local_info$S
+  vs          <- es_to_vs(names(e))[[1]]
+  HM_HM_prime <- unname(e)
+  dev         <- -2*M*HM_HM_prime
+  d_parms     <- prod(level_vec[vs] - 1) * prod(level_vec[S])
+  d_aic       <- dev + log(M) * d_parms
+  return(d_aic)
+}
+
+stop_func <- function(type) {
+  switch(type,
+    "mdl1" = mdl1,
+    "mdl2" = mdl2,
+    "aic"  = delta_aic,
+    "bic"  = delta_bic)
+}
+
+
 
 ## -----------------------------------------------------------------------------
 ##                           SUB-ROUTINES FOR efs_step
@@ -326,7 +312,7 @@ which_Cp_from_Cx_to_Cab <- function(CG_prime, C_prime_Cx, Cx, vx, Cab, Sab,  cty
   list(add = unique(add), add_tvl = unique(add_tvl)) 
 }
 
-update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
+update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 5) {
   # Cps : C_primes
   sep <- lapply(Cps, function(Cp) {
     Sp          <- intersect(Cp, Cab)
@@ -335,8 +321,8 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
     eligs       <- expand.grid(eligs_Cp, eligs_Cab)
     eligs       <- apply(eligs, 1, paste, collapse = "|")
     eligs_names <- eligs
-    ## dst  <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
-    H_Sp <- 0L
+    dst         <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
+    H_Sp        <- 0L
     if( neq_empt_chr(Sp) ) H_Sp <- ht[[sort_(Sp)]]
     eligs  <- sapply(eligs, function(e) {
       ## See the proof of Theorem 4.3 in Jordan to optimize! (Dont need to use exists for all cases)
@@ -346,7 +332,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
       if( exists(Spx, envir = ht) ) {
         H_Sp_x <- ht[[Spx]]
       } else {
-        H_Sp_x  <- entropy(df[c(Sp, v[1])]) ## dst(df[c(Sp, v[1])])
+        H_Sp_x  <- dst(df[c(Sp, v[1])])
         ht[[Spx]] <<- H_Sp_x 
       }
       H_Sp_y <- 0L
@@ -354,7 +340,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
       if( exists(Spy, envir = ht) ) {
         H_Sp_y <- ht[[Spy]]
       } else {
-        H_Sp_y  <- entropy(df[c(Sp, v[2])]) ## dst(df[c(Sp, v[2])])
+        H_Sp_y  <- dst(df[c(Sp, v[2])])
         ht[[Spy]] <<- H_Sp_y 
       }
       H_Sp_x_y <- 0L
@@ -362,7 +348,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
       if( exists(Spxy, envir = ht) ) {
         H_Sp_xy <- ht[[Spxy]]
       } else {
-        H_Sp_xy  <- entropy(df[c(Sp, v)]) ## dst(df[c(Sp, v)])
+        H_Sp_xy  <-dst(df[c(Sp, v)])
         ht[[Spxy]] <<- H_Sp_xy  
       }
       return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )
@@ -376,35 +362,51 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht) {
 ## -----------------------------------------------------------------------------
 ##                              THE ENGINE
 ## -----------------------------------------------------------------------------
-efs_step <- function(df, x) {
+
+#' EFS step
+#'
+#' EFS step
+#' 
+#' @param df Dataframe
+#' @param x An efs object
+#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy
+#' @export
+efs_step <- function(df, x, thres = 5) {
   ## -----------------------------------------------------------------------------
   ##                    STORE ALL CURRENT INFORMATION
   ## -----------------------------------------------------------------------------
   ## x : efs object
-  MSI <- x$MSI
-  ht  <- x$ht
-  msi <- MSI$S  
-  mab <- MSI$max
-  eab <- mab$e
-  vab <- unlist(strsplit(eab, "\\|"))
-  va  <- vab[1]
-  vb  <- vab[2]
-  Ca  <- msi[[mab$idx]]$C1
-  Cb  <- msi[[mab$idx]]$C2
-  Sab <- msi[[mab$idx]]$S
-  Cab <- c(Sab, va, vb)
+  G_adj <- x$G_adj
+  MSI   <- x$MSI
+  ht    <- x$ht
+  msi   <- MSI$S  
+  mab   <- MSI$max
+  eab   <- mab$e
+  vab   <- unlist(strsplit(eab, "\\|"))
+  va    <- vab[1]
+  vb    <- vab[2]
+  Ca    <- msi[[mab$idx]]$C1
+  Cb    <- msi[[mab$idx]]$C2
+  Sab   <- msi[[mab$idx]]$S
+  Cab   <- c(Sab, va, vb)
 
-  G_prime     <- x$G
-  G_prime_A   <- x$G_A
+  G_prime           <- x$G
+  G_prime_A         <- x$G_A
+  G_prime_adj       <- G_adj
+  G_prime_adj[[va]] <- c(G_prime_adj[[va]], vb)
+  G_prime_adj[[vb]] <- c(G_prime_adj[[vb]], va)
   G_prime_A[va, vb] <- 1L # Adding the new edge (va, vb)
   G_prime_A[vb, va] <- 1L
-  G_prime     <- igraph::add_edges(G_prime, c(va, vb))
-  CG_prime    <- x$CG
-  CG_prime_A  <- x$CG_A
-  G_dbl_prime <- make_G_dbl_prime(Sab, x$G_A)
-  msi_prime   <- msi
-  
+  G_prime      <- igraph::add_edges(G_prime, c(va, vb))
+  CG_prime     <- x$CG    
+  CG_prime_A   <- x$CG_A ## ALSO MAKE THIS AN ADJ LIST!!! WITH INTEGER VECS
+  ## Here the matrix should be kept, more efficient than traversing G_adj!
+  G_dbl_prime  <- make_G_dbl_prime(Sab, x$G_A)
+  msi_prime    <- msi
+        
   ## Vertices connected to a and b in G_dbl_prime
+  ## cta <- molic::dfs(G_adj, va)
+  ## ctb <- molic::dfs(G_adj, vb)
   cta <- names(as.list(igraph::bfs(G_dbl_prime, va, unreachable = FALSE)$order))
   cta <- cta[!is.na(cta)]
   ctb <- names(as.list(igraph::bfs(G_dbl_prime, vb, unreachable = FALSE)$order))
@@ -523,16 +525,17 @@ efs_step <- function(df, x) {
   ## -----------------------------------------------------------------------------
   ##                       CALCULATE NEW ENTROPIES
   ## -----------------------------------------------------------------------------
-  ue         <- update_edges_from_C_primes_to_Cab(df, C_primes, Cab, va, vb, ht)
+  ue         <- update_edges_from_C_primes_to_Cab(df, C_primes, Cab, va, vb, ht, thres)
   ht         <- ue[[2]]
   msi_prime  <- c(msi_prime, ue[[1]])
   if( !neq_empt_lst(msi_prime) ) { # If the graph is complete
-    out <- list(G = G_prime,
-      G_A         = G_prime_A,
-      CG          = CG_prime,
-      CG_A        = CG_prime_A,
-      MSI         = msi_prime,
-      ht          = ht
+    out <- list(G_adj = G_prime_adj,
+      G     = G_prime,
+      G_A   = G_prime_A,
+      CG    = CG_prime,
+      CG_A  = CG_prime_A,
+      MSI   = msi_prime,
+      ht    = ht
     )
     class(out) <- c("efs")
     return(out)
@@ -542,17 +545,18 @@ efs_step <- function(df, x) {
   maxy       <- msi_prime[[wm_max_es]]
   e_max      <- max_es[wm_max_es]
   idx_max    <- wm_max_es
-  ins_max    <-unlist(sapply(seq_along(CG_prime), function(x) {
+  ins_max    <- unlist(sapply(seq_along(CG_prime), function(x) {
     cond <- setequal(CG_prime[[x]], maxy$C1) || setequal(CG_prime[[x]], maxy$C2)
     if( cond ) return(x)
   }))
   MSI_prime <- list(S = msi_prime, max = list(e = names(e_max), idx = idx_max, ins = ins_max))
-  out <- list(G = G_prime,
-    G_A         = G_prime_A,
-    CG          = CG_prime,
-    CG_A        = CG_prime_A,
-    MSI         = MSI_prime,
-    ht          = ht
+  out <- list(G_adj = G_prime_adj,
+    G    = G_prime,
+    G_A  = G_prime_A,
+    CG   = CG_prime,
+    CG_A = CG_prime_A,
+    MSI  = MSI_prime,
+    ht   = ht
   )
   class(out) <- c("efs")
   return(out)

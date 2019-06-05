@@ -125,13 +125,3 @@ qq <- Sys.time() - q
 tt
 qq
 as.numeric(qq) / as.numeric(tt)
-
-
-## ---------------------------------------------------------
-##                  FIXING RIP FUNCTION
-## ---------------------------------------------------------
-A <- make(tgp_dat, tgp_haps, 6, 5)
-A$df
-rip(A$adj)
-
-efs(A$df)

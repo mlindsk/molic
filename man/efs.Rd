@@ -2,20 +2,23 @@
 % Please edit documentation in R/efs.R
 \name{efs}
 \alias{efs}
-\title{Efficient Forward Selection in Decomposable Graphical Models}
+\title{EFS}
 \usage{
-efs(df, x = efs_init(df), d = 3, trace = TRUE, mdl_type = "mdl1")
+efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3,
+  thres = 5)
 }
 \arguments{
 \item{df}{Dataframe}
 
 \item{x}{An efs object}
 
-\item{d}{Number of bits to encode a single parameter}
-
 \item{trace}{Logical indidcating whether or not to trace the procedure}
 
-\item{mdl_type}{Temporary parameter}
+\item{stop_crit}{Stopping criterion (mdl1, mdl2, aic or bic)}
+
+\item{d}{Number of bits to encode a single parameter}
+
+\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy}
 }
 \description{
 Efficient Forward Selection in Decomposable Graphical Models

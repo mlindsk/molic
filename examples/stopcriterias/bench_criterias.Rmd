@@ -1,0 +1,31 @@
+---
+title: "Benchmarking stopping criterias for EFS"
+author: "Mads Lindskou"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+highlight: tango
+toc: yes
+header-includes:
+- \usepackage{fourier}
+fontsize: 12pt
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, echo = FALSE, message = FALSE, warning = FALSE}
+library(molic)
+library(dplyr)
+library(igraph)
+load("/home/mads/Documents/phd/publications/molic/data/tgp_dat.rda")
+load("/home/mads/Documents/phd/publications/molic/data/tgp_haps.rda")
+load("/home/mads/Documents/phd/publications/molic/data/tgp_meta.rda")
+```
+```{r}
+haps <- tgp_haps[1:2]
+df   <- tgp_dat
+df   <- df %>% filter(pop_meta == "EUR") %>% select(unname(unlist(haps)))
+
+```

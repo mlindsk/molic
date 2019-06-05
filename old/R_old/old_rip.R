@@ -57,7 +57,7 @@ separators <- function(C) {
   })
 }
 
-old_rip <- function(A) {
+rip <- function(A) {
   # See Graphical Models, Lemma 2.13 by Steffen Lauritzen
   # if(!igraph::is_chordal(G)$chordal) stop("Graph is not triangulated")
   z  <- old_mcs(A)
