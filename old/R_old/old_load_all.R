@@ -1,8 +1,0 @@
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_default_graphs.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_efs.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_efs_utils.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_outlier_generics.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_outlier_model.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_outlier_utils.R")
-source(file = "/home/mads/Documents/phd/publications/molic/old/R_old/old_rip.R")
-load(file = "/home/mads/Documents/phd/publications/molic/data/tgp_dat.rda")
