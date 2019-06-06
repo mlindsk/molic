@@ -143,8 +143,9 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##                         STOPPING CRITERIAS
 ## -----------------------------------------------------------------------------
 
-mdl1 <- function(adj, df, d = 3, thres = 5)  {
+mdl1 <- function(adj, lv, df, d = 3, thres = 5)  {
   # adj: Adjacency list
+  # lv: not used here. Included for compatability with efs_mdl
   RIP      <- rip(adj)
   cliqs    <- RIP$C
   seps     <- RIP$S
@@ -175,14 +176,14 @@ mdl1 <- function(adj, df, d = 3, thres = 5)  {
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-mdl2 <- function(adj, df, d = 3, thres = 5) {
+mdl2 <- function(adj, lv, df, d = 3, thres = 5) {
   # adj: Adjacency list
-  lv = sapply(df, function(x) length(unique(x)))
+  # lv:  Vector of length ncol(df) with number of levels for each var
   RIP    <- rip(adj)
   cliqs  <- RIP$C
   seps   <- RIP$S
   Nobs   <- nrow(df)
-  Nvars   <- ncol(df)
+  Nvars  <- ncol(df)
   logNvars <- log(Nvars)
   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
@@ -210,9 +211,9 @@ mdl2 <- function(adj, df, d = 3, thres = 5) {
 
 
 
-delta_aic <- function(x, level_vec, M) {
+delta_aic <- function(x, lv, M) {
   # x : efs object
-  n           <- length(level_vec) # ncol(df)
+  n           <- length(lv) # ncol(df)
   complete    <- n * (n-1L) / 2L
   local_info  <- x$MSI$S[[x$MSI$max$idx]]
   e           <- local_info$e[x$MSI$max$e]
@@ -220,14 +221,14 @@ delta_aic <- function(x, level_vec, M) {
   vs          <- es_to_vs(names(e))[[1]]
   HM_HM_prime <- unname(e)
   dev         <- -2*M*HM_HM_prime
-  d_parms     <- prod(level_vec[vs] - 1) * prod(level_vec[S])
+  d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
   d_aic       <- dev + 2 * d_parms
   return(d_aic)
 }
 
-delta_bic <- function(x, level_vec, M) {
+delta_bic <- function(x, lv, M) {
   # x : efs object
-  n           <- length(level_vec) # ncol(df)
+  n           <- length(lv) # ncol(df)
   complete    <- n * (n-1L) / 2L
   local_info  <- x$MSI$S[[x$MSI$max$idx]]
   e           <- local_info$e[x$MSI$max$e]
@@ -235,7 +236,7 @@ delta_bic <- function(x, level_vec, M) {
   vs          <- es_to_vs(names(e))[[1]]
   HM_HM_prime <- unname(e)
   dev         <- -2*M*HM_HM_prime
-  d_parms     <- prod(level_vec[vs] - 1) * prod(level_vec[S])
+  d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
   d_aic       <- dev + log(M) * d_parms
   return(d_aic)
 }
@@ -247,7 +248,6 @@ stop_func <- function(type) {
     "aic"  = delta_aic,
     "bic"  = delta_bic)
 }
-
 
 
 ## -----------------------------------------------------------------------------

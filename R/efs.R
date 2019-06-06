@@ -1,14 +1,15 @@
 msg <- function(k, complete, val, stop_crit) cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)), "\n")
 
 efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
+  lv       <- sapply(df, function(x) length(unique(x)))
   sf       <- stop_func(stop_crit)
   n        <- ncol(df)
   complete <- n * (n-1L) / 2L
   k        <- length(igraph::E(x$G))
   if( k == complete ) stop("The graph is already complete!")
-  prev_val <- sf(x$G_adj, df, d, thres)
+  prev_val <- sf(x$G_adj, lv, df, d, thres)
   x       <- efs_step(df, x, thres)
-  curr_val <- sf(x$G_adj, df, d, thres)
+  curr_val <- sf(x$G_adj, lv, df, d, thres)
   k <- k + 1L
   if( curr_val > prev_val || k == complete) return(x)
   while( curr_val <= prev_val ) {
@@ -20,17 +21,17 @@ efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 
     x <- efs_step(df, x, thres)
     k <- k + 1L
     prev_val <- curr_val
-    curr_val <- sf(x$G_adj, df, d, thres)
+    curr_val <- sf(x$G_adj, lv, df, d, thres)
   }
   if( trace ) msg(k, complete, curr_val, stop_crit)
   return(x)
 }
 
-efs_ic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres = 5) {
+efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres = 5) {
+  lv       <- sapply(df, function(x) length(unique(x)))
   sf       <- stop_func(stop_crit)
   n        <- ncol(df)
   M        <- nrow(df)
-  lv       <- sapply(df, function(x) length(unique(x)))
   complete <- n * (n-1L) / 2L
   k        <- length(igraph::E(x$G))
   if( k == complete ) stop("The graph is already complete!")
@@ -67,7 +68,7 @@ efs_ic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres 
 #' @export
 efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
   if( grepl("mdl", stop_crit) ) return(efs_mdl(df, x, trace, stop_crit, d, thres))
-  else return(efs_ic(df, x, trace, stop_crit, thres))
+  else return(efs_xic(df, x, trace, stop_crit, thres))
 }
 
 
@@ -78,7 +79,7 @@ efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, t
 #' @param x A \code{efs} object
 #' @param ... Not used (for S3 compatability)
 #' @export
-efs.print <- function(x, ...) {
+print.efs <- function(x, ...) {
   nv <- ncol(x$G_A)
   ne <- length(igraph::E(x$G))
   print(ne)

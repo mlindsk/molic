@@ -34,10 +34,9 @@
 ##     Cx <- igraph::make_full_graph(length(x))
 ##     igraph::V(Cx)$name <- x
 ##     Cx
-##   })
 ## }
 
-##' @return A graph with empty edge set
+## #' @return A graph with empty edge set
 ## #' @export
 ## ind_graph <- function(component_list) {
 ##   lapply(component_list, function(x) {

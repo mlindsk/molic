@@ -170,6 +170,13 @@ outlier_model <- function(df,
   return(out)
 }
 
+#' Print outlier model
+#'
+#' A print method for \code{outlier_model} objects
+#'
+#' @param x A \code{outlier_model} object
+#' @param ... Not used (for S3 compatability)
+#' @export
 print.outlier_model <- function(x, ...) {
   cat("\n Meta: ", x$meta_name,
     "\n", paste(rep("-", 16), collapse = ""),
@@ -205,10 +212,10 @@ cdf.outlier_model <- function(x, ...) {
 } 
 
 p_val <- function(x, ty_new, ...) {
-  UseMethod("p_value")
+  UseMethod("p_val")
 }
 
-p_value.outlier_model <- function(x, ty_new, ...) {
+p_val.outlier_model <- function(x, ty_new, ...) {
   1 - x$cdf( ty_new )
 }
 
