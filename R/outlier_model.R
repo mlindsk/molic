@@ -195,10 +195,18 @@ print.outlier_model <- function(x, ...) {
   )
 }
 
+
 pmf <- function(x, ...) {
   UseMethod("pmf")
 }
 
+#' pmf
+#'
+#' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
+#'
+#' @param x A \code{outlier_model} object
+#' @param ... Not used (for S3 compatability)
+#' @export
 pmf.outlier_model <- function(x, ...) {
   graphics::hist(x$sims, breaks = 30, xlab = "T(y)", main = x$meta_name, freq = FALSE)
 }
@@ -207,38 +215,56 @@ cdf <- function(x, ...) {
   UseMethod("cdf")
 }
 
+#' cdf
+#'
+#' The empirical cdf function of \code{T(Y)}
+#'
+#' @param x A \code{outlier_model} object
+#' @param ... Not used (for S3 compatability)
+#' @export
 cdf.outlier_model <- function(x, ...) {
   x$cdf
 } 
+
 
 p_val <- function(x, ty_new, ...) {
   UseMethod("p_val")
 }
 
+#' p_val
+#'
+#' Calculate the p value for obtaining ty_new under \code{H_0}
+#'
+#' @param x A \code{outlier_model} object
+#' @param ty_new The transformed value T(y_new) obtained from function \code{TY}
+#' @param ... Not used (for S3 compatability)
+#' @export
 p_val.outlier_model <- function(x, ty_new, ...) {
   1 - x$cdf( ty_new )
 }
 
-## outlier_test <- function(x, z) {
-##   UseMethod("outlier_test")
-## }
+#' mean
+#'
+#' Estimated mean for T(Y)
+#'
+#' @param x A \code{outlier_model} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+mean.outlier_model <- function(x, ...) {
+  x$mu_hat
+}
 
-## outlier_test.outlier_model <- function(x, z) {
-##   # z : the row in df for the observation to be tested.
-##   ty_z <- x$sims[z]
-##   pval <- p_value(x, ty_z)
-##   # if( verbose )
-##   pval
-## }
+variance <- function(x) {
+  UseMethod("variance")
+}
 
-## mean.outlier_model <- function(x, ...) {
-##   x$mu
-## }
-
-## variance <- function(x) {
-##   UseMethod("variance")
-## }
-
-## variance.outlier_model <- function(x, ...) {
-##   x$sigma
-## }
+#' variance
+#'
+#' Estimated variance for T(Y)
+#'
+#' @param x A \code{outlier_model} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+variance.outlier_model <- function(x, ...) {
+  x$sigma_hat
+}

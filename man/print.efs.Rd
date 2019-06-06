@@ -2,7 +2,7 @@
 % Please edit documentation in R/efs.R
 \name{print.efs}
 \alias{print.efs}
-\title{Print}
+\title{Print efs}
 \usage{
 \method{print}{efs}(x, ...)
 }

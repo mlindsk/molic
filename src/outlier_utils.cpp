@@ -121,11 +121,12 @@ RCM subM( RCM & A, RCV & x ) {
   Rcpp::colnames(A_sub) = x;
   return A_sub;
 }
-//' Marginal Tables
+
+//' Marginal tables
 //'
 //' Returns a list with sparse marginal tables corresponding to variables in list \code{am}
 //'
-//' @param A Character Matrix (the data)
+//' @param A character matrix (the data)
 //' @param am A list of variables (typically cliques or separators with RIP ordering)
 //'
 //' @export

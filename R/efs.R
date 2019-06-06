@@ -72,7 +72,7 @@ efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, t
 }
 
 
-#' Print
+#' Print efs
 #'
 #' A print method for \code{efs} objects
 #'
