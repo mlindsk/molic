@@ -6,7 +6,9 @@ Authors@R:
            family = "Lindskou",
            role = c("aut", "cre"),
            email = "mads@math.aau.dk")
-Description: Detecting outliers in contingency tables.
+Description: There are two main functionalities in this package. The first is
+    to learn a decomposable grah and the second is to detect outliers in
+    contingency tables.
 Depends: R (>= 2.10)
 License: GPL-3
 Encoding: UTF-8

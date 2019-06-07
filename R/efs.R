@@ -55,9 +55,9 @@ efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres
   return(x)
 }
 
-#' EFS
+#' efs
 #'
-#' Efficient Forward Selection in Decomposable Graphical Models
+#' Efficient forward felection in decomposable graphical models
 #' 
 #' @param df Dataframe
 #' @param x An efs object

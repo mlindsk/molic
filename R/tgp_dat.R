@@ -1,4 +1,4 @@
-#' Genetic data fron the 1000 Genomes Project
+#' Genetic data from the 1000 Genomes Project
 #'
 #' Some description
 #'

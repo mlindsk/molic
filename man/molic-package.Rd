@@ -6,14 +6,9 @@
 \alias{molic-package}
 \title{molic: Multivariate Ouliterdetection In Contingency Tables}
 \description{
-The foo package provides three categories of important functions:
-foo, bar and baz.
+The molic package has two main functionalities: outlier detection in
+contingency tables and model selection in decomposable grahs.
 }
-\section{Foo functions}{
-
-The foo functions ...
-}
-
 \author{
 \strong{Maintainer}: Mads Lindskou \email{mads@math.aau.dk}
 

@@ -209,8 +209,6 @@ mdl2 <- function(adj, lv, df, d = 3, thres = 5) {
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-
-
 delta_aic <- function(x, lv, M) {
   # x : efs object
   n           <- length(lv) # ncol(df)
@@ -248,7 +246,6 @@ stop_func <- function(type) {
     "aic"  = delta_aic,
     "bic"  = delta_bic)
 }
-
 
 ## -----------------------------------------------------------------------------
 ##                           SUB-ROUTINES FOR efs_step
@@ -561,4 +558,3 @@ efs_step <- function(df, x, thres = 5) {
   class(out) <- c("efs")
   return(out)
 }
-

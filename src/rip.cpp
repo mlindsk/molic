@@ -1,8 +1,8 @@
 #include "rip.h"
 
-//' Minimum Cardinality Search
+//' Maximum Cardinality Search
 //' 
-//' @param adj A named adjacency list
+//' @param adj A named adjacency list of a decomposable grah
 //' @return A perfect numbering of the nodes
 //' @export
 // [[Rcpp::export]]

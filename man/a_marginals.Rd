@@ -2,12 +2,12 @@
 % Please edit documentation in R/RcppExports.R
 \name{a_marginals}
 \alias{a_marginals}
-\title{Marginal Tables}
+\title{Marginal tables}
 \usage{
 a_marginals(A, am)
 }
 \arguments{
-\item{A}{Character Matrix (the data)}
+\item{A}{character matrix (the data)}
 
 \item{am}{A list of variables (typically cliques or separators with RIP ordering)}
 }

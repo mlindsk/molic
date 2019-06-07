@@ -2,7 +2,7 @@
 % Please edit documentation in R/efs.R
 \name{efs}
 \alias{efs}
-\title{EFS}
+\title{efs}
 \usage{
 efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3,
   thres = 5)
@@ -21,5 +21,5 @@ efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3,
 \item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy}
 }
 \description{
-Efficient Forward Selection in Decomposable Graphical Models
+Efficient forward felection in decomposable graphical models
 }

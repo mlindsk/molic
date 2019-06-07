@@ -49,11 +49,11 @@ subM <- function(A, x) {
     .Call('_molic_subM', PACKAGE = 'molic', A, x)
 }
 
-#' Marginal Tables
+#' Marginal tables
 #'
 #' Returns a list with sparse marginal tables corresponding to variables in list \code{am}
 #'
-#' @param A Character Matrix (the data)
+#' @param A character matrix (the data)
 #' @param am A list of variables (typically cliques or separators with RIP ordering)
 #'
 #' @export
@@ -74,9 +74,9 @@ TY <- function(y, C_marginals, S_marginals) {
     .Call('_molic_TY', PACKAGE = 'molic', y, C_marginals, S_marginals)
 }
 
-#' Minimum Cardinality Search
+#' Maximum Cardinality Search
 #' 
-#' @param adj A named adjacency list
+#' @param adj A named adjacency list of a decomposable grah
 #' @return A perfect numbering of the nodes
 #' @export
 mcs <- function(adj) {

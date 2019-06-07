@@ -2,16 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{mcs}
 \alias{mcs}
-\title{Minimum Cardinality Search}
+\title{Maximum Cardinality Search}
 \usage{
 mcs(adj)
 }
 \arguments{
-\item{adj}{A named adjacency list}
+\item{adj}{A named adjacency list of a decomposable grah}
 }
 \value{
 A perfect numbering of the nodes
 }
 \description{
-Minimum Cardinality Search
+Maximum Cardinality Search
 }

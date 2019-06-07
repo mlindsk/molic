@@ -10,7 +10,7 @@ outlier_model(df, adj = NULL, nsim = 1000, ncores = 1,
 \arguments{
 \item{df}{Data frame}
 
-\item{adj}{Adjacency list}
+\item{adj}{Adjacency list of a decomposable graph}
 
 \item{nsim}{Number of simulations}
 
@@ -20,4 +20,10 @@ outlier_model(df, adj = NULL, nsim = 1000, ncores = 1,
 }
 \description{
 Outlier tests in contingency tables using decomposable graphical models
+}
+\details{
+It is assumed that all cell values in \code{df}, for all variables,
+are represented as a single character. No check for this is done in the
+current version. If cell values are not single characters, one may
+exploit \code{letters} and \code{LETTERS} e.g.
 }

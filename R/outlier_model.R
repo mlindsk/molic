@@ -125,12 +125,17 @@ sim_Y <- function(A,                      # Character Matrix
 #' Outlier tests in contingency tables using decomposable graphical models
 #'
 #' Outlier tests in contingency tables using decomposable graphical models
-#' 
+#'
 #' @param df Data frame
-#' @param adj Adjacency list
+#' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param meta_name A meta name to keep track of different outlier models
+#'
+#' @details It is assumed that all cell values in \code{df}, for all variables,
+#' are represented as a single character. No check for this is done in the
+#' current version. If cell values are not single characters, one may
+#' exploit \code{letters} and \code{LETTERS} e.g.
 #' @export
 outlier_model <- function(df,
                           adj       = NULL,
