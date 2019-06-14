@@ -45,11 +45,18 @@ as_adj_lst <- function(A) { # For the RIP function
   out
 }
 
-## as_adj_mat <- function(adj) { # For the RIP function
-##   Delta <- names(adj)
-##   # USE THE match function
-##   # apply(A, 2, function(r) Delta[r])
-## }
+as_adj_mat <- function(adj) { # For the RIP function
+  Delta <- names(adj)
+  N     <- length(Delta)
+  A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(NULL, Delta))
+  for( d in seq_along(Delta) ) {
+    idx <- match(adj[[d]], Delta)
+    A[idx, d] <- 1L
+  }
+  A
+}
+
+is_decomposable <- function(A) igraph::is.chordal(A)
 
 ## -----------------------------------------------------------------------------
 ##                                  METRICS
