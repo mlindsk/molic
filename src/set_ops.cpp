@@ -44,9 +44,15 @@ bool set_eq(VS &v1, VS &v2) {
 }
 
 // [[Rcpp::export]]
+bool is_element_present(std::string & a, VS & b) {
+  std::vector<std::string>::iterator it = std::find(b.begin(), b.end(), a);
+  return it != b.end();
+}
+
+// [[Rcpp::export]]
 bool is_subseteq(VS const& a, VS const& b) {
-  for(auto const & av:a){
-    if( std::find(b.begin(),b.end(),av) == b.end() )
+  for(auto const & av : a){
+    if( std::find(b.begin(), b.end(), av) == b.end() )
       return false;
   }
   return true;
