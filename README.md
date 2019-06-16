@@ -1,6 +1,5 @@
- <!-- badges: start -->
-  [![Travis build status](https://travis-ci.org/mlindsk/molic.svg?branch=master)](https://travis-ci.org/mlindsk/molic)
-  <!-- badges: end -->
+[![Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
+  
 # molic
 
 An **R** package to perform outlier detection in contingency tables. The methodology relies on a given decomposable graph. The main functions are 
