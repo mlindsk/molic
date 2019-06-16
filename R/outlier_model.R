@@ -147,7 +147,7 @@ outlier_model <- function(df,
   ## It is ASSUMED that all values _for all variables_ in df are represented as a single character
   ## - Maybe we will implement a conversion, e.g. levels(df$x1) <- letters[1:length(levels(df$x1))]
   A     <- as.matrix(df)
-  RIP   <- rip(adj)
+  RIP   <- rip(adj) ## the rip (or actually mcs) will check for decomposability here
   C     <- RIP$C
   S     <- RIP$S
   Cms   <- a_marginals(A, C)
