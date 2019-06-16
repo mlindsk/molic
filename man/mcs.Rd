@@ -10,8 +10,11 @@ mcs(adj)
 \item{adj}{A named adjacency list of a decomposable grah}
 }
 \value{
-A perfect numbering of the nodes
+A list with a perfect numbering of the nodes and a perfect sequence of sets
 }
 \description{
 Maximum Cardinality Search
+}
+\details{
+If adj is not the adjacency list of a decomposable graph and error is produced
 }

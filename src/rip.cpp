@@ -53,9 +53,9 @@ Rcpp::List mcs(Rcpp::List & adj) {
     if ( i > 1 && card_i > 2) {
       // ----------------------------------------------------------------------------------------------
       // Test for decomposability for step i. See Lauritzen for details
-      // cl(v_i) \cap {v_1, .., v_{i-1}} needs to be complete
-      // 1. The check is always positive for i \in {1,2}
-      // 2. It is not neccesarry to check for ||ne_v|| < 3 since these are always complete in the graph
+      // 1. cl(v_i) \cap {v_1, .., v_{i-1}} needs to be complete
+      // 2. The check is always positive for i \in {1,2}
+      // 3. It is not neccesarry to check for ||ne_v|| < 3 since these are always complete in the graph
       // ----------------------------------------------------------------------------------------------
       for (int j = 0; j < card_i; j++) {
     	for (int k = j + 1; k < card_i - 1; k++) {
@@ -113,7 +113,7 @@ Rcpp::List perfect_separators(VVS & x) {
 //'
 //' Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 //'
-//' @param adj A named adjacency list
+//' @param adj A named adjacency list of a decomposable graph
 //' @export
 // [[Rcpp::export]]
 Rcpp::List rip(Rcpp::List & adj) {

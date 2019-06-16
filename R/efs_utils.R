@@ -56,7 +56,25 @@ as_adj_mat <- function(adj) { # For the RIP function
   A
 }
 
-is_decomposable <- function(A) igraph::is.chordal(A)
+#' A test for decomposability in undirected graphs
+#'
+#' This function returns \code{TRUE} if the graph is decomposable and \code{FALSE} otherwise
+#'
+#' @param adj Adjacency list of an undirected graph
+#' @export
+is_decomposable <- function(adj) {
+  m <- try(mcs(adj), silent = TRUE)
+  if( class(m) == "list" ) return(TRUE)
+    else return(FALSE)
+}
+
+## examples:
+## 4-cycle:
+## adj <- list(a = c("b", "d"), b = c("a", "c"), c = c("b", "d"), d = c("a", "c"))
+## is_decomposable(adj) # FALSE
+## Two triangles:
+## adj <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+## is_decomposable(adj) # TRUE
 
 ## -----------------------------------------------------------------------------
 ##                                  METRICS

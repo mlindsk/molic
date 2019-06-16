@@ -74,6 +74,34 @@ TY <- function(y, C_marginals, S_marginals) {
     .Call('_molic_TY', PACKAGE = 'molic', y, C_marginals, S_marginals)
 }
 
+#' Maximum Cardinality Search
+#' 
+#' @param adj A named adjacency list of a decomposable grah
+#' @details If adj is not the adjacency list of a decomposable graph and error is produced
+#' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
+#' @export
+mcs <- function(adj) {
+    .Call('_molic_mcs', PACKAGE = 'molic', adj)
+}
+
+perfect_cliques <- function(x) {
+    .Call('_molic_perfect_cliques', PACKAGE = 'molic', x)
+}
+
+perfect_separators <- function(x) {
+    .Call('_molic_perfect_separators', PACKAGE = 'molic', x)
+}
+
+#' Runnining Intersection Property
+#'
+#' Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
+#'
+#' @param adj A named adjacency list of a decomposable graph
+#' @export
+rip <- function(adj) {
+    .Call('_molic_rip', PACKAGE = 'molic', adj)
+}
+
 set_intersect <- function(v1, v2) {
     .Call('_molic_set_intersect', PACKAGE = 'molic', v1, v2)
 }
