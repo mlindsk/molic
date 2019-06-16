@@ -9,3 +9,4 @@ src/GPATH
 src/GRTAGS
 src/GTAGS
 TODO\.org
+^\.travis\.yml$
