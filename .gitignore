@@ -1,6 +1,10 @@
 .Rhistory
 .RData
 .Rproj.user
-TODO.org
 examples
 old
+R/TAGS
+src/GPATH
+src/GRTAGS
+src/GTAGS
+TODO.org
