@@ -15,7 +15,6 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp,
-    igraph,
     Matrix,
     doParallel,
     foreach

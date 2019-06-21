@@ -122,7 +122,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   n       <- length(nodes)
   G_A     <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
   G_adj   <- as_adj_lst(G_A)
-  G       <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
+  # G       <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
   CG      <- as.list(nodes)
   CG_A    <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
   ## CG_adj  <- as_adj_lst(CG_A) unordered_map<something>
@@ -153,7 +153,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   # max_ins <- match(max_nodes, CG) ## A better name might be "max_clique_CG_index"
   msi <- list(S = msi_S, max = list(e = max_edge, idx = max_idx, ins = match(max_nodes, CG)))
   out <- list(G_adj = G_adj,
-    G        = G,
+    # G        = G,
     G_A      = G_A,
     CG       = CG,
     CG_A     = CG_A,
@@ -277,7 +277,10 @@ stop_func <- function(type) {
 ## -----------------------------------------------------------------------------
 make_G_dbl_prime <- function(Sab, G_A) {
   keepers <- setdiff(dimnames(G_A)[[1]], Sab)
-  igraph::graph_from_adjacency_matrix(G_A[keepers, keepers], mode = "undirected")
+  ## Old approach using igraph:
+  ## --------------------------
+  ## igraph::graph_from_adjacency_matrix(G_A[keepers, keepers], mode = "undirected")
+  G_A[keepers, keepers]
 }
 
 edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
@@ -419,20 +422,22 @@ efs_step <- function(df, x, thres = 5) {
   G_prime_adj[[vb]] <- c(G_prime_adj[[vb]], va)
   G_prime_A[va, vb] <- 1L # Adding the new edge (va, vb)
   G_prime_A[vb, va] <- 1L
-  G_prime      <- igraph::add_edges(G_prime, c(va, vb))
+  # G_prime      <- igraph::add_edges(G_prime, c(va, vb))
   CG_prime     <- x$CG    
-  CG_prime_A   <- x$CG_A ## ALSO MAKE THIS AN ADJ LIST!!! WITH INTEGER VECS
-  ## Here the matrix should be kept, more efficient than traversing G_adj!
+  CG_prime_A   <- x$CG_A
   G_dbl_prime  <- make_G_dbl_prime(Sab, x$G_A)
   msi_prime    <- msi
         
   ## Vertices connected to a and b in G_dbl_prime
-  ## cta <- molic::dfs(G_adj, va)
-  ## ctb <- molic::dfs(G_adj, vb)
-  cta <- names(as.list(igraph::bfs(G_dbl_prime, va, unreachable = FALSE)$order))
-  cta <- cta[!is.na(cta)]
-  ctb <- names(as.list(igraph::bfs(G_dbl_prime, vb, unreachable = FALSE)$order))
-  ctb <- ctb[!is.na(ctb)]
+  cta <- dfs(as_adj_lst(G_dbl_prime), va) # FIX - expensive to convert?
+  ctb <- dfs(as_adj_lst(G_dbl_prime), vb) # FIX - expensive to convert?
+
+  ## OLD APPROACH USING igraph:
+  ## --------------------------
+  ## cta <- names(as.list(igraph::bfs(G_dbl_prime, va, unreachable = FALSE)$order))
+  ## cta <- cta[!is.na(cta)]
+  ## ctb <- names(as.list(igraph::bfs(G_dbl_prime, vb, unreachable = FALSE)$order))
+  ## ctb <- ctb[!is.na(ctb)]
   
   ## -----------------------------------------------------------------------------
   ##       INSERTING Cab BETWEEN Ca AND Cb IN CG_prime AND REMOVE (Ca, Cb)
@@ -552,7 +557,7 @@ efs_step <- function(df, x, thres = 5) {
   msi_prime  <- c(msi_prime, ue[[1]])
   if( !neq_empt_lst(msi_prime) ) { # If the graph is complete
     out <- list(G_adj = G_prime_adj,
-      G     = G_prime,
+      # G     = G_prime,
       G_A   = G_prime_A,
       CG    = CG_prime,
       CG_A  = CG_prime_A,
@@ -573,7 +578,7 @@ efs_step <- function(df, x, thres = 5) {
   }))
   MSI_prime <- list(S = msi_prime, max = list(e = names(e_max), idx = idx_max, ins = ins_max))
   out <- list(G_adj = G_prime_adj,
-    G    = G_prime,
+    # G    = G_prime,
     G_A  = G_prime_A,
     CG   = CG_prime,
     CG_A = CG_prime_A,

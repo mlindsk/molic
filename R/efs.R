@@ -1,13 +1,5 @@
 msg <- function(k, complete, val, stop_crit) {
-  cat(paste(" Edges:",
-    k,
-    "of",
-    complete,
-    "-",
-    stop_crit,
-    "=",
-    round(val, 6L)),
-    "\n")
+  cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
 }
   
 
@@ -17,7 +9,8 @@ efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thre
   sf       <- stop_func(stop_crit)
   n        <- ncol(df)
   complete <- n * (n-1L) / 2L
-  k        <- length(igraph::E(x$G))
+  # k        <- length(igraph::E(x$G))
+  k        <- sum(x$G_A)/2
   if (k == complete) stop("The graph is already complete!")
   prev_val <- sf(x$G_adj, lv, df, d, thres)
   x       <- efs_step(df, x, thres)
@@ -45,7 +38,8 @@ efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres
   n        <- ncol(df)
   M        <- nrow(df)
   complete <- n * (n-1L) / 2L
-  k        <- length(igraph::E(x$G))
+  # k        <- length(igraph::E(x$G))
+  k        <- sum(x$G_A)/2
   if (k == complete) stop("The graph is already complete!")
   x     <- efs_step(df, x, thres)
   stop_val    <- sf(x, lv, M)
@@ -92,7 +86,7 @@ efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thres = 
 #' @export
 print.efs <- function(x, ...) {
   nv <- ncol(x$G_A)
-  ne <- length(igraph::E(x$G))
+  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
   print(ne)
   cat(" A Decomposable Graph With",
     "\n -------------------------",
