@@ -1,12 +1,9 @@
-data
 tests
-^LICENSE\.md$
 old
 examples
-flow
-junk
 src/GPATH
 src/GRTAGS
 src/GTAGS
+^LICENSE\.md$
 TODO\.org
 ^\.travis\.yml$
