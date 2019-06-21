@@ -1,29 +1,41 @@
-msg <- function(k, complete, val, stop_crit) cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)), "\n")
+msg <- function(k, complete, val, stop_crit) {
+  cat(paste(" Edges:",
+    k,
+    "of",
+    complete,
+    "-",
+    stop_crit,
+    "=",
+    round(val, 6L)),
+    "\n")
+}
+  
 
-efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
+efs_mdl <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thres = 5) {
   lv       <- sapply(df, function(x) length(unique(x)))
+  d        <- max(lv) # See Learning Bayesin Networks - An approach based on the MDL principle
   sf       <- stop_func(stop_crit)
   n        <- ncol(df)
   complete <- n * (n-1L) / 2L
   k        <- length(igraph::E(x$G))
-  if( k == complete ) stop("The graph is already complete!")
+  if (k == complete) stop("The graph is already complete!")
   prev_val <- sf(x$G_adj, lv, df, d, thres)
   x       <- efs_step(df, x, thres)
   curr_val <- sf(x$G_adj, lv, df, d, thres)
   k <- k + 1L
-  if( curr_val > prev_val || k == complete) return(x)
-  while( curr_val <= prev_val ) {
-    if( k == complete ) {
-      if( trace ) msg(k, complete, curr_val, stop_crit)
+  if (curr_val > prev_val || k == complete) return(x)
+  while (curr_val <= prev_val) {
+    if (k == complete) {
+      if (trace) msg(k, complete, curr_val, stop_crit)
       return(x)
     } 
-    if( trace ) msg(k, complete, curr_val, stop_crit)
+    if (trace) msg(k, complete, curr_val, stop_crit)
     x <- efs_step(df, x, thres)
     k <- k + 1L
     prev_val <- curr_val
     curr_val <- sf(x$G_adj, lv, df, d, thres)
   }
-  if( trace ) msg(k, complete, curr_val, stop_crit)
+  if (trace) msg(k, complete, curr_val, stop_crit)
   return(x)
 }
 
@@ -34,22 +46,22 @@ efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres
   M        <- nrow(df)
   complete <- n * (n-1L) / 2L
   k        <- length(igraph::E(x$G))
-  if( k == complete ) stop("The graph is already complete!")
+  if (k == complete) stop("The graph is already complete!")
   x     <- efs_step(df, x, thres)
   stop_val    <- sf(x, lv, M)
   k     <- k + 1L
-  if( stop_val >= 0 || k == complete) return(x)
-  while( stop_val < 0 ) {
-    if( k == complete ) {
-      if( trace ) msg(k, complete, stop_val, stop_crit)
+  if (stop_val >= 0 || k == complete) return(x)
+  while (stop_val < 0) {
+    if (k == complete) {
+      if (trace) msg(k, complete, stop_val, stop_crit)
       return(x)
     } 
-    if( trace ) msg(k, complete, stop_val, stop_crit)
+    if (trace) msg(k, complete, stop_val, stop_crit)
     x_old <- x
     x  <- efs_step(df, x, thres)
     k  <- k + 1L
     stop_val <- sf(x, lv, M)
-    if( stop_val >= 0 ) return(x_old)
+    if (stop_val >= 0) return(x_old)
   }
   if( trace ) msg(k, complete, stop_val, stop_crit)
   return(x)
@@ -63,11 +75,10 @@ efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres
 #' @param x An efs object
 #' @param trace Logical indidcating whether or not to trace the procedure
 #' @param stop_crit Stopping criterion (mdl1, mdl2, aic or bic)
-#' @param d Number of bits to encode a single parameter
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy
 #' @export
-efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5) {
-  if( grepl("mdl", stop_crit) ) return(efs_mdl(df, x, trace, stop_crit, d, thres))
+efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thres = 5) {
+  if( grepl("mdl", stop_crit) ) return(efs_mdl(df, x, trace, stop_crit, thres))
   else return(efs_xic(df, x, trace, stop_crit, thres))
 }
 

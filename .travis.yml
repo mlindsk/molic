@@ -2,3 +2,5 @@
 
 language: R
 cache: packages
+notifications:
+  email: false

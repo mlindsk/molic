@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
   
-# molic
+# molic: Multivariate OutLIerdetection In Contingency Tables
 
-An **R** package to perform outlier detection in contingency tables. The methodology relies on a given decomposable graph. The main functions are 
+An **R** package to perform outlier detection in contingency tables using decomposable graphical models; models for which the underlying association between all variables can be depicted by an undirected graph. The main functions are 
 
-## Outlier detection
+## Outlier Detection
 Fit a model from which outlier detection can be conducted
 
 - `outlier_model(df, adj = NULL, nsim = 1000, ncores = 1, meta_name = "")` 
@@ -20,7 +20,7 @@ Argument      |Description
 ## Efficient Forward Selection in Decomposable Graphical Models
 Learn a decomposable graph
 
-- `efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3, thres = 5)`:
+- `efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thres = 5)`:
 
 Argument      |Description
 ------------- |----------------
@@ -28,8 +28,10 @@ Argument      |Description
 ```x```     |     An efs object
 ```trace```     |     Logical indidcating whether or not to trace the procedure
 ```stop_crit```     |     Stopping criterion (mdl1, mdl2, aic or bic)
-```d```     |     Number of bits to encode a single parameter
 ```thres```     |     A threshold mechanism for choosing between two different ways of calculating the entropy
+
+## Example
+TBA
 
 # Installation
 

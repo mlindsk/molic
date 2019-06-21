@@ -4,7 +4,7 @@
 \alias{efs}
 \title{efs}
 \usage{
-efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3,
+efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1",
   thres = 5)
 }
 \arguments{
@@ -15,8 +15,6 @@ efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", d = 3,
 \item{trace}{Logical indidcating whether or not to trace the procedure}
 
 \item{stop_crit}{Stopping criterion (mdl1, mdl2, aic or bic)}
-
-\item{d}{Number of bits to encode a single parameter}
 
 \item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy}
 }

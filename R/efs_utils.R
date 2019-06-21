@@ -168,7 +168,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##                         STOPPING CRITERIAS
 ## -----------------------------------------------------------------------------
 
-mdl1 <- function(adj, lv, df, d = 3, thres = 5)  {
+mdl1 <- function(adj, lv, df, d, thres)  {
   # adj: Adjacency list
   # lv: not used here. Included for compatability with efs_mdl
   RIP      <- rip(adj)
@@ -201,7 +201,7 @@ mdl1 <- function(adj, lv, df, d = 3, thres = 5)  {
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-mdl2 <- function(adj, lv, df, d = 3, thres = 5) {
+mdl2 <- function(adj, lv, df, d, thres) {
   # adj: Adjacency list
   # lv:  Vector of length ncol(df) with number of levels for each var
   RIP    <- rip(adj)
