@@ -4,10 +4,7 @@
 
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models; models for which the underlying association between all variables can be depicted by an undirected graph. The main functions are 
 
-## Outlier Detection
-Fit a model from which outlier detection can be conducted
-
-- `outlier_model(df, adj = NULL, nsim = 1000, ncores = 1, meta_name = "")` 
+- `outlier_model(df, adj, nsim = 1000, ncores = 1, meta_name = "")` 
 
 Argument      |Description
 ------------- |----------------
@@ -17,8 +14,7 @@ Argument      |Description
 ```ncores```     |     Number of cores to use in parallelization
 ```meta_name```     |     A meta name to keep track of different outlier models
 
-## Efficient Forward Selection in Decomposable Graphical Models
-Learn a decomposable graph
+The function fits an outlier model from which outlier detection can be conducted
 
 - `efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1", thres = 5)`:
 
@@ -29,6 +25,8 @@ Argument      |Description
 ```trace```     |     Logical indidcating whether or not to trace the procedure
 ```stop_crit```     |     Stopping criterion (mdl1, mdl2, aic or bic)
 ```thres```     |     A threshold mechanism for choosing between two different ways of calculating the entropy
+
+Efficient forward selection in decomposable graphical models. It is for example used to obtain the input graph `adj` in `outlier_model`.
 
 ## Example
 TBA

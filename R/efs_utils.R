@@ -354,7 +354,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       v <- unlist(es_to_vs(e))
       H_Sp_x <- 0L        
       Spx <- sort_(c(Sp, v[1]))
-      if( exists(Spx, envir = ht) ) {
+      if( exists(Spx, envir = ht, inherits = FALSE) ) {
         H_Sp_x <- ht[[Spx]]
       } else {
         H_Sp_x  <- dst(df[c(Sp, v[1])])
@@ -362,7 +362,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       }
       H_Sp_y <- 0L
       Spy <- sort_(c(Sp, v[2]))
-      if( exists(Spy, envir = ht) ) {
+      if( exists(Spy, envir = ht, inherits = FALSE) ) {
         H_Sp_y <- ht[[Spy]]
       } else {
         H_Sp_y  <- dst(df[c(Sp, v[2])])
@@ -370,7 +370,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       }
       H_Sp_x_y <- 0L
       Spxy <- sort_(c(Sp, v))
-      if( exists(Spxy, envir = ht) ) {
+      if( exists(Spxy, envir = ht, inherits = FALSE) ) {
         H_Sp_xy <- ht[[Spxy]]
       } else {
         H_Sp_xy  <-dst(df[c(Sp, v)])

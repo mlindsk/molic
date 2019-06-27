@@ -138,7 +138,7 @@ sim_Y <- function(A,                      # Character Matrix
 #' exploit \code{letters} and \code{LETTERS} e.g.
 #' @export
 outlier_model <- function(df,
-                          adj       = NULL,
+                          adj,
                           nsim      = 1000,
                           ncores    = 1,
                           meta_name = "") {
