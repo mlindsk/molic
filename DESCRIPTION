@@ -20,4 +20,5 @@ Imports:
     foreach
 Suggests: 
     testthat
+    igraph
 RoxygenNote: 6.1.1
