@@ -1,9 +1,10 @@
-tests
 old
+tests
 examples
 src/GPATH
 src/GRTAGS
 src/GTAGS
+src/efsC
 ^LICENSE\.md$
 TODO\.org
 ^\.travis\.yml$

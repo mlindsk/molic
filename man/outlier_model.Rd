@@ -4,8 +4,7 @@
 \alias{outlier_model}
 \title{Outlier tests in contingency tables using decomposable graphical models}
 \usage{
-outlier_model(df, adj = NULL, nsim = 1000, ncores = 1,
-  meta_name = "")
+outlier_model(df, adj, nsim = 1000, ncores = 1, meta_name = "")
 }
 \arguments{
 \item{df}{Data frame}

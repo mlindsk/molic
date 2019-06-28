@@ -19,6 +19,6 @@ Imports:
     doParallel,
     foreach
 Suggests: 
-    testthat
+    testthat,
     igraph
 RoxygenNote: 6.1.1
