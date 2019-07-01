@@ -3,22 +3,24 @@
 ## Shut up CRAN check - foreach must know z!
 utils::globalVariables('z') 
 
-#' Simulation of TY
+#' Simulation of observations from a decomposable model
 #'
-#' This function simulates observations Ty in order to obtain the approximated density of TY
+#' This function simulates raw observations or likelihood ratio transformed values used in outlier detection
 #' 
 #' @param A Character Matrix (data)
 #' @param C_marginals Clique marginal tables
 #' @param S_marginals Separator marginal tables
 #' @param nsim Number of simulations
+#' @param type What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)
 #' @param ncores Number of cores to use in parallelization
+#' @details For type = "lr" the output is a numeric vector of likelihood ratio transformed values and for type = "raw" the output is a dataframe with each row being a simulated observation.
 #' @export
-sim_TY <- function(A,                      # Character Matrix
+dgm_simulate <- function(A,
                   C_marginals,
                   S_marginals,
-                  nsim            = 1000,
-                  ncores          = 1) {
-  # OUTPUT: Simulated TY values of cells from the database given by A
+                  nsim         = 1000,
+                  type         = "lr",
+                  ncores       = 1) {
   y <- replicate(nsim, vector("character", ncol(A)), simplify = FALSE)
   M <- nrow(A)
   Delta   <- colnames(A)
@@ -32,7 +34,8 @@ sim_TY <- function(A,                      # Character Matrix
     return( sapply(yC1_sim, TY, C_marginals, S_marginals) )
   }
   doParallel::registerDoParallel(ncores)
-  y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = 'c', .inorder = FALSE), {
+  combine_ <- switch(type, "lr"  = 'c', "raw" = "rbind")
+  y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = combine_, .inorder = FALSE), {
     ## USE ITERATORS INSTEAD OF "z"
     y_sim_z <- y[[z]]
     y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
@@ -57,74 +60,20 @@ sim_TY <- function(A,                      # Character Matrix
         y_sim_z[Ck_idx_minus_Sk_idx] <- .split_chars(sample(names( p_nCk_given_Sk_ySk), 1L, prob =  p_nCk_given_Sk_ySk))
       }
     }
-    TY(structure(y_sim_z, names = Delta), C_marginals, S_marginals)    
-  })
-  doParallel::stopImplicitCluster()
-  y
-}
-
-#' Simulation of cells in contingency tables
-#'
-#' This function simulates cells in a contingency table based on a decomposable graphical model
-#' 
-#' @param A Character Matrix (data)
-#' @param C_marginals Clique marginal tables
-#' @param S_marginals Separator marginal tables
-#' @param nsim Number of simulations
-#' @param ncores Number of cores to use in parallelization
-#' @export
-sim_Y <- function(A,                      # Character Matrix
-                  C_marginals,
-                  S_marginals,
-                  nsim            = 1000,
-                  ncores          = 1) {
-  y <- replicate(nsim, vector("character", ncol(A)), simplify = FALSE)
-  M <- nrow(A)
-  Delta   <- colnames(A)
-  C1_vars <- attr(C_marginals[[1]], "vars")
-  C1_idx  <- match(C1_vars, Delta)                                    ## Make a C++ version?
-  p_nC1   <- C_marginals[[1]] / M
-  yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1) ## C++ version?
-  if(!( length(C_marginals) - 1L)) {
-    # The complete graph
-    yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
-    return( sapply(yC1_sim, TY, C_marginals, S_marginals) )
-  }
-  doParallel::registerDoParallel(ncores)
-  y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .inorder = FALSE), {
-    y_sim_z <- y[[z]]
-    y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
-    for( k in 2:length(C_marginals) ) {
-      nCk     <- C_marginals[[k]]
-      Ck_vars <- attr(nCk, "vars")     # Clique names
-      Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
-      nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
-      Sk_vars <- attr(nSk, "vars")     # Separator names
-      if( is.null(Sk_vars) ) {
-        # For empty separators
-        p_nCk_minus_nSk <- nCk / nSk # nSk = M !
-        y_sim_z[Ck_idx] <- .split_chars(sample(names(p_nCk_minus_nSk), 1L, prob = p_nCk_minus_nSk))
-      } else {
-        Sk_idx              <- match(Sk_vars, Delta)
-        Sk_idx_in_Ck        <- match(Sk_vars, Ck_vars)
-        Ck_idx_minus_Sk_idx <- Ck_idx[-Sk_idx_in_Ck]
-        ySk                 <- y_sim_z[Sk_idx]
-        nSk_ySk             <- na_ya(nSk, paste0(ySk, collapse = ""))
-        nCk_given_Sk        <- n_b(nCk, structure(Sk_idx_in_Ck, names = ySk) )
-        p_nCk_given_Sk_ySk  <- nCk_given_Sk / nSk_ySk # Cant be Inf, since ySk MUST be present since we simulated it
-        y_sim_z[Ck_idx_minus_Sk_idx] <- .split_chars(sample(names( p_nCk_given_Sk_ySk), 1L, prob =  p_nCk_given_Sk_ySk))
-      }
+    out <- structure(y_sim_z, names = Delta)
+    if ( type == "lr") {
+      out <- TY(out, C_marginals, S_marginals)
     }
-    structure(y_sim_z, names = Delta)
+    out
   })
   doParallel::stopImplicitCluster()
   y
 }
 
 
-#' Outlier tests in contingency tables using decomposable graphical models
+#' Outlier model
 #'
-#' Outlier tests in contingency tables using decomposable graphical models
+#' A model based on decomposable graphical models for outlier detection
 #'
 #' @param df Data frame
 #' @param adj Adjacency list of a decomposable graph
@@ -152,7 +101,7 @@ outlier_model <- function(df,
   S     <- RIP$S
   Cms   <- a_marginals(A, C)
   Sms   <- a_marginals(A, S)
-  sims  <- sim_TY(A, Cms, Sms, nsim = nsim, ncores = ncores)
+  sims  <- dgm_simulate(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
   mu    <- NA
   sigma <- NA
   mu_hat    <- mean(sims)
