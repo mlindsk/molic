@@ -8,7 +8,7 @@ An **R** package to perform outlier detection in contingency tables using decomp
 
 Argument      |Description
 ------------- |----------------
-```A```     |     Character Matric (data)
+```A```     |     Character Matrix (data)
 ```adj```     |     Adjacency list of a decomposable graph
 ```nsim```     |     Number of simulations
 ```ncores```     |     Number of cores to use in parallelization
