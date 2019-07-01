@@ -2,12 +2,12 @@
 % Please edit documentation in R/outlier_model.R
 \name{outlier_model}
 \alias{outlier_model}
-\title{Outlier tests in contingency tables using decomposable graphical models}
+\title{Outlier model}
 \usage{
-outlier_model(df, adj, nsim = 1000, ncores = 1, meta_name = "")
+outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "")
 }
 \arguments{
-\item{df}{Data frame}
+\item{A}{Character Matrix (data)}
 
 \item{adj}{Adjacency list of a decomposable graph}
 
@@ -18,7 +18,7 @@ outlier_model(df, adj, nsim = 1000, ncores = 1, meta_name = "")
 \item{meta_name}{A meta name to keep track of different outlier models}
 }
 \description{
-Outlier tests in contingency tables using decomposable graphical models
+A model based on decomposable graphical models for outlier detection
 }
 \details{
 It is assumed that all cell values in \code{df}, for all variables,
