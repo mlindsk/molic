@@ -9,6 +9,8 @@ dgm_sim(A, adj, nsim = 1000, type = "raw", ncores = 1)
 \arguments{
 \item{A}{Character Matrix (data)}
 
+\item{adj}{Adjacency list of a decomposable graph}
+
 \item{nsim}{Number of simulations}
 
 \item{type}{What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)}

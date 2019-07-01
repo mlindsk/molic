@@ -63,6 +63,7 @@ utils::globalVariables('z')
 #' This function simulates raw observations or likelihood ratio transformed values used in outlier detection
 #' 
 #' @param A Character Matrix (data)
+#' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param type What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)
 #' @param ncores Number of cores to use in parallelization
