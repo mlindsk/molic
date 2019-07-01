@@ -1,21 +1,9 @@
 .split_chars <- function(x) unlist(strsplit(x, ""))
 
-## Shut up CRAN check - foreach must know z!
+## Shut up CRAN check - foreach and z are good friends!
 utils::globalVariables('z') 
 
-#' Simulation of observations from a decomposable model
-#'
-#' This function simulates raw observations or likelihood ratio transformed values used in outlier detection
-#' 
-#' @param A Character Matrix (data)
-#' @param C_marginals Clique marginal tables
-#' @param S_marginals Separator marginal tables
-#' @param nsim Number of simulations
-#' @param type What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)
-#' @param ncores Number of cores to use in parallelization
-#' @details For type = "lr" the output is a numeric vector of likelihood ratio transformed values and for type = "raw" the output is a dataframe with each row being a simulated observation.
-#' @export
-dgm_simulate <- function(A,
+.sim_internal <- function(A,
                   C_marginals,
                   S_marginals,
                   nsim         = 1000,
@@ -70,12 +58,33 @@ dgm_simulate <- function(A,
   y
 }
 
+#' Simulation of observations from a decomposable model
+#'
+#' This function simulates raw observations or likelihood ratio transformed values used in outlier detection
+#' 
+#' @param A Character Matrix (data)
+#' @param C_marginals Clique marginal tables
+#' @param S_marginals Separator marginal tables
+#' @param nsim Number of simulations
+#' @param type What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)
+#' @param ncores Number of cores to use in parallelization
+#' @details For type = "lr" the output is a numeric vector of likelihood ratio transformed values and for type = "raw" the output is a dataframe with each row being a simulated observation.
+#' @export
+dgm_sim <- function(A, adj, nsim = 1000, type = "raw", ncores = 1) {
+  stopifnot( is.matrix(A) )
+  RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
+  C     <- RIP$C
+  S     <- RIP$S
+  Cms   <- a_marginals(A, C)
+  Sms   <- a_marginals(A, S)
+  .sim_internal(A, Cms, Sms, nsim = nsim, type = type, ncores = ncores)
+}
 
 #' Outlier model
 #'
 #' A model based on decomposable graphical models for outlier detection
 #'
-#' @param df Data frame
+#' @param A Character Matrix (data)
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
@@ -86,7 +95,7 @@ dgm_simulate <- function(A,
 #' current version. If cell values are not single characters, one may
 #' exploit \code{letters} and \code{LETTERS} e.g.
 #' @export
-outlier_model <- function(df,
+outlier_model <- function(A,
                           adj,
                           nsim      = 1000,
                           ncores    = 1,
@@ -95,13 +104,8 @@ outlier_model <- function(df,
   ## ---------
   ## It is ASSUMED that all values _for all variables_ in df are represented as a single character
   ## - Maybe we will implement a conversion, e.g. levels(df$x1) <- letters[1:length(levels(df$x1))]
-  A     <- as.matrix(df)
-  RIP   <- rip(adj) ## the rip (or actually mcs) will check for decomposability here
-  C     <- RIP$C
-  S     <- RIP$S
-  Cms   <- a_marginals(A, C)
-  Sms   <- a_marginals(A, S)
-  sims  <- dgm_simulate(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
+  stopifnot( is.matrix(A) )
+  sims  <- dgm_sim(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
   mu    <- NA
   sigma <- NA
   mu_hat    <- mean(sims)
@@ -117,8 +121,6 @@ outlier_model <- function(df,
       mu_hat      = mu_hat,
       sigma_hat   = sigma_hat,
       cdf         = cdf,
-      C_marginals = Cms,
-      S_marginals = Sms
     )
   )
   return(out)
@@ -179,7 +181,6 @@ cdf <- function(x, ...) {
 cdf.outlier_model <- function(x, ...) {
   x$cdf
 } 
-
 
 p_val <- function(x, ty_new, ...) {
   UseMethod("p_val")
