@@ -14,10 +14,6 @@ dgm_sim(A, adj, nsim = 1000, type = "raw", ncores = 1)
 \item{type}{What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)}
 
 \item{ncores}{Number of cores to use in parallelization}
-
-\item{C_marginals}{Clique marginal tables}
-
-\item{S_marginals}{Separator marginal tables}
 }
 \description{
 This function simulates raw observations or likelihood ratio transformed values used in outlier detection

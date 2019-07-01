@@ -4,7 +4,7 @@
 
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models; models for which the underlying association between all variables can be depicted by an undirected graph. The main functions are 
 
-- `outlier_model(df, adj, nsim = 1000, ncores = 1, meta_name = "")` 
+- `outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "")` 
 
 Argument      |Description
 ------------- |----------------
