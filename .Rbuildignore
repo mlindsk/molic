@@ -8,3 +8,4 @@ src/efsC
 ^LICENSE\.md$
 TODO\.org
 ^\.travis\.yml$
+^README\.Rmd$

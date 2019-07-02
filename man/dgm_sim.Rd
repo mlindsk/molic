@@ -2,9 +2,9 @@
 % Please edit documentation in R/outlier_model.R
 \name{dgm_sim}
 \alias{dgm_sim}
-\title{Simulation of observations from a decomposable model}
+\title{Simulate observations from a decomposable graphical model}
 \usage{
-dgm_sim(A, adj, nsim = 1000, type = "raw", ncores = 1)
+dgm_sim(A, adj, nsim = 1000, ncores = 1)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -13,13 +13,8 @@ dgm_sim(A, adj, nsim = 1000, type = "raw", ncores = 1)
 
 \item{nsim}{Number of simulations}
 
-\item{type}{What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)}
-
 \item{ncores}{Number of cores to use in parallelization}
 }
 \description{
-This function simulates raw observations or likelihood ratio transformed values used in outlier detection
-}
-\details{
-For type = "lr" the output is a numeric vector of likelihood ratio transformed values and for type = "raw" the output is a dataframe with each row being a simulated observation.
+This function simulates observations from a DGM
 }

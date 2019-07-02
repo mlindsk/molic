@@ -4,7 +4,8 @@
 \alias{outlier_model}
 \title{Outlier model}
 \usage{
-outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "")
+outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "",
+  validate_A = TRUE)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -16,13 +17,14 @@ outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "")
 \item{ncores}{Number of cores to use in parallelization}
 
 \item{meta_name}{A meta name to keep track of different outlier models}
+
+\item{validate_A}{If TRUE, it is checked if all values in A are characters with \code{nchar == 1} (which is required)}
 }
 \description{
 A model based on decomposable graphical models for outlier detection
 }
 \details{
-It is assumed that all cell values in \code{df}, for all variables,
-are represented as a single character. No check for this is done in the
-current version. If cell values are not single characters, one may
-exploit \code{letters} and \code{LETTERS} e.g.
+It is assumed that all cell values in \code{A}, for all variables,
+are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
+If cell values are not single characters, one may exploit \code{letters} and \code{LETTERS} e.g.
 }

@@ -58,25 +58,21 @@ utils::globalVariables('z')
   y
 }
 
-#' Simulation of observations from a decomposable model
+#' Simulate observations from a decomposable graphical model
 #'
-#' This function simulates raw observations or likelihood ratio transformed values used in outlier detection
+#' This function simulates observations from a DGM
 #' 
 #' @param A Character Matrix (data)
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
-#' @param type What to output ("lr" = likelihood ratio transformed values  or "raw" = raw observations)
 #' @param ncores Number of cores to use in parallelization
-#' @details For type = "lr" the output is a numeric vector of likelihood ratio transformed values and for type = "raw" the output is a dataframe with each row being a simulated observation.
 #' @export
-dgm_sim <- function(A, adj, nsim = 1000, type = "raw", ncores = 1) {
+dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
   RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
-  C     <- RIP$C
-  S     <- RIP$S
-  Cms   <- a_marginals(A, C)
-  Sms   <- a_marginals(A, S)
-  .sim_internal(A, Cms, Sms, nsim = nsim, type = type, ncores = ncores)
+  Cms   <- a_marginals(A, RIP$C)
+  Sms   <- a_marginals(A, RIP$S)
+  .sim_internal(A, Cms, Sms, nsim = nsim, type = "raw", ncores = ncores)
 }
 
 #' Outlier model
@@ -88,23 +84,30 @@ dgm_sim <- function(A, adj, nsim = 1000, type = "raw", ncores = 1) {
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param meta_name A meta name to keep track of different outlier models
+#' @param validate_A If TRUE, it is checked if all values in A are characters with \code{nchar == 1} (which is required)
 #'
-#' @details It is assumed that all cell values in \code{df}, for all variables,
-#' are represented as a single character. No check for this is done in the
-#' current version. If cell values are not single characters, one may
-#' exploit \code{letters} and \code{LETTERS} e.g.
+#' @details It is assumed that all cell values in \code{A}, for all variables,
+#' are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
+#' If cell values are not single characters, one may exploit \code{letters} and \code{LETTERS} e.g.
 #' @export
 outlier_model <- function(A,
                           adj,
-                          nsim      = 1000,
-                          ncores    = 1,
-                          meta_name = "") {
-  ## Comments:
-  ## ---------
-  ## It is ASSUMED that all values _for all variables_ in df are represented as a single character
-  ## - Maybe we will implement a conversion, e.g. levels(df$x1) <- letters[1:length(levels(df$x1))]
+                          nsim       = 1000,
+                          ncores     = 1,
+                          meta_name  = "",
+                          validate_A = TRUE) {
   stopifnot( is.matrix(A) )
-  sims  <- dgm_sim(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
+  if ( validate_A ) {
+    ## All values _for all variables_ in A must be represented as a single character
+    for( i in seq_along(nrow(A)) ) {
+      for( j in seq_along(ncol(A)) )
+        stopifnot( nchar(A[i,j]) == 1L )
+    }
+  }
+  RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
+  Cms   <- a_marginals(A, RIP$C)
+  Sms   <- a_marginals(A, RIP$S)
+  sims  <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
   mu    <- NA
   sigma <- NA
   mu_hat    <- mean(sims)
@@ -112,7 +115,7 @@ outlier_model <- function(A,
   cdf       <- stats::ecdf(sims)
   out <- structure(class = "outlier_model",
     list(
-      df          = df,
+      A           = A,
       meta_name   = meta_name,
       sims        = sims,
       mu          = mu,
@@ -120,6 +123,8 @@ outlier_model <- function(A,
       mu_hat      = mu_hat,
       sigma_hat   = sigma_hat,
       cdf         = cdf,
+      Cms         = Cms,
+      Sms         = Sms
     )
   )
   return(out)
@@ -138,8 +143,8 @@ print.outlier_model <- function(x, ...) {
     "",
     paste(rep("-", nchar(x$meta_name)), collapse = ""),
     "\n  Simulations:",         length(x$sims),
-    "\n  Variables:",           ncol(x$df),
-    "\n  Observations:",        nrow(x$df),
+    "\n  Variables:",           ncol(x$A),
+    "\n  Observations:",        nrow(x$A),
     "\n  Theoretical mean:",    round(x$mu, 2),
     "\n  Theoretical variance:",round(x$sigma, 2),
     "\n  Estimated mean:",      round(x$mu_hat, 2),
