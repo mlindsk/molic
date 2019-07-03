@@ -13,9 +13,9 @@ utils::globalVariables('z')
   M <- nrow(A)
   Delta   <- colnames(A)
   C1_vars <- attr(C_marginals[[1]], "vars")
-  C1_idx  <- match(C1_vars, Delta)                                    ## Make a C++ version?
+  C1_idx  <- match(C1_vars, Delta)
   p_nC1   <- C_marginals[[1]] / M
-  yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1) ## C++ version?
+  yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1)
   if(!( length(C_marginals) - 1L)) {
     # The complete graph
     yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
@@ -24,7 +24,6 @@ utils::globalVariables('z')
   doParallel::registerDoParallel(ncores)
   combine_ <- switch(type, "lr"  = 'c', "raw" = "rbind")
   y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = combine_, .inorder = FALSE), {
-    ## USE ITERATORS INSTEAD OF "z"
     y_sim_z <- y[[z]]
     y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
     for( k in 2:length(C_marginals) ) {
@@ -33,9 +32,8 @@ utils::globalVariables('z')
       Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
       nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
       Sk_vars <- attr(nSk, "vars")     # Separator names
-      if( is.null(Sk_vars) ) {
-        # For empty separators
-        p_nCk_minus_nSk <- nCk / nSk # nSk = M !
+      if( is.null(Sk_vars) ) {         # For empty separators
+        p_nCk_minus_nSk <- nCk / nSk   # nSk = M !
         y_sim_z[Ck_idx] <- .split_chars(sample(names(p_nCk_minus_nSk), 1L, prob = p_nCk_minus_nSk))
       } else {
         Sk_idx              <- match(Sk_vars, Delta)
@@ -66,6 +64,7 @@ utils::globalVariables('z')
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
+#' @return This function returns a matrix of dimension `nsim x ncol(A)` where each row correspond to a simulated observation from a DGM represented by `adj`.
 #' @export
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
@@ -160,7 +159,7 @@ pmf <- function(x, ...) {
   UseMethod("pmf")
 }
 
-#' pmf
+#' Plot of pmf
 #'
 #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
 #'
@@ -175,9 +174,9 @@ cdf <- function(x, ...) {
   UseMethod("cdf")
 }
 
-#' cdf
+#' Emprical distribution function
 #'
-#' The empirical cdf function of \code{T(Y)}
+#' The empirical cdf of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
@@ -190,21 +189,21 @@ p_val <- function(x, ty_new, ...) {
   UseMethod("p_val")
 }
 
-#' p_val
+#' P-value
 #'
-#' Calculate the p value for obtaining ty_new under \code{H_0}
+#' Calculate the p-value for obtaining \code{ty_new} under \code{H_0}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ty_new The transformed value T(y_new) obtained from function \code{TY}
+#' @param ty_new The transformed value \code{T(y_new)} obtained from function \code{TY}
 #' @param ... Not used (for S3 compatability)
 #' @export
 p_val.outlier_model <- function(x, ty_new, ...) {
   1 - x$cdf( ty_new )
 }
 
-#' mean
+#' Mean
 #'
-#' Estimated mean for T(Y)
+#' Estimated mean of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
@@ -217,9 +216,9 @@ variance <- function(x) {
   UseMethod("variance")
 }
 
-#' variance
+#' Variance
 #'
-#' Estimated variance for T(Y)
+#' Estimated variance of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)

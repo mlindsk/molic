@@ -168,40 +168,40 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##                         STOPPING CRITERIAS
 ## -----------------------------------------------------------------------------
 
-mdl1 <- function(adj, lv, df, d, thres)  {
-  # adj: Adjacency list
-  # lv: not used here. Included for compatability with efs_mdl
-  RIP      <- rip(adj)
-  cliqs    <- RIP$C
-  seps     <- RIP$S
-  Nobs     <- nrow(df)
-  Nvars    <- ncol(df)
-  logNvars <- log(Nvars)
-  DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-  DL_prob  <- d * sum(sapply(seq_along(cliqs), function(i) {
-    if( i == 1L ) return( length(cliqs[[i]]) - 1 )
-    Ci <- cliqs[[i]]
-    Si <- seps[[i]]
-    Ci_Si <- setdiff(Ci, Si)
-    length(Si) * (length(Ci_Si) - 1)
-  }))
-  HM_C <- sum(sapply(cliqs, function(z) {
-    dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-    dst(df[z])
-  }))
-  HM_S <- 0L
-  if( length(seps[-1]) ) {
-    HM_S <- sum(sapply(seps[-1], function(z) {
-      if( !neq_empt_chr(z)) return(0L)
-      dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-      dst(df[z])
-    }))    
-  }
-  DL_data <- Nobs * (HM_C - HM_S)
-  return( log(DL_graph + DL_prob + DL_data) )
-}
+## mdl1 <- function(adj, lv, df, d, thres)  {
+##   # adj: Adjacency list
+##   # lv: not used here. Included for compatability with efs_mdl
+##   RIP      <- rip(adj)
+##   cliqs    <- RIP$C
+##   seps     <- RIP$S
+##   Nobs     <- nrow(df)
+##   Nvars    <- ncol(df)
+##   logNvars <- log(Nvars)
+##   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
+##   DL_prob  <- d * sum(sapply(seq_along(cliqs), function(i) {
+##     if( i == 1L ) return( length(cliqs[[i]]) - 1 )
+##     Ci <- cliqs[[i]]
+##     Si <- seps[[i]]
+##     Ci_Si <- setdiff(Ci, Si)
+##     length(Si) * (length(Ci_Si) - 1)
+##   }))
+##   HM_C <- sum(sapply(cliqs, function(z) {
+##     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+##     dst(df[z])
+##   }))
+##   HM_S <- 0L
+##   if( length(seps[-1]) ) {
+##     HM_S <- sum(sapply(seps[-1], function(z) {
+##       if( !neq_empt_chr(z)) return(0L)
+##       dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+##       dst(df[z])
+##     }))    
+##   }
+##   DL_data <- Nobs * (HM_C - HM_S)
+##   return( log(DL_graph + DL_prob + DL_data) )
+## }
 
-mdl2 <- function(adj, lv, df, d, thres) {
+mdl <- function(adj, lv, df, d, thres) {
   # adj: Adjacency list
   # lv:  Vector of length ncol(df) with number of levels for each var
   RIP    <- rip(adj)
@@ -234,8 +234,41 @@ mdl2 <- function(adj, lv, df, d, thres) {
   return( log(DL_graph + DL_prob + DL_data) )
 }
 
-delta_aic <- function(x, lv, M) {
+## delta_aic <- function(x, lv, M) {
+##   # x : efs object
+##   n           <- length(lv) # ncol(df)
+##   complete    <- n * (n-1L) / 2L
+##   local_info  <- x$MSI$S[[x$MSI$max$idx]]
+##   e           <- local_info$e[x$MSI$max$e]
+##   S           <- local_info$S
+##   vs          <- es_to_vs(names(e))[[1]]
+##   HM_HM_prime <- unname(e)
+##   dev         <- -2*M*HM_HM_prime
+##   d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
+##   d_aic       <- dev + 2 * d_parms
+##   return(d_aic)
+## }
+
+## delta_bic <- function(x, lv, M) {
+##   # x : efs object
+##   n           <- length(lv) # ncol(df)
+##   complete    <- n * (n-1L) / 2L
+##   local_info  <- x$MSI$S[[x$MSI$max$idx]]
+##   e           <- local_info$e[x$MSI$max$e]
+##   S           <- local_info$S
+##   vs          <- es_to_vs(names(e))[[1]]
+##   HM_HM_prime <- unname(e)
+##   dev         <- -2*M*HM_HM_prime
+##   d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
+##   d_aic       <- dev + log(M) * d_parms
+##   return(d_aic)
+## }
+
+delta_xic <- function(x, lv, M, xic = "aic") {
   # x : efs object
+  if ( xic == "aic" )
+    penalty <- 2
+  else penalty <- log(M)
   n           <- length(lv) # ncol(df)
   complete    <- n * (n-1L) / 2L
   local_info  <- x$MSI$S[[x$MSI$max$idx]]
@@ -245,31 +278,8 @@ delta_aic <- function(x, lv, M) {
   HM_HM_prime <- unname(e)
   dev         <- -2*M*HM_HM_prime
   d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
-  d_aic       <- dev + 2 * d_parms
+  d_aic       <- dev + penalty * d_parms
   return(d_aic)
-}
-
-delta_bic <- function(x, lv, M) {
-  # x : efs object
-  n           <- length(lv) # ncol(df)
-  complete    <- n * (n-1L) / 2L
-  local_info  <- x$MSI$S[[x$MSI$max$idx]]
-  e           <- local_info$e[x$MSI$max$e]
-  S           <- local_info$S
-  vs          <- es_to_vs(names(e))[[1]]
-  HM_HM_prime <- unname(e)
-  dev         <- -2*M*HM_HM_prime
-  d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
-  d_aic       <- dev + log(M) * d_parms
-  return(d_aic)
-}
-
-stop_func <- function(type) {
-  switch(type,
-    "mdl1" = mdl1,
-    "mdl2" = mdl2,
-    "aic"  = delta_aic,
-    "bic"  = delta_bic)
 }
 
 ## -----------------------------------------------------------------------------
@@ -388,13 +398,17 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
 ##                              THE ENGINE
 ## -----------------------------------------------------------------------------
 
-#' EFS step
-#'
-#' EFS step
+#' Stepwise efficient forward selection in decomposable graphical models
 #' 
-#' @param df Dataframe
-#' @param x An efs object
-#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy
+#' @description Stepwise efficient forward selection in decomposable graphical models
+#' 
+#' @param df data.frame
+#' @param x A efs object
+#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
+#' @return A efs object
+#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
+#' @seealso \code{\link{efs}}
+#' 
 #' @export
 efs_step <- function(df, x, thres = 5) {
   ## -----------------------------------------------------------------------------
