@@ -2,7 +2,7 @@
 % Please edit documentation in R/outlier_model.R
 \name{variance.outlier_model}
 \alias{variance.outlier_model}
-\title{variance}
+\title{Variance}
 \usage{
 \method{variance}{outlier_model}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-Estimated variance for T(Y)
+Estimated variance of \code{T(Y)}
 }

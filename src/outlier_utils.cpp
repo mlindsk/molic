@@ -147,14 +147,12 @@ RL a_marginals( RCM A, RL & am ) {
   return out;
 }
 
-//' T(y)
+//' \code{T(y)}
 //'
-//' Calculate the affine value T(y) of -2log likelihood-ratio statistic
-//'
-//' @param y A named (according to data) vector
+//' @description This function Calculates the affine value \code{T(y)} of \code{-2\log} likelihood-ratio statistic
+//' @param y A named vector (named according to data)
 //' @param C_marginals Clique marginal tables (use a_marginals function)
 //' @param S_marginals Separator marginal tables (use a_marginals function)
-//'
 //' @export
 // [[Rcpp::export]]
 double TY(RCV y, RL & C_marginals, RL & S_marginals) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/outlier_model.R
 \name{mean.outlier_model}
 \alias{mean.outlier_model}
-\title{mean}
+\title{Mean}
 \usage{
 \method{mean}{outlier_model}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-Estimated mean for T(Y)
+Estimated mean of \code{T(Y)}
 }

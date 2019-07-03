@@ -3,7 +3,7 @@
 //' Maximum Cardinality Search
 //' 
 //' @param adj A named adjacency list of a decomposable grah
-//' @details If adj is not the adjacency list of a decomposable graph and error is produced
+//' @details If adj is not the adjacency list of a decomposable graph an error is raised
 //' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
 //' @export
 // [[Rcpp::export]]
@@ -110,8 +110,7 @@ Rcpp::List perfect_separators(VVS & x) {
 }
 
 //' Runnining Intersection Property
-//'
-//' Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
+//' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 //'
 //' @param adj A named adjacency list of a decomposable graph
 //' @export

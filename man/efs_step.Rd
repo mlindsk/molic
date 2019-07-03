@@ -2,17 +2,26 @@
 % Please edit documentation in R/efs_utils.R
 \name{efs_step}
 \alias{efs_step}
-\title{EFS step}
+\title{Stepwise efficient forward selection in decomposable graphical models}
 \usage{
 efs_step(df, x, thres = 5)
 }
 \arguments{
-\item{df}{Dataframe}
+\item{df}{data.frame}
 
-\item{x}{An efs object}
+\item{x}{A efs object}
 
-\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy}
+\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.}
+}
+\value{
+A efs object
 }
 \description{
-EFS step
+Stepwise efficient forward selection in decomposable graphical models
+}
+\references{
+\url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
+}
+\seealso{
+\code{\link{efs}}
 }

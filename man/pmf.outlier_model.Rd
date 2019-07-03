@@ -2,7 +2,7 @@
 % Please edit documentation in R/outlier_model.R
 \name{pmf.outlier_model}
 \alias{pmf.outlier_model}
-\title{pmf}
+\title{Plot of pmf}
 \usage{
 \method{pmf}{outlier_model}(x, ...)
 }

@@ -7,5 +7,5 @@ R/TAGS
 src/GPATH
 src/GRTAGS
 src/GTAGS
-src/efsC
 TODO.org
+^README\.Rmd$

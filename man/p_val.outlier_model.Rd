@@ -2,17 +2,17 @@
 % Please edit documentation in R/outlier_model.R
 \name{p_val.outlier_model}
 \alias{p_val.outlier_model}
-\title{p_val}
+\title{P-value}
 \usage{
 \method{p_val}{outlier_model}(x, ty_new, ...)
 }
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{ty_new}{The transformed value T(y_new) obtained from function \code{TY}}
+\item{ty_new}{The transformed value \code{T(y_new)} obtained from function \code{TY}}
 
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-Calculate the p value for obtaining ty_new under \code{H_0}
+Calculate the p-value for obtaining \code{ty_new} under \code{H_0}
 }

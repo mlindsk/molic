@@ -2,22 +2,35 @@
 % Please edit documentation in R/efs.R
 \name{efs}
 \alias{efs}
-\title{efs}
+\title{Efficient forward selection in decomposable graphical models}
 \usage{
-efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl1",
+efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl",
   thres = 5)
 }
 \arguments{
-\item{df}{Dataframe}
+\item{df}{data.frame}
 
-\item{x}{An efs object}
+\item{x}{A efs object}
 
-\item{trace}{Logical indidcating whether or not to trace the procedure}
+\item{trace}{Logical indicating whether or not to trace the procedure}
 
-\item{stop_crit}{Stopping criterion (mdl1, mdl2, aic or bic)}
+\item{stop_crit}{Stopping criterion ("mdl", "aic" or "bic")}
 
-\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy}
+\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.}
+}
+\value{
+A efs object
 }
 \description{
-Efficient forward felection in decomposable graphical models
+Efficient forward selection in decomposable graphical models
+}
+\examples{
+## TBA
+
+}
+\references{
+\url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
+}
+\seealso{
+\code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
 }

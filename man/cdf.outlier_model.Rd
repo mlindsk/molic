@@ -2,7 +2,7 @@
 % Please edit documentation in R/outlier_model.R
 \name{cdf.outlier_model}
 \alias{cdf.outlier_model}
-\title{cdf}
+\title{Emprical distribution function}
 \usage{
 \method{cdf}{outlier_model}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-The empirical cdf function of \code{T(Y)}
+The empirical cdf of \code{T(Y)}
 }
