@@ -2,3 +2,5 @@
 *.so
 *.dll
 tests.R
+efsC/Makefile
+efsC/run.out

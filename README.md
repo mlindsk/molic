@@ -2,9 +2,6 @@
 [![Build
 Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
 
-molic: Multivariate OutLIerdetection In Contingency Tables
-==========================================================
-
 An **R** package to perform outlier detection in contingency tables
 using decomposable graphical models; models for which the underlying
 association between all variables can be depicted by an undirected
