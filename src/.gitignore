@@ -3,4 +3,6 @@
 *.dll
 tests.R
 efsC/Makefile
-efsC/run.out
+efsC/Makefile.save
+efsC/main.cpp
+efsC/run
