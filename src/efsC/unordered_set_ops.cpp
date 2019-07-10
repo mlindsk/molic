@@ -1,9 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <unordered_set>
-
-using set = std::unordered_set<std::string>;
+#include "unordered_set_ops.h"
 
 set set_intersect(set &v1, set &v2) {
   // Tjeck which is the smallest

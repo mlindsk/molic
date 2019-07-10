@@ -1,19 +1,4 @@
-#include <unordered_map>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cmath>
 #include "entropy.h"
-// #include <stdexcept>
-// [[Rcpp::plugins(cpp11)]]
-
-using matrix = std::vector<std::vector<std::string>>;
-using table  = std::unordered_map<std::string, int>;
-
-struct data_matrix {
-  matrix mat;
-  std::vector<std::string> col_names;
-};
 
 /*-------------------------------------------------------------*
  * In: dm - data matrix with each cell being a string of one char
@@ -58,13 +43,3 @@ double entropy(matrix &m, std::vector<int> d) {
   }
   return -ent;
 }
-
-// int main() {
-//   matrix m = { {"a", "b", "t"},
-// 	       {"a", "c", "q"},
-// 	       {"b", "b", "z"} };
-//   std::vector<int> d_ = {0, 2};
-//   std::cout << entropy(m, d_) << "\n";
-  
-//  return 0;
-// }
