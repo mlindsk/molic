@@ -1,8 +1,9 @@
 #ifndef RIP_H
 #define RIP_H
 
-#include "set_ops.h"
-#include "misc_utils.h"
+#include <Rcpp.h>
+
+using VVS = std::vector<std::vector<std::string>>;
 
 Rcpp::List mcs(Rcpp::List & adj);
 VVS        perfect_cliques(VVS & x);

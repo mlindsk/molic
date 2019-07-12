@@ -2,6 +2,8 @@
 *.so
 *.dll
 tests.R
+mainR.R
+Makefile
 efsC/Makefile
 efsC/Makefile.save
 efsC/main.cpp

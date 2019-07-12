@@ -6,25 +6,26 @@
 
 using namespace Rcpp;
 
-// any_true
-bool any_true(std::vector<bool>& v);
-RcppExport SEXP _molic_any_true(SEXP vSEXP) {
+// mainC
+void mainC(Rcpp::CharacterMatrix& m, Rcpp::CharacterVector& nodes);
+RcppExport SEXP _molic_mainC(SEXP mSEXP, SEXP nodesSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<bool>& >::type v(vSEXP);
-    rcpp_result_gen = Rcpp::wrap(any_true(v));
-    return rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterMatrix& >::type m(mSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector& >::type nodes(nodesSEXP);
+    mainC(m, nodes);
+    return R_NilValue;
 END_RCPP
 }
-// pairwise_comb
-Rcpp::CharacterMatrix pairwise_comb(VS x);
-RcppExport SEXP _molic_pairwise_comb(SEXP xSEXP) {
+// dfs
+VS dfs(Rcpp::List adj, std::string root);
+RcppExport SEXP _molic_dfs(SEXP adjSEXP, SEXP rootSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< VS >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(pairwise_comb(x));
+    Rcpp::traits::input_parameter< Rcpp::List >::type adj(adjSEXP);
+    Rcpp::traits::input_parameter< std::string >::type root(rootSEXP);
+    rcpp_result_gen = Rcpp::wrap(dfs(adj, root));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -47,18 +48,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::CharacterMatrix >::type A(ASEXP);
     rcpp_result_gen = Rcpp::wrap(matpr(A));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dfs
-VS dfs(Rcpp::List adj, std::string root);
-RcppExport SEXP _molic_dfs(SEXP adjSEXP, SEXP rootSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type adj(adjSEXP);
-    Rcpp::traits::input_parameter< std::string >::type root(rootSEXP);
-    rcpp_result_gen = Rcpp::wrap(dfs(adj, root));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -259,37 +248,47 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// is_element_present
-bool is_element_present(std::string& a, VS& b);
-RcppExport SEXP _molic_is_element_present(SEXP aSEXP, SEXP bSEXP) {
+// set_in
+bool set_in(std::string& a, VS& b);
+RcppExport SEXP _molic_set_in(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string& >::type a(aSEXP);
     Rcpp::traits::input_parameter< VS& >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(is_element_present(a, b));
+    rcpp_result_gen = Rcpp::wrap(set_in(a, b));
     return rcpp_result_gen;
 END_RCPP
 }
-// is_subseteq
-bool is_subseteq(VS const& a, VS const& b);
-RcppExport SEXP _molic_is_subseteq(SEXP aSEXP, SEXP bSEXP) {
+// set_issubeq
+bool set_issubeq(VS& a, VS& b);
+RcppExport SEXP _molic_set_issubeq(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< VS const& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< VS const& >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(is_subseteq(a, b));
+    Rcpp::traits::input_parameter< VS& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< VS& >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_issubeq(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// set_any
+bool set_any(std::vector<bool>& v);
+RcppExport SEXP _molic_set_any(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<bool>& >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_any(v));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_molic_any_true", (DL_FUNC) &_molic_any_true, 1},
-    {"_molic_pairwise_comb", (DL_FUNC) &_molic_pairwise_comb, 1},
+    {"_molic_mainC", (DL_FUNC) &_molic_mainC, 2},
+    {"_molic_dfs", (DL_FUNC) &_molic_dfs, 2},
     {"_molic_count_unique", (DL_FUNC) &_molic_count_unique, 1},
     {"_molic_matpr", (DL_FUNC) &_molic_matpr, 1},
-    {"_molic_dfs", (DL_FUNC) &_molic_dfs, 2},
     {"_molic_n_a", (DL_FUNC) &_molic_n_a, 1},
     {"_molic_na_ya", (DL_FUNC) &_molic_na_ya, 2},
     {"_molic_n_b", (DL_FUNC) &_molic_n_b, 2},
@@ -307,8 +306,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_molic_set_union", (DL_FUNC) &_molic_set_union, 2},
     {"_molic_set_diff", (DL_FUNC) &_molic_set_diff, 2},
     {"_molic_set_eq", (DL_FUNC) &_molic_set_eq, 2},
-    {"_molic_is_element_present", (DL_FUNC) &_molic_is_element_present, 2},
-    {"_molic_is_subseteq", (DL_FUNC) &_molic_is_subseteq, 2},
+    {"_molic_set_in", (DL_FUNC) &_molic_set_in, 2},
+    {"_molic_set_issubeq", (DL_FUNC) &_molic_set_issubeq, 2},
+    {"_molic_set_any", (DL_FUNC) &_molic_set_any, 1},
     {NULL, NULL, 0}
 };
 

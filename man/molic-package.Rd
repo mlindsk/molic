@@ -15,7 +15,7 @@ TBA
 
 \section{The Outlier Model}{
 
-An outlier model bla bla \deqn{p(i) = \prod \Pi_i}
+TBA
 }
 
 \examples{

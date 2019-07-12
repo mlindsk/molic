@@ -5,6 +5,8 @@ src/GPATH
 src/GRTAGS
 src/GTAGS
 src/efsC
+src/mainR.R
+Makefile
 ^LICENSE\.md$
 TODO\.org
 ^\.travis\.yml$

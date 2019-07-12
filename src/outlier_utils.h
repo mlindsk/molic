@@ -1,8 +1,14 @@
-#ifndef OUTLIERUTILS_H
-#define OUTLIERUTILS_H
+#ifndef OUTLIER_UTILS_H
+#define OUTLIER_UTILS_H
 
-#include "set_ops.h"
-#include "misc_utils.h"
+#include <Rcpp.h>
+#include <vector>
+
+using VD  = std::vector<double>;
+using RL  = Rcpp::List;
+using RIV = Rcpp::IntegerVector;
+using RCV = Rcpp::CharacterVector;
+using RCM = Rcpp::CharacterMatrix;
 
 RIV    n_a(RCM & A);
 RIV    n_b(RIV & na, RIV & b);
