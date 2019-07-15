@@ -1,13 +1,53 @@
 #include "outlier_utils.h"
+#include <algorithm>
+#include <string>
+#include <regex>      // For: function na_b : the b'th slice in table a
+#include <map>
+
+using VS  = std::vector<std::string>;
+using VI  = std::vector<int>;
+using VVS = std::vector<std::vector<std::string>>;
+using RIV = Rcpp::IntegerVector;
+
+/*****************************************
+ * In:
+ * - x: Vector of strings
+ * Out: A namedvector of counts of all unique
+ *      elements in x
+ ***************************************/
+// [[Rcpp::export]]
+RIV count_unique(VS  x) { // std::unordered_map<std::string, int>
+  std::map<std::string, int> tab;
+  int n = x.size();
+  for (int i = 0; i < n; i++) {
+    auto s = x[i];
+    tab[s]++;
+  }
+  return Rcpp::wrap(tab);
+}
 
 // [[Rcpp::export]]
+VS matpr(Rcpp::CharacterMatrix A) {
+  // Paste rows in a character matrix
+  int n = A.nrow();
+  VS  x(n);
+  for( int i = 0; i < n; i++ ) {
+    auto row = A(i, Rcpp::_);
+    std::string s;
+    s = std::accumulate(row.begin(),row.end(), s);
+    x[i] = s;
+  }
+  return x;
+}
+
+/*****************************************
+ * In:
+ * - A: A character matrix with all a-variables (and only them)
+ * -    A needs to have dimnames = list(NULL, colnames)
+ * Out: The a-marginal table with attribute = variable names
+ ***************************************/
+// [[Rcpp::export]]
 RIV n_a(RCM & A) {
-  /*****************************************
-   * In:
-   * - A: A character matrix with all a-variables (and only them)
-   * -    A needs to have dimnames = list(NULL, colnames)
-   * Out: The a-marginal table with attribute = variable names
-   ***************************************/
   VS x = matpr(A);
   auto na = count_unique(x);
   // Rcpp::List Delta_A = A.attr("dimnames"); // Use colnames(A) ?
@@ -23,14 +63,15 @@ int na_ya(RIV & na, std::string ya) {
   else return 0;
 }
 
+/*****************************************
+ * In:
+ * - na: The a-marginal tables
+ * -  b: Named vector with positions of the b's
+ * Out:  The b'th slice of the a-marginal table
+ ***************************************/
 // [[Rcpp::export]]
 RIV n_b(RIV & na, RIV & b) {
-  /*****************************************
-   * In:
-   * - na: The a-marginal tables
-   * -  b: Named vector with positions of the b's
-   * Out:  The b'th slice of the a-marginal table
-   ***************************************/
+
   /**
    *  - Assert that max(b) <= nv. Otherwise an error is produced.
    */
@@ -41,7 +82,7 @@ RIV n_b(RIV & na, RIV & b) {
   int  nv       = vars.size();
   int  nb       = b.size();
   VS   names_b  = b.names();
-  VI   b_sorted = as<VI>(b);
+  VI   b_sorted = Rcpp::as<VI>(b);
   VS   fix_b(nv);
 
   // ensures correct deletion of b index
@@ -99,11 +140,6 @@ VD Gx_(VD x) {
 
 // [[Rcpp::export]]
 VD Hx_(VD x) {
-  /*****************************************
-   * In:
-   * - : 
-   * Out: G(x-1) - G(x) := (x-1)log(x-1) - xlog(x)
-   ***************************************/
   VD v1 = Gx_(subtract_one(x)), v2 = Gx_(x), v;
   std::transform(v1.begin(), v1.end(), v2.begin(), std::back_inserter(v),
     [](double i, double j) { return i-j; });
@@ -139,7 +175,7 @@ RL a_marginals( RCM A, RL & am ) {
       out[i] = (am[i]);      
     }
     else {
-      RCV z = as<RCV>(am[i]);
+      RCV z = Rcpp::as<RCV>(am[i]);
       RCM A_sub = subM(A, z);
       out[i] = n_a(A_sub);
     }
@@ -149,7 +185,7 @@ RL a_marginals( RCM A, RL & am ) {
 
 //' \code{T(y)}
 //'
-//' @description This function Calculates the affine value \code{T(y)} of \code{-2\log} likelihood-ratio statistic
+//' @description This function Calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic
 //' @param y A named vector (named according to data)
 //' @param C_marginals Clique marginal tables (use a_marginals function)
 //' @param S_marginals Separator marginal tables (use a_marginals function)

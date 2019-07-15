@@ -7,12 +7,13 @@
 #include <Rcpp.h>     // For: Interface to R
 #include <regex>      // For: function na_b : the b'th slice in table a
 #include <math.h>     // For: log
+#include <Rcpp.h>
 // [[Rcpp::plugins(cpp11)]]
-
-// ...............
-// TYPEDEFINITIONS
-// ...............
 using namespace Rcpp;
+
+// /*----------------------------------------------------------*
+//  *                   TYPEDEFINITIONS                                   
+//  * ---------------------------------------------------------*/
 using VI  = std::vector<int>;
 using VD  = std::vector<double>;
 using VS  = std::vector<std::string>;
@@ -24,3 +25,8 @@ using RIV = Rcpp::IntegerVector;
 using RCV = Rcpp::CharacterVector;
 using RCM = Rcpp::CharacterMatrix;
 
+using set = std::unordered_set<std::string>;
+using vec_str_pair = std::vector<std::pair<std::string, std::string>>;
+/*----------------------------------------------------------*
+ *          FORWARD DECLARATION OF CLASSES                                   
+ * ---------------------------------------------------------*/

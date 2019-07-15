@@ -1,16 +1,19 @@
-#include "misc_utils.h"
+#include <unordered_set>
 #include <unordered_map>
+#include <vector>
+#include <string>
 #include <stack>
+using set              = std::unordered_set<std::string>;
+using adj_list         = std::unordered_map<std::string, set>;
+using adj_list_element = std::pair<std::string, set>;
 
-// [[Rcpp::export]]
+/*****************************************
+ * In:
+ * - adj: A named adjacency list
+ * - root: The rooth node
+ * Out: All nodes connected to the root
+ ***************************************/
 VS dfs(Rcpp::List adj, std::string root) {
-  // std::unordered_map<std::unordered_set, int>
-  /*****************************************
-   * In:
-   * - adj: A named adjacency list
-   * - root: The rooth node
-   * Out: All nodes connected to the root
-   ***************************************/
   VS nodes = adj.names();
   int n = nodes.size();
   std::unordered_map<std::string, bool> visited;

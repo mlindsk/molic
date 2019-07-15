@@ -1,12 +1,15 @@
-#ifndef MISCUTILS_H
-#define MISCUTILS_H
+#ifndef MISC_UTILS_H
+#define MISC_UTILS_H
 
-#include "molic_types.h"
+#include <Rcpp.h>
+#include <vector>
+#include <string>
 
-bool any_true(std::vector<bool> &v);
-RCM  pairwise_comb(VS x);
-RIV  count_unique(VS  x); // std::map<std::string, int>
-VS   matpr(Rcpp::CharacterMatrix A);
-VS   dfs(Rcpp::List adjList, std::string root);
+using VS  = std::vector<std::string>;
+
+/**
+ * This is the old dfs version that is used in efs_utils/efs_step.R 
+ */
+VS dfs(Rcpp::List adjList, std::string root);
 
 #endif

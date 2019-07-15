@@ -14,5 +14,5 @@ TY(y, C_marginals, S_marginals)
 \item{S_marginals}{Separator marginal tables (use a_marginals function)}
 }
 \description{
-This function Calculates the affine value \code{T(y)} of \code{-2\log} likelihood-ratio statistic
+This function Calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic
 }

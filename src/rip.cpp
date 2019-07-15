@@ -1,4 +1,8 @@
 #include "rip.h"
+#include "set_ops.h"  // For set_any
+#include <unordered_map>
+
+using VS = std::vector<std::string>;
 
 //' Maximum Cardinality Search
 //' 
@@ -24,7 +28,7 @@ Rcpp::List mcs(Rcpp::List & adj) {
   ps[0] = {v};
   remaining_nodes.erase(remaining_nodes.begin()+0);
   for( int i = 1; i < N; i++ ) {
-    auto ne_i = as<VS>(adj[v]);
+    auto ne_i = Rcpp::as<VS>(adj[v]);
     // Increment neighbor nodes with a one
     for (auto it = ne_i.begin(); it != ne_i.end(); ++it) {
       auto ne_ = labels.find(*it);
@@ -45,7 +49,7 @@ Rcpp::List mcs(Rcpp::List & adj) {
     v = max_v;
     used_nodes[i] = v;
     remaining_nodes.erase(max_it);
-    auto ne_v = as<VS>(adj[v]);
+    auto ne_v = Rcpp::as<VS>(adj[v]);
     ne_v.push_back(v); // The closure of v
     VS anc    = VS(used_nodes.begin(), used_nodes.begin() + i + 1);
     VS B_i     = set_intersect(ne_v, anc);
@@ -59,14 +63,14 @@ Rcpp::List mcs(Rcpp::List & adj) {
       // ----------------------------------------------------------------------------------------------
       for (int j = 0; j < card_i; j++) {
     	for (int k = j + 1; k < card_i - 1; k++) {
-	  auto adj_k = as<VS>(adj[B_i[k]]);
-    	  if ( !is_element_present(B_i[j], adj_k) ) Rcpp::stop("The corresponding graph of <adj> is not decomposable");
+	  auto adj_k = Rcpp::as<VS>(adj[B_i[k]]);
+    	  if ( !set_in(B_i[j], adj_k) ) Rcpp::stop("The corresponding graph of <adj> is not decomposable");
     	}
       }
     }
     ps[i] = B_i;
   }
-  return Rcpp::List::create(_["po"] = used_nodes , _["ps"] = ps);
+  return Rcpp::List::create(Rcpp::_["po"] = used_nodes , Rcpp::_["ps"] = ps);
 } 
 
 // [[Rcpp::export]]
@@ -82,10 +86,10 @@ VVS perfect_cliques(VVS & x) {
     std::vector<bool> v; // Dummy var to loop over
     for(int j = 0; j < n; j++) {
       if( j != i ) {
-	v.push_back(is_subseteq(x[i], x[j]));
+	v.push_back(set_issubeq(x[i], x[j]));
       }
     }
-    if( !any_true(v) ) {
+    if( !set_any(v) ) {
       pc.push_back(x[i]); 
     }
   }
@@ -120,5 +124,5 @@ Rcpp::List rip(Rcpp::List & adj) {
   VVS pseq = z["ps"];
   VVS pc   = perfect_cliques(pseq);
   Rcpp::List ps = perfect_separators(pc);
-  return List::create(_["C"] = pc , _["S"] = ps);
+  return Rcpp::List::create(Rcpp::_["C"] = pc , Rcpp::_["S"] = ps);
 }

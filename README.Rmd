@@ -1,5 +1,9 @@
 ---
-output: github_document
+title: "molic: Multivariate OutLIerdetection In Contingency Tables"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -15,7 +19,6 @@ knitr::opts_chunk$set(
 
 [![Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
 
-# molic: Multivariate OutLIerdetection In Contingency Tables
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models; models for which the underlying association between all variables can be depicted by an undirected graph. The main functions are described below.
 
 ### Outlier Detection
@@ -25,12 +28,12 @@ A model based on decomposable graphical models for outlier detection.
 
 Argument      |Description
 ------------- |----------------
-```A```     |     Character matrix (data)
-```adj```     |     Adjacency list of a decomposable graph
-```nsim```     |     Number of simulations
-```ncores```     |     Number of cores to use in parallelization
-```meta_name```     |     A meta name to keep track of different outlier models
-```validate_A```     |     If TRUE, it is checked if all values in A are characters with `nchar == 1` (which is required)
+`A`     |     Character matrix (data)
+`adj`     |     Adjacency list of a decomposable graph
+`nsim`     |     Number of simulations
+`ncores`     |     Number of cores to use in parallelization
+`meta_name`     |     A meta name to keep track of different outlier models
+`validate_A`     |     If TRUE, it is checked if all values in A are characters with `nchar == 1` (which is required)
 
 It is assumed that all cell values in `A` , for all are represented as a single character. If `validate_A` is `TRUE` this is checked. If cell values are not single characters, one may exploit `letters` and `LETTERS` e.g.
 
@@ -42,11 +45,11 @@ Efficient forward selection in decomposable graphical models.
 
 Argument      |Description
 ------------- |----------------
-```df```     |     data.frame
-```x```     |     A efs object
-```trace```     |     Logical indicating whether or not to trace the procedure
-```stop_crit```     |     Stopping criterion ("mdl", "aic" or "bic")
-```thres```     |     A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
+`df`     |     data.frame
+`x`     |     A efs object
+`trace`     |     Logical indicating whether or not to trace the procedure
+`stop_crit`     |     Stopping criterion ("mdl", "aic" or "bic")
+`thres`    |     A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 
 Use `efs_adj_list` or `efs_adj_matrix` to extract the fitted graph.
 
@@ -56,10 +59,10 @@ Use `efs_adj_list` or `efs_adj_matrix` to extract the fitted graph.
 
 Argument      |Description
 ------------- |----------------
-```A```     |     Character matrix (data)
-```adj```     |     Adjacency list of a decomposable graph
-```nsim```     |     Number of simulations
-```ncores```     |     Number of cores to use in parallelization
+`A`     |     Character matrix (data)
+`adj`     |     Adjacency list of a decomposable graph
+`nsim`     |     Number of simulations
+`ncores`     |     Number of cores to use in parallelization
 
 This function returns a matrix of dimension `nsim x ncol(A)` where each row correspond to a simulated observation from a DGM represented by `adj`.
 
@@ -70,7 +73,8 @@ TBA
 
 You can install the development version of the package by using the `devtools` package:
 
-```r
+
+```{r, eval = FALSE}
 devtools::install_github("mlindsk/molic")
 ```
 
