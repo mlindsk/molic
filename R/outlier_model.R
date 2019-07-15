@@ -154,6 +154,25 @@ print.outlier_model <- function(x, ...) {
   )
 }
 
+#' Calculate deviance
+#'
+#' This function calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic which is also called the deviance
+#'
+#' @param x A \code{outlier_model} object
+#' @param y An observation (Character vector)
+#' @param ... Not used (for S3 compatability)
+#' @export
+deviance <- function(x, y, ...) {
+  UseMethod("deviance")
+}
+
+#' @rdname deviance
+#' @export
+deviance.outlier_model <- function(x, y,...) {
+  TY(y, x$Cms, x$Sms)
+}
+
+
 #' Plot of pmf
 #'
 #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
