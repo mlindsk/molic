@@ -3,6 +3,7 @@
 *.dll
 tests.R
 mainR.R
+makeC.cpp
 Makefile
 efsC/Makefile
 efsC/Makefile.save
