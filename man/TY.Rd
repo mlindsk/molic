@@ -2,17 +2,17 @@
 % Please edit documentation in R/RcppExports.R
 \name{TY}
 \alias{TY}
-\title{T(y)}
+\title{\code{T(y)}}
 \usage{
 TY(y, C_marginals, S_marginals)
 }
 \arguments{
-\item{y}{A named (according to data) vector}
+\item{y}{A named vector (named according to data)}
 
 \item{C_marginals}{Clique marginal tables (use a_marginals function)}
 
 \item{S_marginals}{Separator marginal tables (use a_marginals function)}
 }
 \description{
-Calculate the affine value T(y) of -2log likelihood-ratio statistic
+This function Calculates the affine value \code{T(y)} of \code{-2\log} likelihood-ratio statistic
 }
