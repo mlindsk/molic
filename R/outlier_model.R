@@ -154,11 +154,6 @@ print.outlier_model <- function(x, ...) {
   )
 }
 
-
-pmf <- function(x, ...) {
-  UseMethod("pmf")
-}
-
 #' Plot of pmf
 #'
 #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
@@ -166,12 +161,14 @@ pmf <- function(x, ...) {
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
 #' @export
-pmf.outlier_model <- function(x, ...) {
-  graphics::hist(x$sims, breaks = 30, xlab = "T(y)", main = x$meta_name, freq = FALSE)
+pmf <- function(x, ...) {
+  UseMethod("pmf")
 }
 
-cdf <- function(x, ...) {
-  UseMethod("cdf")
+#' @rdname pmf
+#' @export
+pmf.outlier_model <- function(x, ...) {
+  graphics::hist(x$sims, breaks = 30, xlab = "T(y)", main = x$meta_name, freq = FALSE)
 }
 
 #' Emprical distribution function
@@ -181,13 +178,15 @@ cdf <- function(x, ...) {
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
 #' @export
+cdf <- function(x, ...) {
+  UseMethod("cdf")
+}
+
+#' @rdname cdf
+#' @export
 cdf.outlier_model <- function(x, ...) {
   x$cdf
 } 
-
-p_val <- function(x, ty_new, ...) {
-  UseMethod("p_val")
-}
 
 #' P-value
 #'
@@ -196,6 +195,12 @@ p_val <- function(x, ty_new, ...) {
 #' @param x A \code{outlier_model} object
 #' @param ty_new The transformed value \code{T(y_new)} obtained from function \code{TY}
 #' @param ... Not used (for S3 compatability)
+#' @export
+p_val <- function(x, ty_new, ...) {
+  UseMethod("p_val")
+}
+
+#' @rdname p_val
 #' @export
 p_val.outlier_model <- function(x, ty_new, ...) {
   1 - x$cdf( ty_new )
@@ -212,16 +217,18 @@ mean.outlier_model <- function(x, ...) {
   x$mu_hat
 }
 
-variance <- function(x) {
-  UseMethod("variance")
-}
-
 #' Variance
 #'
 #' Estimated variance of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
+#' @export
+variance <- function(x) {
+  UseMethod("variance")
+}
+
+#' @rdname variance
 #' @export
 variance.outlier_model <- function(x, ...) {
   x$sigma_hat

@@ -61,14 +61,12 @@ a_marginals <- function(A, am) {
     .Call('_molic_a_marginals', PACKAGE = 'molic', A, am)
 }
 
-#' T(y)
+#' \code{T(y)}
 #'
-#' Calculate the affine value T(y) of -2log likelihood-ratio statistic
-#'
-#' @param y A named (according to data) vector
+#' @description This function Calculates the affine value \code{T(y)} of \code{-2\log} likelihood-ratio statistic
+#' @param y A named vector (named according to data)
 #' @param C_marginals Clique marginal tables (use a_marginals function)
 #' @param S_marginals Separator marginal tables (use a_marginals function)
-#'
 #' @export
 TY <- function(y, C_marginals, S_marginals) {
     .Call('_molic_TY', PACKAGE = 'molic', y, C_marginals, S_marginals)
@@ -77,7 +75,7 @@ TY <- function(y, C_marginals, S_marginals) {
 #' Maximum Cardinality Search
 #' 
 #' @param adj A named adjacency list of a decomposable grah
-#' @details If adj is not the adjacency list of a decomposable graph and error is produced
+#' @details If adj is not the adjacency list of a decomposable graph an error is raised
 #' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
 #' @export
 mcs <- function(adj) {
@@ -93,8 +91,7 @@ perfect_separators <- function(x) {
 }
 
 #' Runnining Intersection Property
-#'
-#' Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
+#' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 #'
 #' @param adj A named adjacency list of a decomposable graph
 #' @export
