@@ -48,7 +48,7 @@ as_adj_lst <- function(A) { # For the RIP function
 as_adj_mat <- function(adj) { # For the RIP function
   Delta <- names(adj)
   N     <- length(Delta)
-  A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(NULL, Delta))
+  A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(Delta, Delta))
   for( d in seq_along(Delta) ) {
     idx <- match(adj[[d]], Delta)
     A[idx, d] <- 1L
@@ -359,6 +359,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
     dst         <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
     H_Sp        <- 0L
     if( neq_empt_chr(Sp) ) H_Sp <- ht[[sort_(Sp)]]
+    
     eligs  <- sapply(eligs, function(e) {
       ## See the proof of Theorem 4.3 in Jordan to optimize! (Dont need to use exists for all cases)
       v <- unlist(es_to_vs(e))
@@ -388,6 +389,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       }
       return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )
     })
+    
     names(eligs) <- eligs_names
     list(S = Sp, e = eligs, C1 = Cp, C2 = Cab)
   })
@@ -421,6 +423,7 @@ efs_step <- function(df, x, thres = 5) {
   msi   <- MSI$S  
   mab   <- MSI$max
   eab   <- mab$e
+  if(class(eab) != "character") browser()
   vab   <- unlist(strsplit(eab, "\\|"))
   va    <- vab[1]
   vb    <- vab[2]
@@ -584,13 +587,14 @@ efs_step <- function(df, x, thres = 5) {
   max_es     <- sapply(msi_prime, function(x) x$e[which.max(x$e)])
   wm_max_es  <- which.max(max_es)
   maxy       <- msi_prime[[wm_max_es]]
-  e_max      <- max_es[wm_max_es]
+  e_max      <- names(max_es[wm_max_es])
   idx_max    <- wm_max_es
   ins_max    <- unlist(sapply(seq_along(CG_prime), function(x) {
     cond <- setequal(CG_prime[[x]], maxy$C1) || setequal(CG_prime[[x]], maxy$C2)
     if( cond ) return(x)
   }))
-  MSI_prime <- list(S = msi_prime, max = list(e = names(e_max), idx = idx_max, ins = ins_max))
+  MSI_prime <- list(S = msi_prime, max = list(e = e_max, idx = idx_max, ins = ins_max))
+  # MSI_prime <- list(S = msi_prime, max = list(e = names(e_max), idx = idx_max, ins = ins_max))
   out <- list(G_adj = G_prime_adj,
     # G    = G_prime,
     G_A  = G_prime_A,

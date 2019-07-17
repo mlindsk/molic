@@ -2,15 +2,16 @@
 #include <unordered_map>
 #include <stack>
 
+// std::unordered_map<std::unordered_set, int>
+/*****************************************
+ * In:
+ * - adj: A named adjacency list
+ * - root: The rooth node
+ * Out: All nodes connected to the root
+ ***************************************/
+
 // [[Rcpp::export]]
 VS dfs(Rcpp::List adj, std::string root) {
-  // std::unordered_map<std::unordered_set, int>
-  /*****************************************
-   * In:
-   * - adj: A named adjacency list
-   * - root: The rooth node
-   * Out: All nodes connected to the root
-   ***************************************/
   VS nodes = adj.names();
   int n = nodes.size();
   std::unordered_map<std::string, bool> visited;

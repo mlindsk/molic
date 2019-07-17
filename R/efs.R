@@ -70,7 +70,7 @@ efs_xic <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "aic", thres
 #' ## TBA
 #'
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
-#' @seealso \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
+#' @seealso \code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
 #' 
 #' @export
 efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl", thres = 5) {
@@ -89,7 +89,6 @@ efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl", thres = 5
 print.efs <- function(x, ...) {
   nv <- ncol(x$G_A)
   ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
-  print(ne)
   cat(" A Decomposable Graph With",
     "\n -------------------------",
     "\n  Nodes:", nv,

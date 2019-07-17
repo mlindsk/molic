@@ -2,10 +2,13 @@
 
 #all: clean compile_program run_program
 
-compile_program:
-	Rscript -e "Rcpp::compileAttributes(); devtools::check()"
+check: 
+	Rscript -e "devtools::check()"
 
-run_program:
+compile:
+	Rscript -e "Rcpp::compileAttributes(); devtools::document()"
+
+run:
 	Rscript src/mainR.R
 
 clean:

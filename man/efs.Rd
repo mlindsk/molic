@@ -32,5 +32,5 @@ Efficient forward selection in decomposable graphical models
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
+\code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
 }
