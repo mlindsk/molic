@@ -1,60 +1,4 @@
-tree_weights <- function(df) {
-  dst         <- metric("entropy")
-  nodes       <- colnames(df)
-  n           <- length(nodes)
-  G_A         <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
-  G_adj       <- as_adj_lst(G_A)
-  CG          <- as.list(nodes)
-  pairs       <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
-  weights     <- structure(vector(mode = "numeric", length = n * (n - 1) / 2), names = "")
-  ht          <- new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
-  for( j in 1:n ) {
-    ht[[nodes[j]]] <- dst(df[nodes[j]])
-  }
-  for (p in seq_along(pairs) ) {
-    x  <- pairs[[p]]
-    edge_x <- sort_(x)
-    ht[[edge_x]] <- dst(df[x])
-    weights[p] <- ht[[edge_x]]
-    names(weights)[p] <- edge_x
-    ## dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
-  }
-  out <- list(G_A = G_A,
-    G_adj         = G_adj,
-    weights       = sort(weights, decreasing = TRUE),
-    ht            = ht
-  )
-  return(out)
-}
-
-kruskal <- function(df) {
-  x          <- tree_weights(df)
-  n          <- ncol(df)
-  nodes      <- colnames(df)
-  x$G_adj    <- structure(replicate(n, character(0)), names = nodes)
-  ## x$G_A      <- Matrix::Matrix(0L, n, n, dimnames = list(nodes, nodes))
-  node_pairs <- es_to_vs(names(x$weights))
-  number_of_nodes_total <- n
-  number_of_nodes_added <- 0L
-  for (e in seq_along(x$weights)) {
-    if( number_of_nodes_added == number_of_nodes_total - 1 ) return(x)
-    node1 <- node_pairs[[e]][1]
-    node2 <- node_pairs[[e]][2]
-    component1 <- dfs(x$G_adj, node1)
-    component2 <- dfs(x$G_adj, node2)
-    if( !neq_empt_chr(intersect(component1, component2)) ) {
-      x$G_adj[[node1]] <- c(x$G_adj[[node1]], node2)
-      x$G_adj[[node2]] <- c(x$G_adj[[node2]], node1)
-      x$G_A[node1, node2] <- 1L
-      x$G_A[node2, node1] <- 1L
-      number_of_nodes_added <- number_of_nodes_added + 1L
-    }
-  }
-  return(x)
-}
-
 edge_entropy <- function(e, S, df, ht) {
-  ## See the proof of Theorem 4.3 in Jordan to optimize! (Dont need to use exists for all cases)
   v <- unlist(es_to_vs(e))
   H_S   <- 0L
   H_S_x <- 0L        
@@ -84,6 +28,80 @@ edge_entropy <- function(e, S, df, ht) {
   return( list(ent = H_S_x + H_S_y - H_S_xy - H_S, ht = ht ))
 }
 
+tree_weights <- function(df) {
+  dst         <- metric("entropy")
+  nodes       <- colnames(df)
+  n           <- length(nodes)
+  G_A         <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
+  G_adj       <- as_adj_lst(G_A)
+  CG          <- as.list(nodes)
+  pairs       <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
+  weights     <- structure(vector(mode = "numeric", length = n * (n - 1) / 2), names = "")
+  ht          <- new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
+  for( j in 1:n ) {
+    ht[[nodes[j]]] <- dst(df[nodes[j]])
+  }
+  for (p in seq_along(pairs) ) {
+    x  <- pairs[[p]]
+    edge_x <- sort_(x)
+    ee <-  edge_entropy(edge_x, character(0), df, ht)
+    weights[p] <- ee$ent # ht[[edge_x]]
+    names(weights)[p] <- edge_x
+    ht <- ee$ht
+  }
+  out <- list(G_A = G_A,
+    G_adj         = G_adj,
+    weights       = sort(weights, decreasing = TRUE),
+    ht            = ht
+  )
+  return(out)
+}
+
+kruskal <- function(df) {
+  x          <- tree_weights(df)
+  class(x)   <- c(class(x), "tree")
+  n          <- ncol(df)
+  nodes      <- colnames(df)
+  x$G_adj    <- structure(replicate(n, character(0)), names = nodes)
+  ## x$G_A      <- Matrix::Matrix(0L, n, n, dimnames = list(nodes, nodes))
+  node_pairs <- es_to_vs(names(x$weights))
+  number_of_nodes_total <- n
+  number_of_nodes_added <- 0L
+  for (e in seq_along(x$weights)) {
+    if( number_of_nodes_added == number_of_nodes_total - 1 ) return(x)
+    node1 <- node_pairs[[e]][1]
+    node2 <- node_pairs[[e]][2]
+    component1 <- dfs(x$G_adj, node1)
+    component2 <- dfs(x$G_adj, node2)
+    if( !neq_empt_chr(intersect(component1, component2)) ) {
+      x$G_adj[[node1]] <- c(x$G_adj[[node1]], node2)
+      x$G_adj[[node2]] <- c(x$G_adj[[node2]], node1)
+      x$G_A[node1, node2] <- 1L
+      x$G_A[node2, node1] <- 1L
+      number_of_nodes_added <- number_of_nodes_added + 1L
+    }
+  }
+  return(x)
+}
+
+#' Print tree 
+#'
+#' A print method for \code{tree} objects
+#'
+#' @param x A \code{tree} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.tree <- function(x, ...) {
+  nv <- ncol(x$G_A)
+  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
+  cat(" A Decomposable Graph With",
+    "\n -------------------------",
+    "\n  Nodes:", nv,
+    "\n  Edges:", ne, "/", nv*(nv-1)/2,
+    "\n  <tree>",
+    "\n -------------------------\n"
+  )
+}
 
 as_efs <- function(df, t) {
   x    <- rip(t$G_adj)
@@ -146,30 +164,14 @@ as_efs <- function(df, t) {
 #' @export
 cl_tree <- function(df, wrap = TRUE) {
   if( wrap ) return( as_efs(df, kruskal(df)) )
-  else return(kruskal(df))
+  else return( kruskal(df) )
 }
 
+
 ## library(dplyr)
-
-## df <- tgp_dat[1:1000, 3:20] # strsplit error
-## df <- tgp_dat[1:1000, 3:50] # matrix indexing error
-
-## kruskal(df)
-## y <- 
-## E <- efs(df, y)
-
-
-## efs(df)
-
-## G <- igraph::graph_from_adjacency_matrix(x$G_A, mode = "undirected")
-## plot(G, vertex.size = 0.1)
-
-## is_decomposable(QQ$G_adj)
-
-## QQ_G <- G <- igraph::graph_from_adjacency_matrix(QQ$G_A, mode = "undirected")
-## visIgraph(QQ_G) %>%
+## G <- igraph::graph_from_adjacency_matrix(z$G_A, mode = "undirected")
+## visIgraph(G) %>%
 ##     visNodes(size = 25, shape = "circle") %>%
 ##     visOptions(highlightNearest = TRUE, 
 ##                nodesIdSelection = TRUE) %>%
 ##     visInteraction(keyboard = TRUE)
-## plot(QQ_G, vertex.size = 0.1)
