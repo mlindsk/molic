@@ -75,7 +75,7 @@ You can install the development version of the package by using the `devtools` p
 
 
 ```{r, eval = FALSE}
-devtools::install_github("mlindsk/molic")
+devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
 ```
 
 # References

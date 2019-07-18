@@ -23,7 +23,6 @@ Suggests:
     rmarkdown,
     testthat,
     dplyr,
-    igraph,
-    vizNetwork
+    igraph
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

@@ -1,11 +1,10 @@
 .Rhistory
 .RData
-.Rproj.user
 examples
-old
 R/TAGS
 src/GPATH
 src/GRTAGS
 src/GTAGS
 TODO.org
 ^README\.Rmd$
+inst/doc
