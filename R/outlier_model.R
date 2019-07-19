@@ -82,6 +82,7 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
+#' @param validateA Logical. See details.
 #'
 #' @details It is assumed that all cell values in \code{A}, for all variables,
 #' are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
@@ -90,14 +91,19 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
 outlier_model <- function(A,
                           adj,
                           nsim       = 1000,
-                          ncores     = 1
+                          ncores     = 1,
+                          validateA  = TRUE
                           ) {
+
   stopifnot( is.matrix(A) )
-  ## All values _for all variables_ in A must be represented as a single character
-  for( i in seq_along(nrow(A)) ) {
-    for( j in seq_along(ncol(A)) )
-      stopifnot( nchar(A[i,j]) == 1L )
+  if( validateA ) {
+    ## All values _for all variables_ in A must be represented as a single character
+    for( i in seq_along(nrow(A)) ) {
+      for( j in seq_along(ncol(A)) )
+        stopifnot( nchar(A[i,j]) == 1L )
+    }    
   }
+
   # the rip (or actually mcs) will check for decomposability here
   RIP   <- rip(adj) 
   Cms   <- a_marginals(A, RIP$C)
