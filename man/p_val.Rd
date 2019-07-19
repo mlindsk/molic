@@ -5,17 +5,23 @@
 \alias{p_val.outlier_model}
 \title{P-value}
 \usage{
-p_val(x, ty_new, ...)
+p_val(x, dy, ...)
 
-\method{p_val}{outlier_model}(x, ty_new, ...)
+\method{p_val}{outlier_model}(x, dy, ...)
 }
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{ty_new}{The transformed value \code{T(y_new)} obtained from function \code{TY}}
+\item{dy}{The deviance of the observation \code{y}.}
 
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
 Calculate the p-value for obtaining \code{ty_new} under \code{H_0}
+}
+\details{
+The value \code{ty_new} can be obtained used the \code{deviance} function.
+}
+\seealso{
+\code{\link{deviance}}
 }

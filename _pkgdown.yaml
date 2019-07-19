@@ -1,0 +1,5 @@
+title: molic
+url: https://mlindsk.github.io/molic
+template:
+  params:
+    bootswatch: flatly

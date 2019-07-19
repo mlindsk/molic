@@ -159,19 +159,10 @@ as_efs <- function(df, t) {
 #' 
 #' @param df data.frame
 #' @param wrap Logical indicating if the object should be converted to a \code{efs} object or not (can increase runtime significantly if FALSE)
-#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
-#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
+#' @references \url{https://ieeexplore.ieee.org/abstract/document/1054142}
+#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 #' @export
 cl_tree <- function(df, wrap = TRUE) {
   if( wrap ) return( as_efs(df, kruskal(df)) )
   else return( kruskal(df) )
 }
-
-
-## library(dplyr)
-## G <- igraph::graph_from_adjacency_matrix(z$G_A, mode = "undirected")
-## visIgraph(G) %>%
-##     visNodes(size = 25, shape = "circle") %>%
-##     visOptions(highlightNearest = TRUE, 
-##                nodesIdSelection = TRUE) %>%
-##     visInteraction(keyboard = TRUE)

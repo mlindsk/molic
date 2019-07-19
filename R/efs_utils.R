@@ -36,45 +36,6 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
   })
 }
 
-as_adj_lst <- function(A) { # For the RIP function
-  Delta <- colnames(A)
-  out <- lapply(seq_along(Delta), function(r) {
-    Delta[as.logical(A[, r])] # FIX!!! in efs_init matrices should be BOOLEAN!!!
-  })
-  names(out) <- Delta
-  out
-}
-
-as_adj_mat <- function(adj) { # For the RIP function
-  Delta <- names(adj)
-  N     <- length(Delta)
-  A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(Delta, Delta))
-  for( d in seq_along(Delta) ) {
-    idx <- match(adj[[d]], Delta)
-    A[idx, d] <- 1L
-  }
-  A
-}
-
-#' A test for decomposability in undirected graphs
-#'
-#' This function returns \code{TRUE} if the graph is decomposable and \code{FALSE} otherwise
-#'
-#' @param adj Adjacency list of an undirected graph
-#' @export
-is_decomposable <- function(adj) {
-  m <- try(mcs(adj), silent = TRUE)
-  if( class(m) == "list" ) return(TRUE)
-    else return(FALSE)
-}
-
-## examples:
-## 4-cycle:
-## adj <- list(a = c("b", "d"), b = c("a", "c"), c = c("b", "d"), d = c("a", "c"))
-## is_decomposable(adj) # FALSE
-## Two triangles:
-## adj <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
-## is_decomposable(adj) # TRUE
 
 ## -----------------------------------------------------------------------------
 ##                                  METRICS
@@ -86,7 +47,6 @@ na_tab <- function(df, a) {
 }
 
 entropy <- function(df) {
-  ## Use matpr and count_unique !!!
   ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
   x  <- na_tab(df, colnames(df))
   Nx <- sum(x)
@@ -201,38 +161,38 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##   return( log(DL_graph + DL_prob + DL_data) )
 ## }
 
-mdl <- function(adj, lv, df, d, thres) {
-  # adj: Adjacency list
-  # lv:  Vector of length ncol(df) with number of levels for each var
-  RIP    <- rip(adj)
-  cliqs  <- RIP$C
-  seps   <- RIP$S
-  Nobs   <- nrow(df)
-  Nvars  <- ncol(df)
-  logNvars <- log(Nvars)
-  DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-  DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
-    if( i == 1L ) return( prod(lv[cliqs[[i]]]) - 1 )
-    Ci <- cliqs[[i]]
-    Si <- seps[[i]]
-    Ci_Si <- setdiff(Ci, Si)
-    prod(lv[Si]) * ( prod(lv[Ci_Si]) - 1)
-  }))
-  HM_C <- sum(sapply(cliqs, function(z) {
-    dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-    dst(df[z])
-  }))
-  HM_S <- 0L
-  if( length(seps[-1]) ) {
-    HM_S <- sum(sapply(seps[-1], function(z) {
-      if( !neq_empt_chr(z)) return(0L)
-      dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-      dst(df[z])
-    }))    
-  }
-  DL_data <- Nobs * (HM_C - HM_S)
-  return( log(DL_graph + DL_prob + DL_data) )
-}
+## mdl <- function(adj, lv, df, d, thres) {
+##   # adj: Adjacency list
+##   # lv:  Vector of length ncol(df) with number of levels for each var
+##   RIP    <- rip(adj)
+##   cliqs  <- RIP$C
+##   seps   <- RIP$S
+##   Nobs   <- nrow(df)
+##   Nvars  <- ncol(df)
+##   logNvars <- log(Nvars)
+##   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
+##   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
+##     if( i == 1L ) return( prod(lv[cliqs[[i]]]) - 1 )
+##     Ci <- cliqs[[i]]
+##     Si <- seps[[i]]
+##     Ci_Si <- setdiff(Ci, Si)
+##     prod(lv[Si]) * ( prod(lv[Ci_Si]) - 1)
+##   }))
+##   HM_C <- sum(sapply(cliqs, function(z) {
+##     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+##     dst(df[z])
+##   }))
+##   HM_S <- 0L
+##   if( length(seps[-1]) ) {
+##     HM_S <- sum(sapply(seps[-1], function(z) {
+##       if( !neq_empt_chr(z)) return(0L)
+##       dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
+##       dst(df[z])
+##     }))    
+##   }
+##   DL_data <- Nobs * (HM_C - HM_S)
+##   return( log(DL_graph + DL_prob + DL_data) )
+## }
 
 ## delta_aic <- function(x, lv, M) {
 ##   # x : efs object
@@ -264,11 +224,9 @@ mdl <- function(adj, lv, df, d, thres) {
 ##   return(d_aic)
 ## }
 
-delta_xic <- function(x, lv, M, xic = "aic") {
+delta_xic <- function(x, lv, M, p = 0.5) {
   # x : efs object
-  if ( xic == "aic" )
-    penalty <- 2
-  else penalty <- log(M)
+  penalty     <- log(M)*p + (1 - p)*2
   n           <- length(lv) # ncol(df)
   complete    <- n * (n-1L) / 2L
   local_info  <- x$MSI$S[[x$MSI$max$idx]]

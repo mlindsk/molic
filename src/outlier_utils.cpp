@@ -158,14 +158,12 @@ RCM subM( RCM & A, RCV & x ) {
   return A_sub;
 }
 
-//' Marginal tables
-//'
-//' Returns a list with sparse marginal tables corresponding to variables in list \code{am}
-//'
-//' @param A character matrix (the data)
-//' @param am A list of variables (typically cliques or separators with RIP ordering)
-//'
-//' @export
+/*****************************************
+ * In:
+ * - A  : Character matrix (the data)
+ * - am : A list of variables (typically cliques or separators with RIP ordering)
+ * Out: A list with sparse marginal tables corresponding to variables in list am
+ ***************************************/
 // [[Rcpp::export]]
 RL a_marginals( RCM A, RL & am ) {
   int n = am.size();
@@ -183,13 +181,13 @@ RL a_marginals( RCM A, RL & am ) {
   return out;
 }
 
-//' \code{T(y)}
-//'
-//' @description This function Calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic
-//' @param y A named vector (named according to data)
-//' @param C_marginals Clique marginal tables (use a_marginals function)
-//' @param S_marginals Separator marginal tables (use a_marginals function)
-//' @export
+/*****************************************
+ * In:
+ * - y : A named vector (named according to data)
+ * - C_marginals : Clique marginal tables (use a_marginals function)
+ * - S_marginals : Separator marginal tables (use a_marginals function)
+ * Out: The affine value T(y) of -2 log likelihood-ratio
+ ***************************************/
 // [[Rcpp::export]]
 double TY(RCV y, RL & C_marginals, RL & S_marginals) {
   int nC = C_marginals.size();

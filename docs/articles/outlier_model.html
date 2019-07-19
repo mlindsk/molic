@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Using The molic Package • molic</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
+<title>The Outlier Model • molic</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using The molic Package">
+<script src="../pkgdown.js"></script><meta property="og:title" content="The Outlier Model">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -53,7 +53,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/using_molic.html">Using The molic Package</a>
+      <a href="../articles/outlier_model.html">The Outlier Model</a>
     </li>
   </ul>
 </li>
@@ -70,12 +70,12 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Using The molic Package</h1>
+      <h1>The Outlier Model</h1>
                         <h4 class="author">Mads Lindskou</h4>
             
       
       
-      <div class="hidden name"><code>using_molic.Rmd</code></div>
+      <div class="hidden name"><code>outlier_model.Rmd</code></div>
 
     </div>
 
@@ -84,21 +84,178 @@
 <div id="background-theory-on-the-outlier-detection-model" class="section level1">
 <h1 class="hasAnchor">
 <a href="#background-theory-on-the-outlier-detection-model" class="anchor"></a>Background Theory on The Outlier Detection Model</h1>
-<div id="outliers" class="section level2">
-<h2 class="hasAnchor">
-<a href="#outliers" class="anchor"></a>Outliers</h2>
+<div id="contingency-tables" class="section level3">
+<h3 class="hasAnchor">
+<a href="#contingency-tables" class="anchor"></a>Contingency Tables</h3>
+<p>The outlier detection model can only be used on discrete data; i.e data for which all variables can only take on a finite set of values (also called <em>levels</em>). We also say, that such variables are <em>discrete variables</em> or <em>categorical variables</em>.</p>
+<!-- Examples of such variables are  -->
+<!-- ```{r echo = FALSE} -->
+<!-- Variables <- c("gender", -->
+<!--   "seasons", -->
+<!--   "DNA markers", -->
+<!--   "grades", -->
+<!--   "race", -->
+<!--   "treatment" -->
+<!-- ) -->
+<!-- Levels  <- c("male/female", -->
+<!--   "spring/summer/autumn/winther", -->
+<!--   "A/T/C/G", -->
+<!--   "pass/fail", -->
+<!--   "white/hispanic/black", -->
+<!--   "active/placebo" -->
+<!-- ) -->
+<!-- discrete_examples <- data.frame(Variables, Levels) -->
+<!-- pander::pander(discrete_examples) -->
+<!-- ``` -->
+<p>Consider for example the built in discrete data set in <code>R</code> on <code>4526</code> applicants to graduate school at Berkeley for the six largest departments in 1973 classified by admission and sex. Below, a small sample of the data is seen.</p>
+<table class="table">
+<colgroup>
+<col width="15%">
+<col width="12%">
+<col width="8%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Admit</th>
+<th align="center">Gender</th>
+<th align="center">Dept</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">F</td>
+</tr>
+<tr class="even">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">D</td>
+</tr>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">C</td>
+</tr>
+<tr class="even">
+<td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">C</td>
+</tr>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">F</td>
+</tr>
+<tr class="even">
+<td align="center">Admitted</td>
+<td align="center">Female</td>
+<td align="center">C</td>
+</tr>
+</tbody>
+</table>
+<p>Another and more appropriate way of showing the entire data, is via a <em>contingency table</em> which summarizes the counts of all combinations of <code>Admit</code>, <code>Gender</code> and <code>Dept</code></p>
+<table class="table">
+<colgroup>
+<col width="15%">
+<col width="12%">
+<col width="9%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td align="center">Dept</td>
+<td align="center">A</td>
+<td align="center">B</td>
+<td align="center">C</td>
+<td align="center">D</td>
+<td align="center">E</td>
+<td align="center">F</td>
+</tr>
+<tr class="even">
+<td>Admit</td>
+<td>Gender</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td>Admitted</td>
+<td>Female</td>
+<td align="center"></td>
+<td align="center">89</td>
+<td align="center">17</td>
+<td align="center">202</td>
+<td align="center">131</td>
+<td align="center">94</td>
+<td align="center">24</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Male</td>
+<td align="center"></td>
+<td align="center">512</td>
+<td align="center">353</td>
+<td align="center">120</td>
+<td align="center">138</td>
+<td align="center">53</td>
+<td align="center">22</td>
+</tr>
+<tr class="odd">
+<td>Rejected</td>
+<td>Female</td>
+<td align="center"></td>
+<td align="center">19</td>
+<td align="center">8</td>
+<td align="center">391</td>
+<td align="center">244</td>
+<td align="center">299</td>
+<td align="center">317</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Male</td>
+<td align="center"></td>
+<td align="center">313</td>
+<td align="center">207</td>
+<td align="center">205</td>
+<td align="center">279</td>
+<td align="center">138</td>
+<td align="center">351</td>
+</tr>
+</tbody>
+</table>
+<p>This is much more informative and we can e.g. say immediately that <code>207</code> <code>Male</code> applicants were <code>Rejected</code> at department <code>B</code>. A particular entry in the table is called a <code>cell</code>. So <code>(Male, Rejected, B)</code> is a cell with <em>cellcount</em> <code>207</code>. The <em>dimension</em> of the table is the number of variables (here <code>3</code>). For high-dimensional tables things get more complicated and it may not be feasible to show the table (think of hundreds of DNA markers) and there may be many cells with zero cellcount.</p>
+<p>The outlier detection method (described shortly) uses such contingency table data. However, it should be mentioned one more time, that a contingency table is in one-to-one correspondence with a “regular” discrete data set; contingency tables are nothing more than a convenient way of describing discrete data sets.</p>
+</div>
+<div id="outliers" class="section level3">
+<h3 class="hasAnchor">
+<a href="#outliers" class="anchor"></a>Outliers</h3>
 <p>An outlier can be regarded as an observation which deviates so much from the other observations in a database as to arouse suspicions that it was generated by a different mechanism. The outlier detection method directly adapts this definition by specifying a hypothesis of an outlier being distributed differently than all other observations in a given database. An outlier is also a very case-specific unit, since it may be interpreted as natural extreme noise in some applications and in other applications it might be the most interesting observation.</p>
 <p>Outlier detection is usually divided into  where the task is to detect observations that are extreme for a single variable and  in which the task is to detect unusual combinations between several variables.</p>
 <p>For high-dimensional data, it is a tedious task to determine anomalies such as outliers. The method described here is a multivariate method for outlier detection in high-dimensional contingency tables, i.e. data with discrete variables only. The method relies on the class of decomposable graphical models to model the relationship among the variables of interest, which can be depicted by an undirected graph called the interaction graph.</p>
 </div>
-<div id="decomposable-graphical-models" class="section level2">
-<h2 class="hasAnchor">
-<a href="#decomposable-graphical-models" class="anchor"></a>Decomposable Graphical Models</h2>
+<div id="notation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#notation" class="anchor"></a>Notation</h3>
+</div>
+<div id="decomposable-graphical-models" class="section level3">
+<h3 class="hasAnchor">
+<a href="#decomposable-graphical-models" class="anchor"></a>Decomposable Graphical Models</h3>
 <p>In order to model the interaction structure between variables, we need to construct a <em>decomposable graphical model</em>. A graphical model is a statistical model for which an undirected graph represents the interaction between the vertices in the model. An undirected graph is a pair <span class="math inline">\(G = (V,E)\)</span> where <span class="math inline">\(V\)</span> is a set of vertices and <span class="math inline">\(E\)</span> is a set of edges connecting elements in <span class="math inline">\(V\)</span>. An edge connecting two vertices indicates that these two are dependend on each other; this is also called a two-way interaction. A threeway interaction occurs when three vertices are all mutually connected (e.g. can be visualized as a triangle). An undirected graph is <em>decomposable</em> if there are no cycles of length greater than four without a chord (an edge between two non-adjacent vertices in the cycle). The <em>subgraph</em> <span class="math inline">\(G_{A} = (A, E_{A})\)</span> consist of vertices <span class="math inline">\(A\subseteq V\)</span> from <span class="math inline">\(G\)</span> and the corresponding edges <span class="math inline">\(E_A\)</span> between them. A graph is <em>complete</em> if there is an edge between all pairs of vertices and a complete subgraph is called a (maximal) <em>clique</em> if it is not contained in any other complete subgraph. A subset of vertices is complete if it induces a complete subgraph. Two sets <span class="math inline">\(A,B \subseteq V\)</span> are separated by a third set <span class="math inline">\(C \subseteq V\)</span> if all paths between vertices in <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> go through <span class="math inline">\(C\)</span>. If <span class="math inline">\(C\)</span> is the smallest set such that <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are separated, we say that <span class="math inline">\(C\)</span> is a (minimal) <em>separator</em> for <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
 <p><br>
 Consider the undirected graph <span class="math inline">\(G\)</span> in the figure below.</p>
 <br><div class="figure" style="text-align: center">
-<img src="using_molic_files/figure-html/undirected_graph-1.png" alt="\label{fig:DG} $G$: An undirected decomposable graph." width="700"><p class="caption">
+<img src="outlier_model_files/figure-html/undirected_graph-1.png" alt="\label{fig:DG} $G$: An undirected decomposable graph." width="700"><p class="caption">
  <span class="math inline">\(G\)</span>: An undirected decomposable graph.
 </p>
 </div>
@@ -113,30 +270,15 @@ The set of vertices is <span class="math inline">\(V = \{a,b,c,d,e\}\)</span> an
 <h1 class="hasAnchor">
 <a href="#the-outlier-detection-model" class="anchor"></a>The Outlier Detection Model</h1>
 <p>The method is described using an example. For more details see the original paper [TBA]. We use DNA data from the 1000 Genomes Project <span class="citation">(Consortium and others 2015)</span> consisting of <span class="math inline">\(2504\)</span> DNA profiles from <span class="math inline">\(5\)</span> different continential regions and <span class="math inline">\(302\)</span> binary DNA markers. The data is shipped with the package and can be used by calling <code>tgp_dat</code>. All DNA markers are further grouped into so-called microhaplotypes. DNA markers within a microhaplotype are known to be associated which is perfect to showcase the model.</p>
-<div id="toy-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#toy-example" class="anchor"></a>Toy Example</h2>
+<div id="toy-example-facilitating-theory" class="section level3">
+<h3 class="hasAnchor">
+<a href="#toy-example-facilitating-theory" class="anchor"></a>Toy Example Facilitating Theory</h3>
 <p>For simplicity, we focus on a single microhaplotype containing <span class="math inline">\(3\)</span> DNA markers which we also rename (to <code>X</code>, <code>Y</code> and <code>Z</code>) to have shorter names.</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</code></pre></div>
-<pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:igraph':
-## 
-##     as_data_frame, groups, union</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(molic)</code></pre></div>
-<pre><code>## 
-## Attaching package: 'molic'</code></pre>
-<pre><code>## The following object is masked from 'package:stats':
-## 
-##     deviance</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(tgp_haps[[<span class="dv">2</span>]], <span class="dt">names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Y"</span>, <span class="st">"Z"</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(molic)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
+
+vars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(tgp_haps[[<span class="dv">29</span>]], <span class="dt">names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Y"</span>, <span class="st">"Z"</span>))
 
 df_EUR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
@@ -145,26 +287,32 @@ df_EUR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 df_AFR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">!!</span>vars)</code></pre></div>
-<p><code>molic</code> has a nice function <code>n_a</code> for creating sparse contingency tables. The input is a <code>matrix</code>. It is sparse in the sense, that it do not show the combinations with zero counts. The European table is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">molic<span class="op">:::</span><span class="kw">n_a</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR))</code></pre></div>
-<pre><code>## GTC TCC TTC TTT 
-##   3 125 850  28 
+<p><code>molic</code> has a nice function <code>sptable</code> for creating sparse contingency tables. The input is a <code>matrix</code>. It is sparse in the sense, that it do not show the combinations with zero counts. The European table is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR))</code></pre></div>
+<pre><code>## GAA GAG GGA TAG 
+## 125 706  19 156 
 ## attr(,"vars")
-## [1] "X" "Y" "Z"</code></pre>
+## [1] "X" "Y" "Z"
+## attr(,"class")
+## [1] "sptable" "integer"</code></pre>
 <p>and the African table is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">molic<span class="op">:::</span><span class="kw">n_a</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_AFR))</code></pre></div>
-<pre><code>## GTC TCC TTC TTT 
-## 158 290 432 442 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_AFR))</code></pre></div>
+<pre><code>## GAA GAG GGA TAG 
+## 118 473 708  23 
 ## attr(,"vars")
-## [1] "X" "Y" "Z"</code></pre>
-<p>From the EUR table we see that only <span class="math inline">\(3\)</span> profiles have the combination <code>(X,Y,Z) = (G,T,C)</code> whereas in the AFR table <span class="math inline">\(158\)</span> profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
-<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <code>X, Y</code> and <code>Z</code> with a decomposable graph. We use the <code>efs</code> function to obtain</p>
+## [1] "X" "Y" "Z"
+## attr(,"class")
+## [1] "sptable" "integer"</code></pre>
+<p>From the EUR table we see that only 19 profiles have the combination <code>(X,Y,Z) = (G,G,A)</code> whereas in the AFR table 19 profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
+<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <code>X, Y</code> and <code>Z</code> with a decomposable graph. We use the <code>efs</code> function to fit the graph and use the <code>igraph</code> package to plot it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(igraph)
 DG_EUR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/efs.html">efs</a></span>(df_EUR, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
-G_adj  &lt;-<span class="st"> </span>molic<span class="op">:::</span><span class="kw">efs_adj_list</span>(DG_EUR)   <span class="co"># Used for input to the outlier model</span>
-G_A    &lt;-<span class="st"> </span>molic<span class="op">:::</span><span class="kw">efs_adj_matrix</span>(DG_EUR) <span class="co"># Used for igraph plots</span>
+G_adj  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_list.html">adj_list</a></span>(DG_EUR)   <span class="co"># Used for input to the outlier model</span>
+G_A    &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_matrix.html">adj_matrix</a></span>(DG_EUR) <span class="co"># Used for igraph plots</span>
 iG_A   &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_adjacency_matrix">graph_from_adjacency_matrix</a></span>(G_A, <span class="dt">mode =</span> <span class="st">"undirected"</span>)
-## All the arguments are included to get a feel of how igraph can be used to plot graphs
+
+## All the arguments to the plot function  are included to get a feel of how igraph can be used to plot graphs
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(iG_A,
      <span class="dt">edge.arrow.size=</span><span class="dv">1</span>, 
      <span class="dt">vertex.label.cex=</span><span class="fl">1.5</span>, 
@@ -176,80 +324,92 @@ iG_A   &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class
      <span class="dt">edge.width=</span><span class="dv">5</span>
 )</code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="using_molic_files/figure-html/unnamed-chunk-4-1.png" alt="\label{fig:DG_EUR} $G$: Interaction graph for EUR." width="700"><p class="caption">
+<img src="outlier_model_files/figure-html/unnamed-chunk-4-1.png" alt="\label{fig:DG_EUR} $G$: Interaction graph for EUR." width="672"><p class="caption">
  <span class="math inline">\(G\)</span>: Interaction graph for EUR.
 </p>
 </div>
-<p>The cliques and separator of <span class="math inline">\(G\)</span> are given by <span class="math display">\[
-C_{1} = \{ X, Y\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Y \}.
+<p>Notice that <span class="math inline">\(G\)</span> is in fact a tree (no cycles). The cliques and separator of <span class="math inline">\(G\)</span> are given by <span class="math display">\[
+C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
 \]</span></p>
 <p>and we can now form the <em>marginal tables</em>. The marginal table of clique <span class="math inline">\(C_1\)</span> is</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">molic<span class="op">:::</span><span class="kw">n_a</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Y"</span>)]))</code></pre></div>
-<pre><code>##  GT  TC  TT 
-##   3 125 878 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Z"</span>)]))</code></pre></div>
+<pre><code>##  GA  GG  TG 
+## 144 706 156 
 ## attr(,"vars")
-## [1] "X" "Y"</code></pre>
+## [1] "X" "Z"
+## attr(,"class")
+## [1] "sptable" "integer"</code></pre>
 <p>and for <span class="math inline">\(C_2\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">molic<span class="op">:::</span><span class="kw">n_a</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Y"</span>, <span class="st">"Z"</span>)]))</code></pre></div>
-<pre><code>##  CC  TC  TT 
-## 125 853  28 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Y"</span>, <span class="st">"Z"</span>)]))</code></pre></div>
+<pre><code>##  AA  AG  GA 
+## 125 862  19 
 ## attr(,"vars")
-## [1] "Y" "Z"</code></pre>
+## [1] "Y" "Z"
+## attr(,"class")
+## [1] "sptable" "integer"</code></pre>
 <p>and for <span class="math inline">\(S\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">molic<span class="op">:::</span><span class="kw">n_a</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Y"</span>)]))</code></pre></div>
-<pre><code>##   C   T 
-## 125 881 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="st">"Z"</span>]))</code></pre></div>
+<pre><code>##   A   G 
+## 144 862 
 ## attr(,"vars")
-## [1] "Y"</code></pre>
-<p>We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination <code>(X, Y) = (T,T)</code> for clique <span class="math inline">\(C_1\)</span> is for example <span class="math inline">\(n_{XY}(T,T) = 878\)</span>. The number of profiles having combination <code>(Y, Z) = (T,C)</code> for clique <span class="math inline">\(C_2\)</span> is <span class="math inline">\({n_{YZ}(T,C) = 853}\)</span> and for the separator the number of profiles with <code>Y = T</code> is <span class="math inline">\(n_Y(T) = 881\)</span>. It can be shown that the -joint probability_ of having the combination <code>(X, Y, Z) = (T, T, C)</code> is given by</p>
+## [1] "Z"
+## attr(,"class")
+## [1] "sptable" "integer"</code></pre>
+<p>We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination <span class="math inline">\((X, Y) = (T,T)\)</span> for clique <span class="math inline">\(C_1\)</span> is for example <span class="math inline">\(n_{XZ}(G,A) = 144\)</span>. The number of profiles having combination <span class="math inline">\((Y, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_2\)</span> is <span class="math inline">\({n_{YZ}(G,A) = 19}\)</span> and for the separator the number of profiles with <span class="math inline">\(Z = A\)</span> is <span class="math inline">\(n_Z(A) = 144\)</span>. It can be shown that the -joint probability_ of having the combination <span class="math inline">\((X, Y, Z) = (G, G, A)\)</span> is given by</p>
 <span class="math display">\[\begin{equation*}
-  \frac{n_{XY}(T,T) \cdot n_{YZ}(T,C) }{ 1006 \cdot n_{Y}(T) } = \frac{ 878 \cdot 853 }{ 1006 \cdot 881} = 0.845.
+  \frac{n_{XZ}(G,A) \cdot n_{YZ}(G,A) }{ 1006 \cdot n_{Z}(A) } = \frac{ 144 \cdot 19 }{ 1006 \cdot 144} = 0.0188867,
 \end{equation*}\]</span>
-<p>In other words, with high probability Europeans have the specific combination <code>(X,Y,Z) = (T, T, C)</code> for this specific microhap under the model. If a new observed profile, say <span class="math inline">\(z_{new}\)</span>, do not have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a <em>likelihood</em> <span class="math inline">\(L_0\)</span> that expresses how likely it is that <span class="math inline">\(z_{new}\)</span> originates from Europe. We can also specify an alternative likelihood, <span class="math inline">\(L_{1}\)</span>, specifying how likely it is that <span class="math inline">\(z_{new}\)</span> do not originate from Europe. We then define the <em>likelihood ratio</em> as</p>
+<p>where 1006 is the total number of profiles in <code>df_EUR</code>.</p>
+<p>In other words, with low probability Europeans have the specific combination <code>(X,Y,Z) = (G, G, A)</code> for this specific microhap under the model. If a new observed profile, say <span class="math inline">\(z_{new}\)</span>, have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a <em>likelihood</em> <span class="math inline">\(L_0\)</span> that expresses how likely it is that <span class="math inline">\(z_{new}\)</span> originates from Europe. We can also specify an alternative likelihood, <span class="math inline">\(L_{1}\)</span>, specifying how likely it is that <span class="math inline">\(z_{new}\)</span> do not originate from Europe. We then define the <em>likelihood ratio</em> as</p>
 <span class="math display">\[\begin{equation*}
   \label{eq:LR}
   LR = \frac{L_{0}}{L_{1}},
 \end{equation*}\]</span>
 <p>which can be shown to be completely specified through the counts of profiles in cliques and separators for the given interaction graph. We can therefore test if <span class="math inline">\(z_{new}\)</span> is an outlier in Europe by calculating <span class="math inline">\(LR\)</span> and determine if the value of <span class="math inline">\(LR\)</span> is “too large” in which case we would reject that <span class="math inline">\(z_{new}\)</span> originates from Europe.</p>
-<p>Under the null hypothesis, <span class="math inline">\(z_{new}\)</span> belongs to the hypothesised data base (EUR in this case) and so we append the profile. Assume <span class="math inline">\(z_{new}\)</span> is the <span class="math inline">\(7'\)</span>th profile from AFR.</p>
+<p>Under the null hypothesis, <span class="math inline">\(z_{new}\)</span> belongs to the hypothesised data base (EUR in this case) and so we append the profile to <code>df_EUR</code>. Assume <span class="math inline">\(z_{new}\)</span> is the <span class="math inline">\(7'\)</span>th profile from AFR.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
 df_EUR_z_new &lt;-<span class="st"> </span>df_EUR <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)</code></pre></div>
-<p>All ingredients are now given in order to make the outlier test.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">om &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR_z_new) <span class="op">%&gt;%</span>
+<p>Lets see what the specific value of <span class="math inline">\(z_{new\)</span> is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(z_new)</code></pre></div>
+<pre><code>## [1] "G" "G" "A"</code></pre>
+<p>So we already have an idea, that <span class="math inline">\(z_{new}\)</span> could be an outlier in <code>df_EUR</code>. All ingredients are now given in order to make the outlier test.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
+om &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR_z_new) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/outlier_model.html">outlier_model</a></span>(G_adj, <span class="dt">nsim =</span> <span class="dv">10000</span>)</code></pre></div>
 <p>What we have done is, that we have simulated <span class="math inline">\(10000\)</span> profiles from <code>df_EUR_7</code> and for each of those simulations we can calculate <span class="math inline">\(LR\)</span>. In effect, we obtain an estimated <em>distribution</em> of <span class="math inline">\(LR\)</span> (more precise we get the distribution of <span class="math inline">\(-2\cdot \log LR\)</span> which is called the <em>deviance</em>) which we can plot</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pmf.html">pmf</a></span>(om)</code></pre></div>
-<p><img src="using_molic_files/figure-html/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="outlier_model_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>Since we only have <span class="math inline">\(3\)</span> variables it looks a bit odd. However, the particular deviance score for <span class="math inline">\(z_{new}\)</span> is given by</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/deviance.html">deviance</a></span>(om, z_new)</code></pre></div>
-<pre><code>## [1] -4.346444</code></pre>
-<p>with p-value for <span class="math inline">\(z_{new}\)</span> being an outlier in EUR is</p>
+<pre><code>## [1] -3.970305</code></pre>
+<p>with p-value for <span class="math inline">\(z_{new}\)</span> being an outlier in EUR</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/p_val.html">p_val</a></span>(om, <span class="kw"><a href="../reference/deviance.html">deviance</a></span>(om, z_new))</code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<p>and hence we declare <span class="math inline">\(z_{new}\)</span> as an outlier in EUR on a significance level <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Therefore we declare <span class="math inline">\(z_{new}\)</span> as an outlier in EUR on a significance level <span class="math inline">\(\alpha = 0.05\)</span>.</p>
 </div>
-<div id="a-larger-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-larger-example" class="anchor"></a>A Larger Example</h2>
+<div id="a-larger-example" class="section level3">
+<h3 class="hasAnchor">
+<a href="#a-larger-example" class="anchor"></a>A Larger Example</h3>
 <p>In this example we include more variables from <code>tgp_dat</code> and show how to aggregate decomposable graphs using expert knowledge. We know, that the SNP variables are <em>independent</em> between microhaplotypes. We include the first <span class="math inline">\(25\)</span> microhaplotypes which consists of <span class="math inline">\(96\)</span> SNP variables.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">microhaps &lt;-<span class="st"> </span>tgp_haps[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>]
 vars   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(microhaps))
 
-df_EUR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
+df_EUR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(vars)
 
-df_AFR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
+df_AFR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">!!</span>vars)</code></pre></div>
 <p>Then we fit an interaction graph on each microhaplotype</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">micro_graphs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(microhaps, <span class="cf">function</span>(x) {
-  df_x &lt;-<span class="st"> </span>df_EUR[, x]
+  df_x &lt;-<span class="st"> </span>df_EUR_micro[, x]
   <span class="kw"><a href="../reference/efs.html">efs</a></span>(df_x, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
 })
-<span class="co"># Show the first 3</span>
-micro_graphs[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</code></pre></div>
+
+<span class="co"># Show the first one</span>
+micro_graphs[<span class="dv">1</span>]</code></pre></div>
 <pre><code>## $mh14KK101
 ##  A Decomposable Graph With 
 ##  ------------------------- 
@@ -257,43 +417,57 @@ micro_graphs[<span class="dv">1</span><span class="op">:</span><span class="dv">
 ##   Edges: 1 / 1 
 ##   Cliques: 1 
 ##   &lt;efs&gt; 
-##  -------------------------
-## 
-## $mh02KK003
-##  A Decomposable Graph With 
-##  ------------------------- 
-##   Nodes: 3 
-##   Edges: 2 / 3 
-##   Cliques: 2 
-##   &lt;efs&gt; 
-##  -------------------------
-## 
-## $mh02KK134
-##  A Decomposable Graph With 
-##  ------------------------- 
-##   Nodes: 4 
-##   Edges: 6 / 6 
-##   Cliques: 1 
-##   &lt;efs&gt; 
 ##  -------------------------</code></pre>
-<p>Then we extract the graphs and “aggregate” (more precisely we take the union of the graphs) them</p>
+<p>Then we extract the graphs and “aggregate” them (more precisely we take the union of the graphs)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">G_union &lt;-<span class="st"> </span>micro_graphs <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(<span class="cf">function</span>(x) x<span class="op">$</span>G_adj) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(<span class="cf">function</span>(x) <span class="kw"><a href="../reference/adj_list.html">adj_list</a></span>(x)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(<span class="dt">recursive =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p>And lets plot the fitted interaction graph</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iG_union &lt;-<span class="st"> </span>molic<span class="op">:::</span><span class="kw">as_adj_mat</span>(G_union) <span class="op">%&gt;%</span>
+<p>Plotting the fitted interaction graph</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iG_union &lt;-<span class="st"> </span><span class="kw"><a href="../reference/as_adj_mat.html">as_adj_mat</a></span>(G_union) <span class="op">%&gt;%</span>
 <span class="st">  </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_adjacency_matrix">graph_from_adjacency_matrix</a></span>(<span class="dt">mode =</span> <span class="st">"undirected"</span>)
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(iG_union,
-     <span class="dt">vertex.label.cex=</span><span class="fl">0.2</span>, 
-     <span class="dt">vertex.label.family=</span><span class="st">"Helvetica"</span>,
-     <span class="dt">vertex.label.font=</span><span class="dv">1</span>,
-     <span class="dt">vertex.size=</span><span class="dv">20</span>, 
-     <span class="dt">vertex.label.color=</span><span class="st">"blue"</span>, 
-     <span class="dt">edge.width=</span><span class="dv">1</span>
+     <span class="dt">vertex.label.cex =</span> <span class="fl">0.2</span>, 
+     <span class="dt">vertex.size      =</span> <span class="dv">2</span>, 
+     <span class="dt">edge.width       =</span> <span class="dv">1</span>
 )</code></pre></div>
-<p><img src="using_molic_files/figure-html/unnamed-chunk-15-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="outlier_model_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;"></p>
+<p>Constructing the outlier model where we first append the hypothesized outlier from AFR</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
+z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR_micro[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
+df_EUR_micro_z_new &lt;-<span class="st"> </span>df_EUR_micro <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)
+
+om_micro &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR_micro_z_new) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="../reference/outlier_model.html">outlier_model</a></span>(G_union, <span class="dt">nsim =</span> <span class="dv">10000</span>)
+
+<span class="co"># print model info</span>
+om_micro</code></pre></div>
+<pre><code>## 
+##  ---------------------- 
+##   Simulations: 10000 
+##   Variables: 96 
+##   Observations: 1007 
+##   Estimated mean: -166.35 
+##   Estimated variance: 13.25 
+##   &lt;outlier_model&gt; 
+##  ----------------------</code></pre>
+<p>Plotting the distribution of the deviance</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pmf.html">pmf</a></span>(om_micro)</code></pre></div>
+<p><img src="outlier_model_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Determine if <span class="math inline">\(z_new\)</span> is an outlier</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dz_new &lt;-<span class="st"> </span><span class="kw"><a href="../reference/deviance.html">deviance</a></span>(om_micro, z_new)
+dz_new</code></pre></div>
+<pre><code>## [1] -137.3278</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/p_val.html">p_val</a></span>(om_micro, dz_new)</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>It is seen again, that <span class="math inline">\(z_{new}\)</span> does not belong to <code>df_EUR</code> with a very high degree of certainty at a significance level of <span class="math inline">\(0.05\)</span>.</p>
+<!-- ## Conditional Tables -->
+<!-- ```{r} -->
+<!-- sptab <- sptable(as.matrix(df_EUR_micro[, 1:5])) -->
+<!-- csptable(sptab, structure(c(1, 5), names = c("G", "C"))) -->
+<!-- ``` -->
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
@@ -318,18 +492,8 @@ micro_graphs[<span class="dv">1</span><span class="op">:</span><span class="dv">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#background-theory-on-the-outlier-detection-model">Background Theory on The Outlier Detection Model</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#outliers">Outliers</a></li>
-      <li><a href="#decomposable-graphical-models">Decomposable Graphical Models</a></li>
-      </ul>
-</li>
-      <li>
-<a href="#the-outlier-detection-model">The Outlier Detection Model</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#toy-example">Toy Example</a></li>
-      <li><a href="#a-larger-example">A Larger Example</a></li>
-      </ul>
-</li>
+<li><a href="#background-theory-on-the-outlier-detection-model">Background Theory on The Outlier Detection Model</a></li>
+      <li><a href="#the-outlier-detection-model">The Outlier Detection Model</a></li>
       <li><a href="#references">References</a></li>
       </ul>
 </div>

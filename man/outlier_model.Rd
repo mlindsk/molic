@@ -4,8 +4,7 @@
 \alias{outlier_model}
 \title{Outlier model}
 \usage{
-outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "",
-  validate_A = TRUE)
+outlier_model(A, adj, nsim = 1000, ncores = 1)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -15,10 +14,6 @@ outlier_model(A, adj, nsim = 1000, ncores = 1, meta_name = "",
 \item{nsim}{Number of simulations}
 
 \item{ncores}{Number of cores to use in parallelization}
-
-\item{meta_name}{A meta name to keep track of different outlier models}
-
-\item{validate_A}{If TRUE, it is checked if all values in A are characters with \code{nchar == 1} (which is required)}
 }
 \description{
 A model based on decomposable graphical models for outlier detection

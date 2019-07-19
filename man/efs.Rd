@@ -4,17 +4,16 @@
 \alias{efs}
 \title{Efficient forward selection in decomposable graphical models}
 \usage{
-efs(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl",
-  thres = 5)
+efs(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5)
 }
 \arguments{
 \item{df}{data.frame}
 
 \item{x}{A efs object}
 
-\item{trace}{Logical indicating whether or not to trace the procedure}
+\item{p}{Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)}
 
-\item{stop_crit}{Stopping criterion ("mdl", "aic" or "bic")}
+\item{trace}{Logical indicating whether or not to trace the procedure}
 
 \item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.}
 }
@@ -32,5 +31,5 @@ Efficient forward selection in decomposable graphical models
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
+\code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 }

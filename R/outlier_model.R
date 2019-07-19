@@ -82,8 +82,6 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
-#' @param meta_name A meta name to keep track of different outlier models
-#' @param validate_A If TRUE, it is checked if all values in A are characters with \code{nchar == 1} (which is required)
 #'
 #' @details It is assumed that all cell values in \code{A}, for all variables,
 #' are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
@@ -92,18 +90,16 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
 outlier_model <- function(A,
                           adj,
                           nsim       = 1000,
-                          ncores     = 1,
-                          meta_name  = "",
-                          validate_A = TRUE) {
+                          ncores     = 1
+                          ) {
   stopifnot( is.matrix(A) )
-  if ( validate_A ) {
-    ## All values _for all variables_ in A must be represented as a single character
-    for( i in seq_along(nrow(A)) ) {
-      for( j in seq_along(ncol(A)) )
-        stopifnot( nchar(A[i,j]) == 1L )
-    }
+  ## All values _for all variables_ in A must be represented as a single character
+  for( i in seq_along(nrow(A)) ) {
+    for( j in seq_along(ncol(A)) )
+      stopifnot( nchar(A[i,j]) == 1L )
   }
-  RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
+  # the rip (or actually mcs) will check for decomposability here
+  RIP   <- rip(adj) 
   Cms   <- a_marginals(A, RIP$C)
   Sms   <- a_marginals(A, RIP$S)
   sims  <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "lr", ncores = ncores)
@@ -115,7 +111,6 @@ outlier_model <- function(A,
   out <- structure(class = "outlier_model",
     list(
       A           = A,
-      meta_name   = meta_name,
       sims        = sims,
       mu          = mu,
       sigma       = sigma,
@@ -137,19 +132,17 @@ outlier_model <- function(A,
 #' @param ... Not used (for S3 compatability)
 #' @export
 print.outlier_model <- function(x, ...) {
-  cat("\n Meta: ", x$meta_name,
-    "\n", paste(rep("-", 16), collapse = ""),
-    "",
-    paste(rep("-", nchar(x$meta_name)), collapse = ""),
+  cat(
+    "\n ----------------------",
     "\n  Simulations:",         length(x$sims),
     "\n  Variables:",           ncol(x$A),
     "\n  Observations:",        nrow(x$A),
-    "\n  Theoretical mean:",    round(x$mu, 2),
-    "\n  Theoretical variance:",round(x$sigma, 2),
+#    "\n  Theoretical mean:",    round(x$mu, 2),
+#    "\n  Theoretical variance:",round(x$sigma, 2),
     "\n  Estimated mean:",      round(x$mu_hat, 2),
     "\n  Estimated variance:",  round(x$sigma_hat, 2),
     "\n  <outlier_model>", 
-    "\n ---------------",
+    "\n ----------------------",
     "\n\n"
   )
 }
@@ -187,7 +180,7 @@ pmf <- function(x, ...) {
 #' @rdname pmf
 #' @export
 pmf.outlier_model <- function(x, ...) {
-  graphics::hist(x$sims, breaks = 30, xlab = "T(y)", main = x$meta_name, freq = FALSE)
+  graphics::hist(x$sims, breaks = 30, xlab = "T(y)",  freq = FALSE, main = " ")
 }
 
 #' Emprical distribution function
@@ -212,17 +205,19 @@ cdf.outlier_model <- function(x, ...) {
 #' Calculate the p-value for obtaining \code{ty_new} under \code{H_0}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ty_new The transformed value \code{T(y_new)} obtained from function \code{TY}
+#' @param dy The deviance of the observation \code{y}.
 #' @param ... Not used (for S3 compatability)
+#' @details The value \code{ty_new} can be obtained used the \code{deviance} function.
+#' @seealso \code{\link{deviance}}
 #' @export
-p_val <- function(x, ty_new, ...) {
+p_val <- function(x, dy, ...) {
   UseMethod("p_val")
 }
 
 #' @rdname p_val
 #' @export
-p_val.outlier_model <- function(x, ty_new, ...) {
-  1 - x$cdf( ty_new )
+p_val.outlier_model <- function(x, dy, ...) {
+  1 - x$cdf( dy )
 }
 
 #' Mean
@@ -252,3 +247,4 @@ variance <- function(x) {
 variance.outlier_model <- function(x, ...) {
   x$sigma_hat
 }
+

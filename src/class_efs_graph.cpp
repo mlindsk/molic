@@ -23,7 +23,7 @@ efs_graph::efs_graph(RCM &dm) : G(Rcpp::as<std::vector<std::string>>(Rcpp::colna
     std::string node_i = nodes[i];
     std::vector<std::string>  node_i_as_vec = {node_i};
     RCM sub_dm_i = sub_dm(dm, node_i_as_vec);
-    double ent_i  = entropy(sub_dm_i);
+    double ent_i  = entropy_(sub_dm_i);
     EM[node_i]  = ent_i;
   }
 
@@ -44,7 +44,7 @@ efs_graph::efs_graph(RCM &dm) : G(Rcpp::as<std::vector<std::string>>(Rcpp::colna
      * ---------------------------------------------------------*/
     std::vector<std::string>  pair_as_vec = {node_1, node_2};
     RCM sub_dm_pair = sub_dm(dm, pair_as_vec);
-    EM[edge_i] = entropy(sub_dm_pair);
+    EM[edge_i] = entropy_(sub_dm_pair);
     double entropy_i = EM[node_1] + EM[node_2] - EM[edge_i];
     /* ---------------------------------------------------------*/
     

@@ -45,25 +45,10 @@ subM <- function(A, x) {
     .Call('_molic_subM', PACKAGE = 'molic', A, x)
 }
 
-#' Marginal tables
-#'
-#' Returns a list with sparse marginal tables corresponding to variables in list \code{am}
-#'
-#' @param A character matrix (the data)
-#' @param am A list of variables (typically cliques or separators with RIP ordering)
-#'
-#' @export
 a_marginals <- function(A, am) {
     .Call('_molic_a_marginals', PACKAGE = 'molic', A, am)
 }
 
-#' \code{T(y)}
-#'
-#' @description This function Calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic
-#' @param y A named vector (named according to data)
-#' @param C_marginals Clique marginal tables (use a_marginals function)
-#' @param S_marginals Separator marginal tables (use a_marginals function)
-#' @export
 TY <- function(y, C_marginals, S_marginals) {
     .Call('_molic_TY', PACKAGE = 'molic', y, C_marginals, S_marginals)
 }

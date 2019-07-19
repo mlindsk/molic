@@ -1,4 +1,4 @@
-.PHONY: compile doc check run_main clean
+.PHONY: compile doc check install build_site run_main clean
 
 all: compile doc check
 
@@ -10,6 +10,12 @@ doc:
 
 check: 
 	Rscript -e "devtools::check()"
+
+install:
+	Rscript -e "devtools::install()"
+
+build_site:
+	Rscript -e "pkgdown::build_site()"
 
 run_main:
 	Rscript src/mainR.R

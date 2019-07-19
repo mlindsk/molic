@@ -29,7 +29,7 @@ RCM sub_dm( RCM & dm, std::vector<std::string> & x ) {
   return dm_sub;
 }
 
-double entropy(RCM & dm) {
+double entropy_(RCM & dm) {
   RIV    x = n_a(dm);
   double n = dm.nrow();
   double ent;

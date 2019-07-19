@@ -15,8 +15,8 @@ cl_tree(df, wrap = TRUE)
 This functions uses Kruskals algorithm to fit a tree structure to variables in \code{df}
 }
 \references{
-\url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
+\url{https://ieeexplore.ieee.org/abstract/document/1054142}
 }
 \seealso{
-\code{\link{efs}}, \code{\link{efs_step}}, \code{\link{efs_adj_list.efs}}, \code{\link{efs_adj_matrix.efs}}
+\code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 }

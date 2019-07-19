@@ -1,12 +1,13 @@
 tests
 examples
+docs
 src/GPATH
 src/GRTAGS
 src/GTAGS
 src/efsC
 src/mainR.R
 Makefile
-^LICENSE\.md$
 TODO\.org
+^LICENSE\.md$
 ^\.travis\.yml$
 ^README\.Rmd$
