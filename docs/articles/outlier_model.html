@@ -121,29 +121,29 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">Admitted</td>
-<td align="center">Female</td>
-<td align="center">C</td>
-</tr>
-<tr class="even">
 <td align="center">Rejected</td>
 <td align="center">Male</td>
-<td align="center">C</td>
-</tr>
-<tr class="odd">
-<td align="center">Admitted</td>
-<td align="center">Female</td>
-<td align="center">C</td>
+<td align="center">D</td>
 </tr>
 <tr class="even">
-<td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">C</td>
+<td align="center">Admitted</td>
+<td align="center">Male</td>
+<td align="center">E</td>
 </tr>
 <tr class="odd">
 <td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">F</td>
+</tr>
+<tr class="even">
+<td align="center">Admitted</td>
 <td align="center">Male</td>
-<td align="center">A</td>
+<td align="center">D</td>
+</tr>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">B</td>
 </tr>
 <tr class="even">
 <td align="center">Admitted</td>
@@ -269,7 +269,7 @@ The set of vertices is <span class="math inline">\(V = \{a,b,c,d,e\}\)</span> an
 <div id="toy-example-facilitating-theory" class="section level3">
 <h3 class="hasAnchor">
 <a href="#toy-example-facilitating-theory" class="anchor"></a>Toy Example Facilitating Theory</h3>
-<p>For simplicity, we focus on a single microhaplotype containing <span class="math inline">\(3\)</span> DNA markers which we also rename (to <code>X</code>, <code>Y</code> and <code>Z</code>) to have shorter names.</p>
+<p>For simplicity, we focus on a single microhaplotype containing <span class="math inline">\(3\)</span> DNA markers which we rename to <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> to have shorter names.</p>
 <p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(molic)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
@@ -299,8 +299,8 @@ df_AFR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 ## [1] "X" "Y" "Z"
 ## attr(,"class")
 ## [1] "sptable" "integer"</code></pre>
-<p>From the EUR table we see that only 19 profiles have the combination <code>(X,Y,Z) = (G,G,A)</code> whereas in the AFR table 19 profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
-<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <code>X, Y</code> and <code>Z</code> with a decomposable graph. We use the <code>efs</code> function to fit the graph and use the <code>igraph</code> package to plot it.</p>
+<p>From the EUR table we see that only 19 profiles have the combination <span class="math inline">\((X,Y,Z) = (G,G,A)\)</span> whereas in the AFR table 708 profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
+<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> with a decomposable graph. We use the <code>efs</code> function to fit the graph and use the <code>igraph</code> package to plot it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(igraph)
 DG_EUR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/efs.html">efs</a></span>(df_EUR, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
 G_adj  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_list.html">adj_list</a></span>(DG_EUR)   <span class="co"># Used for input to the outlier model</span>
@@ -352,7 +352,7 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
 ## [1] "Z"
 ## attr(,"class")
 ## [1] "sptable" "integer"</code></pre>
-<p>We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination <span class="math inline">\((X, Y) = (T,T)\)</span> for clique <span class="math inline">\(C_1\)</span> is for example <span class="math inline">\(n_{XZ}(G,A) = 144\)</span>. The number of profiles having combination <span class="math inline">\((Y, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_2\)</span> is <span class="math inline">\({n_{YZ}(G,A) = 19}\)</span> and for the separator the number of profiles with <span class="math inline">\(Z = A\)</span> is <span class="math inline">\(n_Z(A) = 144\)</span>. It can be shown that the -joint probability_ of having the combination <span class="math inline">\((X, Y, Z) = (G, G, A)\)</span> is given by</p>
+<p>We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination <span class="math inline">\((X, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_1\)</span> is for example <span class="math inline">\(n_{XZ}(G,A) = 144\)</span>. The number of profiles having combination <span class="math inline">\((Y, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_2\)</span> is <span class="math inline">\({n_{YZ}(G,A) = 19}\)</span> and for the separator the number of profiles with <span class="math inline">\(Z = A\)</span> is <span class="math inline">\(n_Z(A) = 144\)</span>. It can be shown that the <em>joint probability</em> of having the combination <span class="math inline">\((X, Y, Z) = (G, G, A)\)</span> is given by</p>
 <span class="math display">\[\begin{equation*}
   \frac{n_{XZ}(G,A) \cdot n_{YZ}(G,A) }{ 1006 \cdot n_{Z}(A) } = \frac{ 144 \cdot 19 }{ 1006 \cdot 144} = 0.0188867,
 \end{equation*}\]</span>
@@ -362,7 +362,7 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
   \label{eq:LR}
   LR = \frac{L_{0}}{L_{1}},
 \end{equation*}\]</span>
-<p>which can be shown to be completely specified through the counts of profiles in cliques and separators for the given interaction graph. We can therefore test if <span class="math inline">\(z_{new}\)</span> is an outlier in Europe by calculating <span class="math inline">\(LR\)</span> and determine if the value of <span class="math inline">\(LR\)</span> is “too large” in which case we would reject that <span class="math inline">\(z_{new}\)</span> originates from Europe.</p>
+<p>which can be shown to be completely specified through the counts of profiles in cliques and separators for the given interaction graph. We can therefore test if <span class="math inline">\(z_{new}\)</span> is an outlier in Europe by calculating <span class="math inline">\(LR\)</span> and determine if the value of <span class="math inline">\(LR\)</span> (soon we modify <span class="math inline">\(LR\)</span> and call it <em>deviance</em>) is “too large” in which case we would reject that <span class="math inline">\(z_{new}\)</span> originates from Europe.</p>
 <p>Under the null hypothesis, <span class="math inline">\(z_{new}\)</span> belongs to the hypothesised data base (EUR in this case) and so we append the profile to <code>df_EUR</code>. Assume <span class="math inline">\(z_{new}\)</span> is the <span class="math inline">\(7'\)</span>th profile from AFR.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
 df_EUR_z_new &lt;-<span class="st"> </span>df_EUR <span class="op">%&gt;%</span>
@@ -374,7 +374,7 @@ df_EUR_z_new &lt;-<span class="st"> </span>df_EUR <span class="op">%&gt;%</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
 om &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR_z_new) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/outlier_model.html">outlier_model</a></span>(G_adj, <span class="dt">nsim =</span> <span class="dv">10000</span>)</code></pre></div>
-<p>What we have done is, that we have simulated <span class="math inline">\(10000\)</span> profiles from <code>df_EUR_7</code> and for each of those simulations we can calculate <span class="math inline">\(LR\)</span>. In effect, we obtain an estimated <em>distribution</em> of <span class="math inline">\(LR\)</span> (more precise we get the distribution of <span class="math inline">\(-2\cdot \log LR\)</span> which is called the <em>deviance</em>) which we can plot</p>
+<p>What we have done is, that we have simulated <span class="math inline">\(10000\)</span> profiles from <code>df_EUR_7</code> and for each of those simulations we can calculate <span class="math inline">\(LR\)</span>. In effect, we obtain an estimated <em>distribution</em> of <span class="math inline">\(LR\)</span>. More precise we get the distribution of <span class="math inline">\(-2\cdot \log LR\)</span> which is called the <em>deviance</em>. We can plot the distribution of the deviance as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pmf.html">pmf</a></span>(om)</code></pre></div>
 <p><img src="outlier_model_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>Since we only have <span class="math inline">\(3\)</span> variables it looks a bit odd. However, the particular deviance score for <span class="math inline">\(z_{new}\)</span> is given by</p>
@@ -403,18 +403,7 @@ df_AFR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">micro_graphs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(microhaps, <span class="cf">function</span>(x) {
   df_x &lt;-<span class="st"> </span>df_EUR_micro[, x]
   <span class="kw"><a href="../reference/efs.html">efs</a></span>(df_x, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
-})
-
-<span class="co"># Show the first one</span>
-micro_graphs[<span class="dv">1</span>]</code></pre></div>
-<pre><code>## $mh14KK101
-##  A Decomposable Graph With 
-##  ------------------------- 
-##   Nodes: 2 
-##   Edges: 1 / 1 
-##   Cliques: 1 
-##   &lt;efs&gt; 
-##  -------------------------</code></pre>
+})</code></pre></div>
 <p>Then we extract the graphs and “aggregate” them (more precisely we take the union of the graphs)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">G_union &lt;-<span class="st"> </span>micro_graphs <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>() <span class="op">%&gt;%</span>
@@ -433,6 +422,7 @@ micro_graphs[<span class="dv">1</span>]</code></pre></div>
 <p>Constructing the outlier model where we first append the hypothesized outlier from AFR</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
 z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR_micro[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
+
 df_EUR_micro_z_new &lt;-<span class="st"> </span>df_EUR_micro <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)
 

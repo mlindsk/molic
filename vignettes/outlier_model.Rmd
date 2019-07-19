@@ -126,7 +126,7 @@ The method is described using an example. For more details see the original pape
 
 ### Toy Example Facilitating Theory
 
-For simplicity, we focus on a single microhaplotype containing $3$ DNA markers which we also rename (to `X`, `Y` and `Z`) to have shorter names.
+For simplicity, we focus on a single microhaplotype containing $3$ DNA markers which we rename to $X, Y$ and $Z$ to have shorter names.
 
 \
 
@@ -156,7 +156,7 @@ sptable(as.matrix(df_EUR))
 ```
 
 ```{r AFR_tab, include = FALSE}
-AFR_tab <- sptable(as.matrix(df_EUR))
+AFR_tab <- sptable(as.matrix(df_AFR))
 ```
 
 and the African table is
@@ -165,9 +165,9 @@ and the African table is
 sptable(as.matrix(df_AFR))
 ```
 
-From the EUR table we see that only `r unname(EUR_tab["GGA"])` profiles have the combination `(X,Y,Z) = (G,G,A)` whereas in the AFR table `r unname(AFR_tab["GGA"])` profiles have that combination. Thus, the two populations seems to differ quite substantially.
+From the EUR table we see that only `r unname(EUR_tab["GGA"])` profiles have the combination $(X,Y,Z) = (G,G,A)$ whereas in the AFR table `r unname(AFR_tab["GGA"])` profiles have that combination. Thus, the two populations seems to differ quite substantially.
 
-Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables `X, Y` and `Z` with a decomposable graph. We use the `efs` function to fit the graph and use the `igraph` package to plot it.
+Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables $X, Y$ and $Z$ with a decomposable graph. We use the `efs` function to fit the graph and use the `igraph` package to plot it.
 
 ```{r fig.align = "center", fig.cap = "\\label{fig:DG_EUR} $G$: Interaction graph for EUR.", fig.width = 7}
 library(igraph)
@@ -225,7 +225,7 @@ sptable(as.matrix(df_EUR[, "Z"]))
 ```
 
 
-We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination $(X, Y) = (T,T)$ for clique $C_1$ is for example $n_{XZ}(G,A) = `r unname(XZ_tab["GA"])`$. The number of profiles having combination $(Y, Z) = (G,A)$ for clique $C_2$ is \({n_{YZ}(G,A) = `r unname(YZ_tab["GA"])`}\) and for the separator the number of profiles with $Z = A$ is $n_Z(A) = `r unname(Z_tab["A"])`$. It can be shown that the -joint probability_ of having the combination $(X, Y, Z) = (G, G, A)$ is given by
+We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination $(X, Z) = (G,A)$ for clique $C_1$ is for example $n_{XZ}(G,A) = `r unname(XZ_tab["GA"])`$. The number of profiles having combination $(Y, Z) = (G,A)$ for clique $C_2$ is \({n_{YZ}(G,A) = `r unname(YZ_tab["GA"])`}\) and for the separator the number of profiles with $Z = A$ is $n_Z(A) = `r unname(Z_tab["A"])`$. It can be shown that the _joint probability_ of having the combination $(X, Y, Z) = (G, G, A)$ is given by
 
 ```{r computation,  include = FALSE}
 comp <- ( unname(XZ_tab["GA"]) * unname(YZ_tab["GA"]) ) / ( nrow(df_EUR) * unname(Z_tab["A"]) ) 
@@ -243,7 +243,7 @@ In other words, with low probability Europeans have the specific combination $(X
   \label{eq:LR}
   LR = \frac{L_{0}}{L_{1}},
 \end{equation*}
-which can be shown to be completely specified through the counts of profiles in cliques and separators for the given interaction graph. We can therefore test if $z_{new}$ is an outlier in Europe by calculating $LR$ and determine if the value of $LR$ is "too large" in which case we would reject that $z_{new}$ originates from Europe.
+which can be shown to be completely specified through the counts of profiles in cliques and separators for the given interaction graph. We can therefore test if $z_{new}$ is an outlier in Europe by calculating $LR$ and determine if the value of $LR$ (soon we modify $LR$ and call it _deviance_) is "too large" in which case we would reject that $z_{new}$ originates from Europe.
 
 Under the null hypothesis, $z_{new}$ belongs to the hypothesised data base (EUR in this case) and so we append the profile to `df_EUR`. Assume $z_{new}$ is the $7'$th profile from AFR.
 
@@ -267,7 +267,7 @@ om <- as.matrix(df_EUR_z_new) %>%
   outlier_model(G_adj, nsim = 10000)
 ```
 
-What we have done is, that we have simulated $10000$ profiles from `df_EUR_7` and for each of those simulations we can calculate $LR$. In effect, we obtain an estimated _distribution_ of $LR$ (more precise we get the distribution of $-2\cdot \log LR$ which is called the _deviance_) which we can plot 
+What we have done is, that we have simulated $10000$ profiles from `df_EUR_7` and for each of those simulations we can calculate $LR$. In effect, we obtain an estimated _distribution_ of $LR$. More precise we get the distribution of $-2\cdot \log LR$ which is called the _deviance_. We can plot the distribution of the deviance as 
 
 ```{r fig.width = 7}
 pmf(om)
@@ -310,9 +310,6 @@ micro_graphs <- lapply(microhaps, function(x) {
   df_x <- df_EUR_micro[, x]
   efs(df_x, trace = FALSE)
 })
-
-# Show the first one
-micro_graphs[1]
 ```
 
 Then we extract the graphs and "aggregate" them (more precisely we take the union of the graphs)
@@ -342,6 +339,7 @@ Constructing the outlier model where we first append the hypothesized outlier fr
 ```{r large_outliermodel, cache = TRUE}
 set.seed(7)
 z_new <- unlist(df_AFR_micro[7, ]) # It is important to unlist here!
+
 df_EUR_micro_z_new <- df_EUR_micro %>%
   bind_rows(z_new)
 
