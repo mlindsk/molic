@@ -178,7 +178,8 @@ G_adj  <- adj_list(DG_EUR)   # Used for input to the outlier model
 G_A    <- adj_matrix(DG_EUR) # Used for igraph plots
 iG_A   <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
 
-## All the arguments to the plot function  are included to get a feel of how igraph can be used to plot graphs
+## The arguments to the plot function are included
+## to get a feel of how igraph can be used to plot graphs
 set.seed(7)
 plot(iG_A,
      edge.arrow.size=1, 
@@ -238,7 +239,7 @@ comp <- ( unname(XZ_tab["GA"]) * unname(YZ_tab["GA"]) ) / ( nrow(df_EUR) * unnam
 
 where `r nrow(df_EUR)` is the total number of profiles in `df_EUR`.
 
-In other words, with low probability Europeans have the specific combination `(X,Y,Z) = (G, G, A)` for this specific microhap under the model. If a new observed profile, say $z_{new}$, have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a _likelihood_ $L_0$ that expresses how likely it is that $z_{new}$ originates from Europe. We can also specify an alternative likelihood, $L_{1}$, specifying how likely it is that $z_{new}$ do not originate from Europe. We then define the _likelihood ratio_ as
+In other words, with low probability Europeans have the specific combination $(X,Y,Z) = (G, G, A)$ for this specific microhap under the model. If a new observed profile, say $z_{new}$, have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a _likelihood_ $L_0$ that expresses how likely it is that $z_{new}$ originates from Europe. We can also specify an alternative likelihood, $L_{1}$, specifying how likely it is that $z_{new}$ do not originate from Europe. We then define the _likelihood ratio_ as
 
 \begin{equation*}
   \label{eq:LR}
@@ -254,7 +255,7 @@ df_EUR_z_new <- df_EUR %>%
   bind_rows(z_new)
 ```
 
-Lets see what the specific value of $z_{new$ is 
+Lets see what the specific value of $z_{new}$ is 
 
 ```{r}
 unname(z_new)
@@ -359,7 +360,7 @@ Plotting the distribution of the deviance
 pmf(om_micro)
 ```
 
-Determine if $z_new$ is an outlier
+Determine if $z_{new}$ is an outlier
 
 ```{r}
 dz_new <- deviance(om_micro, z_new)
