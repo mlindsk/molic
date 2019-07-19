@@ -4,6 +4,9 @@ molic: Multivariate OutLIerdetection In Contingency Tables
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
 
+About molic
+-----------
+
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-timer performance.
 
 Getting Started
@@ -34,6 +37,11 @@ A list of some core functions in the **molic** package is listed below
 
 Example
 -------
+
+TBA
+
+How To Cite
+-----------
 
 TBA
 

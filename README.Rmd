@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 
 [![Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic)
 
+## About molic
+
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-timer performance.
 
 ## Getting Started
@@ -51,6 +53,9 @@ pander::pander(func_tab)
 ```
 
 ## Example
+TBA
+
+## How To Cite
 TBA
 
 # References
