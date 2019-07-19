@@ -132,7 +132,7 @@ as_efs <- function(df, t) {
         if( ent_ij > max_dst ) {
           max_dst  <- ent_ij
           max_edge <- edge
-          max_idx  <- length(msi_S)
+          max_idx  <- k
           max_ins  <- c(i, j)
         }
         msi_S[[k]] <- list(S = Sij, e = structure(ent_ij, names = edge), C1 = Ci, C2 = Cj)
