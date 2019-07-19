@@ -121,34 +121,34 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">Rejected</td>
-<td align="center">Male</td>
-<td align="center">F</td>
-</tr>
-<tr class="even">
-<td align="center">Rejected</td>
-<td align="center">Male</td>
-<td align="center">D</td>
-</tr>
-<tr class="odd">
-<td align="center">Rejected</td>
-<td align="center">Male</td>
-<td align="center">C</td>
-</tr>
-<tr class="even">
-<td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">C</td>
-</tr>
-<tr class="odd">
-<td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">F</td>
-</tr>
-<tr class="even">
 <td align="center">Admitted</td>
 <td align="center">Female</td>
 <td align="center">C</td>
+</tr>
+<tr class="even">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">C</td>
+</tr>
+<tr class="odd">
+<td align="center">Admitted</td>
+<td align="center">Female</td>
+<td align="center">C</td>
+</tr>
+<tr class="even">
+<td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">C</td>
+</tr>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">A</td>
+</tr>
+<tr class="even">
+<td align="center">Admitted</td>
+<td align="center">Male</td>
+<td align="center">D</td>
 </tr>
 </tbody>
 </table>
@@ -244,10 +244,6 @@
 <p>Outlier detection is usually divided into  where the task is to detect observations that are extreme for a single variable and  in which the task is to detect unusual combinations between several variables.</p>
 <p>For high-dimensional data, it is a tedious task to determine anomalies such as outliers. The method described here is a multivariate method for outlier detection in high-dimensional contingency tables, i.e. data with discrete variables only. The method relies on the class of decomposable graphical models to model the relationship among the variables of interest, which can be depicted by an undirected graph called the interaction graph.</p>
 </div>
-<div id="notation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#notation" class="anchor"></a>Notation</h3>
-</div>
 <div id="decomposable-graphical-models" class="section level3">
 <h3 class="hasAnchor">
 <a href="#decomposable-graphical-models" class="anchor"></a>Decomposable Graphical Models</h3>
@@ -311,7 +307,8 @@ G_adj  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_
 G_A    &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_matrix.html">adj_matrix</a></span>(DG_EUR) <span class="co"># Used for igraph plots</span>
 iG_A   &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_adjacency_matrix">graph_from_adjacency_matrix</a></span>(G_A, <span class="dt">mode =</span> <span class="st">"undirected"</span>)
 
-## All the arguments to the plot function  are included to get a feel of how igraph can be used to plot graphs
+## The arguments to the plot function are included
+## to get a feel of how igraph can be used to plot graphs
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(iG_A,
      <span class="dt">edge.arrow.size=</span><span class="dv">1</span>, 
@@ -360,7 +357,7 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
   \frac{n_{XZ}(G,A) \cdot n_{YZ}(G,A) }{ 1006 \cdot n_{Z}(A) } = \frac{ 144 \cdot 19 }{ 1006 \cdot 144} = 0.0188867,
 \end{equation*}\]</span>
 <p>where 1006 is the total number of profiles in <code>df_EUR</code>.</p>
-<p>In other words, with low probability Europeans have the specific combination <code>(X,Y,Z) = (G, G, A)</code> for this specific microhap under the model. If a new observed profile, say <span class="math inline">\(z_{new}\)</span>, have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a <em>likelihood</em> <span class="math inline">\(L_0\)</span> that expresses how likely it is that <span class="math inline">\(z_{new}\)</span> originates from Europe. We can also specify an alternative likelihood, <span class="math inline">\(L_{1}\)</span>, specifying how likely it is that <span class="math inline">\(z_{new}\)</span> do not originate from Europe. We then define the <em>likelihood ratio</em> as</p>
+<p>In other words, with low probability Europeans have the specific combination <span class="math inline">\((X,Y,Z) = (G, G, A)\)</span> for this specific microhap under the model. If a new observed profile, say <span class="math inline">\(z_{new}\)</span>, have this combination for the selected microhap it supports the belief that this profile might not originate from Europe. We can carry out the same calculations for all microhaps and combine the result into a <em>likelihood</em> <span class="math inline">\(L_0\)</span> that expresses how likely it is that <span class="math inline">\(z_{new}\)</span> originates from Europe. We can also specify an alternative likelihood, <span class="math inline">\(L_{1}\)</span>, specifying how likely it is that <span class="math inline">\(z_{new}\)</span> do not originate from Europe. We then define the <em>likelihood ratio</em> as</p>
 <span class="math display">\[\begin{equation*}
   \label{eq:LR}
   LR = \frac{L_{0}}{L_{1}},
@@ -370,7 +367,7 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
 df_EUR_z_new &lt;-<span class="st"> </span>df_EUR <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)</code></pre></div>
-<p>Lets see what the specific value of <span class="math inline">\(z_{new\)</span> is</p>
+<p>Lets see what the specific value of <span class="math inline">\(z_{new}\)</span> is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(z_new)</code></pre></div>
 <pre><code>## [1] "G" "G" "A"</code></pre>
 <p>So we already have an idea, that <span class="math inline">\(z_{new}\)</span> could be an outlier in <code>df_EUR</code>. All ingredients are now given in order to make the outlier test.</p>
@@ -456,7 +453,7 @@ om_micro</code></pre></div>
 <p>Plotting the distribution of the deviance</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pmf.html">pmf</a></span>(om_micro)</code></pre></div>
 <p><img src="outlier_model_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>Determine if <span class="math inline">\(z_new\)</span> is an outlier</p>
+<p>Determine if <span class="math inline">\(z_{new}\)</span> is an outlier</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dz_new &lt;-<span class="st"> </span><span class="kw"><a href="../reference/deviance.html">deviance</a></span>(om_micro, z_new)
 dz_new</code></pre></div>
 <pre><code>## [1] -137.3278</code></pre>
