@@ -4,7 +4,7 @@
 \alias{outlier_model}
 \title{Outlier model}
 \usage{
-outlier_model(A, adj, nsim = 1000, ncores = 1)
+outlier_model(A, adj, nsim = 1000, ncores = 1, validateA = TRUE)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -14,6 +14,8 @@ outlier_model(A, adj, nsim = 1000, ncores = 1)
 \item{nsim}{Number of simulations}
 
 \item{ncores}{Number of cores to use in parallelization}
+
+\item{validateA}{Logical. See details.}
 }
 \description{
 A model based on decomposable graphical models for outlier detection
