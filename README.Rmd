@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-timer performance.
 
 ## Getting Started
-If you want to learn the "behind the scenes" of the model it is recommended to go through the [vignette tutorial](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. The material has been written in hope that laymen (non-statisticians) can follow along and comprehend the core idea.
+If you want to learn the "behind the scenes" of the model it is recommended to go through the [vignette tutorial](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. 
 
 
 ## Installation
@@ -38,14 +38,14 @@ A list of some core functions in the **molic** package is listed below
 ```{r molic_funcs, echo = FALSE}
 func_names <- c(
   "`outlier_model`",
+  "`p_val`",
   "`efs`",
-  "`cl_tree`",
-  "`p_val`")
+  "`cl_tree`")
 func_descr <- c(
   "Fits an outlier detection model",
+  "Calculates the p-value of an observation being an outlier",
   "Fits a decomposable graph using forward selection.",
-  "Fits a tree (decomposable graph) using the Chow-Liu method.",
-  "Calculates the p-value of an observation being an outlier"
+  "Fits a tree (decomposable graph) using the Chow-Liu method."
 )
 func_tab <- data.frame(Function = func_names, Description = func_descr)
 pander::panderOptions('table.alignment.default', 'left')
@@ -57,13 +57,3 @@ TBA
 
 ## How To Cite
 TBA
-
-# References
-
-### Outlier Detection in Contingency Tables Using Decomposable Graphical Models
-TBA
-
-### Efficient Forward Selection
-Deshpande, A., Garofalakis, M. and Jordan, M. I. (2001) Efficient stepwise selection in decomposable models. In Proceedings of the Seventeenth conference on Uncertainty in artificial intelligence, 128–135. Morgan Kaufmann Publishers Inc. https://arxiv.org/abs/1301.2267
-
-Altmueller, S. M. and Haralick, R. M. (2004) Practical aspects of efficient forward selection in decomposable graphical models. In 16th IEEE International Conference on Tools with Artificial Intelligence, 710–715. IEEE. URL: https://doi.org/10.1109/ictai.2004.100

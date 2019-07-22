@@ -6,16 +6,6 @@
 
 using namespace Rcpp;
 
-// mainC
-void mainC(Rcpp::CharacterMatrix& dm);
-RcppExport SEXP _molic_mainC(SEXP dmSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterMatrix& >::type dm(dmSEXP);
-    mainC(dm);
-    return R_NilValue;
-END_RCPP
-}
 // dfs
 VS dfs(Rcpp::List adj, std::string root);
 RcppExport SEXP _molic_dfs(SEXP adjSEXP, SEXP rootSEXP) {
@@ -284,7 +274,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_molic_mainC", (DL_FUNC) &_molic_mainC, 1},
     {"_molic_dfs", (DL_FUNC) &_molic_dfs, 2},
     {"_molic_count_unique", (DL_FUNC) &_molic_count_unique, 1},
     {"_molic_matpr", (DL_FUNC) &_molic_matpr, 1},

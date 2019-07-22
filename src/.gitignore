@@ -1,5 +1,7 @@
 *.o
 *.so
 *.dll
-mainR.R
-makeC.cpp
+efs_cpp
+GPATH
+GRTAGS
+GTAGS
