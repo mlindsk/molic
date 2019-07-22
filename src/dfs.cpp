@@ -1,15 +1,19 @@
-#include "misc_utils.h"
+#include <Rcpp.h>
+#include <vector>
+#include <string>
 #include <unordered_map>
 #include <stack>
 
-// std::unordered_map<std::unordered_set, int>
-/*****************************************
- * In:
- * - adj: A named adjacency list
- * - root: The rooth node
- * Out: All nodes connected to the root
- ***************************************/
+using VS  = std::vector<std::string>;
 
+//' Depth First Search
+//'
+//' Finds the elements in the component of \code{root}
+//' 
+//' @param adj A named adjacency list of a decomposable grah
+//' @param root The node from which the component should be found
+//' @return All nodes connected to \code{root}
+//' @export
 // [[Rcpp::export]]
 VS dfs(Rcpp::List adj, std::string root) {
   VS nodes = adj.names();

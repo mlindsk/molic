@@ -12,7 +12,7 @@ An **R** package to perform outlier detection in contingency tables using decomp
 Getting Started
 ---------------
 
-If you want to learn the "behind the scenes" of the model it is recommended to go through the [vignette tutorial](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. The material has been written in hope that laymen (non-statisticians) can follow along and comprehend the core idea.
+If you want to learn the "behind the scenes" of the model it is recommended to go through the [vignette tutorial](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along.
 
 Installation
 ------------
@@ -28,12 +28,36 @@ Main Functions
 
 A list of some core functions in the **molic** package is listed below
 
-| Function        | Description                                                 |
-|:----------------|:------------------------------------------------------------|
-| `outlier_model` | Fits an outlier detection model                             |
-| `efs`           | Fits a decomposable graph using forward selection.          |
-| `cl_tree`       | Fits a tree (decomposable graph) using the Chow-Liu method. |
-| `p_val`         | Calculates the p-value of an observation being an outlier   |
+<table style="width:67%;">
+<colgroup>
+<col width="25%" />
+<col width="41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Function</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>outlier_model</code></td>
+<td align="left">Fits an outlier detection model</td>
+</tr>
+<tr class="even">
+<td align="left"><code>p_val</code></td>
+<td align="left">Calculates the p-value of an observation being an outlier</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>efs</code></td>
+<td align="left">Fits a decomposable graph using forward selection.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>cl_tree</code></td>
+<td align="left">Fits a tree (decomposable graph) using the Chow-Liu method.</td>
+</tr>
+</tbody>
+</table>
 
 Example
 -------
@@ -44,16 +68,3 @@ How To Cite
 -----------
 
 TBA
-
-References
-==========
-
-### Outlier Detection in Contingency Tables Using Decomposable Graphical Models
-
-TBA
-
-### Efficient Forward Selection
-
-Deshpande, A., Garofalakis, M. and Jordan, M. I. (2001) Efficient stepwise selection in decomposable models. In Proceedings of the Seventeenth conference on Uncertainty in artificial intelligence, 128–135. Morgan Kaufmann Publishers Inc. <https://arxiv.org/abs/1301.2267>
-
-Altmueller, S. M. and Haralick, R. M. (2004) Practical aspects of efficient forward selection in decomposable graphical models. In 16th IEEE International Conference on Tools with Artificial Intelligence, 710–715. IEEE. URL: <https://doi.org/10.1109/ictai.2004.100>

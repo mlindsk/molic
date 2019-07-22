@@ -4,10 +4,11 @@ docs
 src/GPATH
 src/GRTAGS
 src/GTAGS
-src/efsC
-src/mainR.R
+src/efs_cpp
 Makefile
 TODO\.org
 ^LICENSE\.md$
 ^\.travis\.yml$
+.yaml$
 ^README\.Rmd$
+

@@ -1,14 +1,4 @@
 ## -----------------------------------------------------------------------------
-##                              TODO
-## -----------------------------------------------------------------------------
-# - edges_to_delete : convert to cpp
-# - is_Cx           : convert to cpp
-# - is_Ca_or_Cb     : convert to cpp
-# - is_Ca_and_Cb    : convert to cpp
-# ------------------------------------------------------------------------------
-
-
-## -----------------------------------------------------------------------------
 ##                        SMALL HELPER FUNCTIONS
 ## -----------------------------------------------------------------------------
 neq_null     <- function(x) !is.null(x)
@@ -36,44 +26,6 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
   })
 }
 
-
-## -----------------------------------------------------------------------------
-##                                  METRICS
-## -----------------------------------------------------------------------------
-na_tab <- function(df, a) {
-  ct <- table(df[, a])
-  names(dimnames(ct)) <- a # Needed for the onedimensional separators
-  ct
-}
-
-entropy <- function(df) {
-  ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
-  x  <- na_tab(df, colnames(df))
-  Nx <- sum(x)
-  entropy_table <- apply(x, seq_along(dim(x)), function(y) {
-    ifelse(y == 0 , 0, y/Nx * log(y/Nx) )
-  })
-  -sum(entropy_table)
-}
-
-entropy2 <- function(df) {
-  A  <- apply(df, 1, paste0, collapse = "")
-  x  <- table(A)
-  Nx <- sum(x)
-  -sum(x/Nx * log(x/Nx))
-}
-
-metric <- function(m) {
-  # x : character
-  switch(m,
-    "entropy"  = entropy,
-    "entropy2" = entropy2,
-    "pval"     = NULL,
-    "etc..."   = NULL
-  )
-}
-
-
 ## -----------------------------------------------------------------------------
 ##                             INITIALIZATION
 ## -----------------------------------------------------------------------------
@@ -82,24 +34,21 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   n       <- length(nodes)
   G_A     <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
   G_adj   <- as_adj_lst(G_A)
-  # G       <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
   CG      <- as.list(nodes)
   CG_A    <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
-  ## CG_adj  <- as_adj_lst(CG_A) unordered_map<something>
   diag(CG_A) <- 0L
   pairs     <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
   max_dst   <- 0L
   max_edge  <- ""
   max_nodes <- 0L
   max_idx   <- 0L
-  dst       <- metric("entropy")
   # https://www.r-bloggers.com/hash-table-performance-in-r-part-i/
   ht  <-  new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
-  for( j in 1:n ) ht[[nodes[j]]] <- dst(df[nodes[j]])
+  for( j in 1:n ) ht[[nodes[j]]] <- entropy(df[nodes[j]])
   msi_S <- lapply(seq_along(pairs), function(p) {
     x  <- pairs[[p]]
     edge_x <- sort_(x)
-    ht[[edge_x]] <<- dst(df[x])
+    ht[[edge_x]] <<- entropy(df[x])
     dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
     if( dst_x > max_dst ) {
       max_dst   <<- dst_x
@@ -107,10 +56,8 @@ efs_init <- function(df) { ## Should be a character matrix in the future
       max_nodes <<- x
       max_idx   <<- p
     }
-    # Attach entropy to S!?
     list(S = character(0L), e = structure(dst_x, names = edge_x), C1 = x[1], C2 = x[2])
   })
-  # max_ins <- match(max_nodes, CG) ## A better name might be "max_clique_CG_index"
   msi <- list(S = msi_S, max = list(e = max_edge, idx = max_idx, ins = match(max_nodes, CG)))
   out <- list(G_adj = G_adj,
     # G        = G,
@@ -314,7 +261,7 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
     eligs       <- expand.grid(eligs_Cp, eligs_Cab)
     eligs       <- apply(eligs, 1, paste, collapse = "|")
     eligs_names <- eligs
-    dst         <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
+    ## dst         <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
     H_Sp        <- 0L
     if( neq_empt_chr(Sp) ) H_Sp <- ht[[sort_(Sp)]]
     
@@ -326,7 +273,8 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       if( exists(Spx, envir = ht, inherits = FALSE) ) {
         H_Sp_x <- ht[[Spx]]
       } else {
-        H_Sp_x  <- dst(df[c(Sp, v[1])])
+        ## H_Sp_x  <- dst(df[c(Sp, v[1])])
+        H_Sp_x  <- entropy(df[c(Sp, v[1])], thres)
         ht[[Spx]] <<- H_Sp_x 
       }
       H_Sp_y <- 0L
@@ -334,7 +282,8 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       if( exists(Spy, envir = ht, inherits = FALSE) ) {
         H_Sp_y <- ht[[Spy]]
       } else {
-        H_Sp_y  <- dst(df[c(Sp, v[2])])
+        ## H_Sp_y  <- dst(df[c(Sp, v[2])])
+        H_Sp_y  <- entropy(df[c(Sp, v[2])], thres)
         ht[[Spy]] <<- H_Sp_y 
       }
       H_Sp_x_y <- 0L
@@ -342,7 +291,8 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
       if( exists(Spxy, envir = ht, inherits = FALSE) ) {
         H_Sp_xy <- ht[[Spxy]]
       } else {
-        H_Sp_xy  <-dst(df[c(Sp, v)])
+        ## H_Sp_xy  <-dst(df[c(Sp, v)])
+        H_Sp_xy  <- entropy(df[c(Sp, v)], thres)
         ht[[Spxy]] <<- H_Sp_xy  
       }
       return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )

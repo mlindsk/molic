@@ -1,10 +1,6 @@
 .Rhistory
 .RData
 examples
-R/TAGS
-src/GPATH
-src/GRTAGS
-src/GTAGS
 TODO.org
-^README\.Rmd$
+^README\.html$
 inst/doc

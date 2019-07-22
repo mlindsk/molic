@@ -1,35 +1,4 @@
-edge_entropy <- function(e, S, df, ht) {
-  v <- unlist(es_to_vs(e))
-  H_S   <- 0L
-  H_S_x <- 0L        
-  Sx <- sort_(c(S, v[1]))
-  if( exists(Sx, envir = ht, inherits = FALSE) ) {
-    H_S_x <- ht[[Sx]]
-  } else {
-    H_S_x  <- entropy(df[c(S, v[1])])
-    ht[[Sx]] <- H_S_x 
-  }
-  H_S_y <- 0L
-  Sy <- sort_(c(S, v[2]))
-  if( exists(Sy, envir = ht, inherits = FALSE) ) {
-    H_S_y <- ht[[Sy]]
-  } else {
-    H_S_y  <- entropy(df[c(S, v[2])])
-        ht[[Sy]] <- H_S_y 
-  }
-  H_S_x_y <- 0L
-  Sxy <- sort_(c(S, v))
-  if( exists(Sxy, envir = ht, inherits = FALSE) ) {
-    H_S_xy <- ht[[Sxy]]
-  } else {
-    H_S_xy  <-entropy(df[c(S, v)])
-    ht[[Sxy]] <- H_S_xy  
-  }
-  return( list(ent = H_S_x + H_S_y - H_S_xy - H_S, ht = ht ))
-}
-
 tree_weights <- function(df) {
-  dst         <- metric("entropy")
   nodes       <- colnames(df)
   n           <- length(nodes)
   G_A         <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
@@ -39,7 +8,7 @@ tree_weights <- function(df) {
   weights     <- structure(vector(mode = "numeric", length = n * (n - 1) / 2), names = "")
   ht          <- new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
   for( j in 1:n ) {
-    ht[[nodes[j]]] <- dst(df[nodes[j]])
+    ht[[nodes[j]]] <- entropy(df[nodes[j]])
   }
   for (p in seq_along(pairs) ) {
     x  <- pairs[[p]]
