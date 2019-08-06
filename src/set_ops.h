@@ -1,13 +1,15 @@
 #ifndef SETOPS_H
 #define SETOPS_H
 
-#include <vector>
-#include <string>
-#include <unordered_set>
-// [[Rcpp::plugins(cpp11)]]
+#include "molic_types.h"
 
-using set = std::unordered_set<std::string>;
-using VS  = std::vector<std::string>;
+// #include <vector>
+// #include <string>
+// #include <unordered_set>
+// // [[Rcpp::plugins(cpp11)]]
+
+// using set = std::unordered_set<std::string>;
+// using VS  = std::vector<std::string>;
 
 /**
  * For efs c++ version

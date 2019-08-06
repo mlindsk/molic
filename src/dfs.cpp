@@ -1,11 +1,11 @@
-#include <Rcpp.h>
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include <stack>
-// [[Rcpp::plugins(cpp11)]]
-
-using VS  = std::vector<std::string>;
+#include "molic_types.h"
+// #include <Rcpp.h>
+// #include <vector>
+// #include <string>
+// #include <unordered_map>
+// #include <stack>
+// // [[Rcpp::plugins(cpp11)]]
+// using VS  = std::vector<std::string>;
 
 //' Depth First Search
 //'

@@ -1,13 +1,13 @@
 #include "outlier_utils.h"
-#include <algorithm>
-#include <string>
-#include <regex>      // For: function na_b : the b'th slice in table a
-#include <map>
+// #include <algorithm>
+// #include <string>
+// #include <regex>      // For: function na_b : the b'th slice in table a
+// #include <map>
 
-using VS  = std::vector<std::string>;
-using VI  = std::vector<int>;
-using VVS = std::vector<std::vector<std::string>>;
-using RIV = Rcpp::IntegerVector;
+// using VS  = std::vector<std::string>;
+// using VI  = std::vector<int>;
+// using VVS = std::vector<std::vector<std::string>>;
+// using RIV = Rcpp::IntegerVector;
 
 /*****************************************
  * In:
