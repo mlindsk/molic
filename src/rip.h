@@ -2,6 +2,8 @@
 #define RIP_H
 
 #include <Rcpp.h>
+#include <vector>
+// [[Rcpp::plugins(cpp11)]]
 
 using VVS = std::vector<std::vector<std::string>>;
 

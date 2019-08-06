@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+// [[Rcpp::plugins(cpp11)]]
 
 using set = std::unordered_set<std::string>;
 using VS  = std::vector<std::string>;

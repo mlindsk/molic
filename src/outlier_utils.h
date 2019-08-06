@@ -3,6 +3,7 @@
 
 #include <Rcpp.h>
 #include <vector>
+// [[Rcpp::plugins(cpp11)]]
 
 using VD  = std::vector<double>;
 using VS  = std::vector<std::string>;

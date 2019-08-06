@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <stack>
+// [[Rcpp::plugins(cpp11)]]
 
 using VS  = std::vector<std::string>;
 
