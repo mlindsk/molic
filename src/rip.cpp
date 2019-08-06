@@ -16,7 +16,7 @@ Rcpp::List mcs(Rcpp::List & adj) {
   int N = nodes.size();
   // Raise a WARNING if adj is the empty graph
   // if( !( N - 1 )) return VS(nodes[0]);
-  std::unordered_map<std::string, int> labels = {};
+  std::unordered_map<std::string, int> labels; // = {};
   for( int i = 0; i < N; i++ ) {
     labels.emplace(nodes[i], 0);
   }
