@@ -132,7 +132,6 @@ For simplicity, we focus on a single microhaplotype containing $3$ DNA markers w
 
 ```{r message=FALSE, warning=FALSE}
 library(molic)
-library(dplyr)
 
 vars <- structure(tgp_haps[[29]], names = c("X", "Y", "Z"))
 
