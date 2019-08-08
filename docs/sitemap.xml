@@ -64,10 +64,16 @@
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/print.csptable.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/print.efs.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/print.outlier_model.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/print.sptable.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/print.tree.html</loc>

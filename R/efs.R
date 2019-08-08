@@ -1,36 +1,3 @@
-## efs_mdl <- function(df, x = efs_init(df), trace = TRUE, thres = 5) {
-##   lv       <- sapply(df, function(x) length(unique(x)))
-##   d        <- max(lv) # See Learning Bayesin Networks - An approach based on the MDL principle
-##   n        <- ncol(df)
-##   complete <- n * (n-1L) / 2L
-##   k        <- sum(x$G_A)/2
-##   if (k == complete) stop("The graph is already complete!")
-##   prev_val <- mdl(x$G_adj, lv, df, d, thres)
-##   x        <- efs_step(df, x, thres)
-##   curr_val <- mdl(x$G_adj, lv, df, d, thres)
-##   k <- k + 1L
-##   if (curr_val > prev_val || k == complete) return(x)
-##   while (curr_val <= prev_val) {
-##     if (k == complete) {
-##       if (trace) msg(k, complete, curr_val, "mdl")
-##       return(x)
-##     } 
-##     if (trace) msg(k, complete, curr_val, "mdl")
-##     x <- efs_step(df, x, thres)
-##     k <- k + 1L
-##     prev_val <- curr_val
-##     curr_val <- mdl(x$G_adj, lv, df, d, thres)
-##   }
-##   if (trace) msg(k, complete, curr_val, "mdl")
-##   return(x)
-## }
-
-## efs <- function(df, x = efs_init(df), trace = TRUE, stop_crit = "mdl", thres = 5) {
-##   if( stop_crit == "mdl" ) return(efs_mdl(df, x, trace, thres))
-##   else return(efs_xic(df, x, trace, stop_crit, thres))
-## }
-
-
 msg <- function(k, complete, val, stop_crit) {
   cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
 }
@@ -82,7 +49,6 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
   if( trace ) msg(k, complete, stop_val, "xic")
   return(x)
 }
-
 
 #' Print efs
 #'

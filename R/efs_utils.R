@@ -40,7 +40,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   pairs     <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
   max_dst   <- 0L
   max_edge  <- ""
-  max_nodes <- 0L
+  max_nodes <- ""
   max_idx   <- 0L
   # https://www.r-bloggers.com/hash-table-performance-in-r-part-i/
   ht  <-  new.env(hash = TRUE) # Hash table with all entropy information - names NEED to be sorted!
@@ -50,7 +50,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
     edge_x <- sort_(x)
     ht[[edge_x]] <<- entropy(df[x])
     dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
-    if( dst_x > max_dst ) {
+    if( dst_x >= max_dst ) {
       max_dst   <<- dst_x
       max_edge  <<- edge_x
       max_nodes <<- x

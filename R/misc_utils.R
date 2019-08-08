@@ -12,6 +12,25 @@ sptable <- function(x) {
   sptab
 }
 
+#' Print sptable 
+#'
+#' A print method for \code{sptable} objects
+#'
+#' @param x A \code{sptable} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.sptable <- function(x, ...) {
+  vars  <- attr(x, "vars")
+  nchr  <- sum(sapply(vars, function(s) nchar(s))) + length(vars) - 1
+  N     <- length(x)
+  cells <- names(x)
+  cat(paste0(vars, collapse = "-"), "\n")
+  cat(paste0(rep("-", nchr), collapse = ""), "\n")
+  for( i in 1:N ) {
+    cat(paste0(cells[i], " : ", x[i]),"\n")
+  }
+}
+
 #' Conditional sparse table
 #'
 #' Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
@@ -26,6 +45,18 @@ csptable <- function(x, b) {
   csptab <- n_b(x, b)
   class(csptab) <- class(x)
   csptab
+}
+
+#' Print csptable 
+#'
+#' A print method for \code{csptable} objects
+#'
+#' @param x A \code{csptable} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.csptable <- function(x, ...) {
+  ## TODO: Print the conditional information
+  print.sptable(x, ...)
 }
 
 #' Converts and an adjacency matrix to an adjacency list
