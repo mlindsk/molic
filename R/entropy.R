@@ -28,6 +28,10 @@ joint_entropy2 <- function(df) {
 #' @param df data.frame
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A numeric
+#' @examples
+#' # Joint entropy over five variables in tgp_dat
+#' entropy(tgp_dat[, 5:9])
+#' 
 #' @export
 entropy <- function(df, thres = 5) {
   if( ncol(df) <= thres ) return(joint_entropy(df))

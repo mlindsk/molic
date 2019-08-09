@@ -17,6 +17,11 @@ The names of \code{b} are the fixed values of the variables corresponding to the
 \details{
 Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
 }
+\examples{
+sp <- sptable(as.matrix(tgp_dat[, 5:8]))
+y  <- structure(c(1, 3), names = c("T", "T"))
+csptable(sp, y)
+}
 \seealso{
 \code{\link{sptable}}
 }

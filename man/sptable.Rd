@@ -12,6 +12,9 @@ sptable(x)
 \description{
 Returns a sparse contingency table for the variables in \code{x} as a vector .
 }
+\examples{
+sptable(as.matrix(tgp_dat[, 5:8]))
+}
 \seealso{
 \code{\link{csptable}}
 }

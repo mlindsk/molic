@@ -21,3 +21,7 @@ This function returns a matrix of dimension `nsim x ncol(A)` where each row corr
 \description{
 This function simulates observations from a DGM
 }
+\examples{
+G  <- adj_list(efs(tgp_dat[, 5:8]))
+dgm_sim(as.matrix(tgp_dat[, 5:8]), G)
+}

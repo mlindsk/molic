@@ -65,6 +65,10 @@ utils::globalVariables('z')
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @return This function returns a matrix of dimension `nsim x ncol(A)` where each row correspond to a simulated observation from a DGM represented by `adj`.
+#' @examples
+#' G  <- adj_list(efs(tgp_dat[, 5:8]))
+#' dgm_sim(as.matrix(tgp_dat[, 5:8]), G)
+
 #' @export
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
@@ -87,6 +91,11 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
 #' @details It is assumed that all cell values in \code{A}, for all variables,
 #' are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
 #' If cell values are not single characters, one may exploit \code{letters} and \code{LETTERS} e.g.
+#' @examples
+#' G  <- adj_list(efs(tgp_dat[, 5:8]))
+#' om <- outlier_model(as.matrix(tgp_dat[, 5:8]), G)
+#' # pmf(om)
+#' 
 #' @export
 outlier_model <- function(A,
                           adj,

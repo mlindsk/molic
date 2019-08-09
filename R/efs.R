@@ -11,7 +11,7 @@ msg <- function(k, complete, val, stop_crit) {
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A efs object
 #' @examples
-#' ## TBA
+#' efs(tgp_dat[, 5:8])
 #'
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
 #' @seealso \code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}

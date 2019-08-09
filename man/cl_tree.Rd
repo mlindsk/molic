@@ -14,6 +14,9 @@ cl_tree(df, wrap = TRUE)
 \description{
 This functions uses Kruskals algorithm to fit a tree structure to variables in \code{df}
 }
+\examples{
+cl_tree(tgp_dat[, 5:8])
+}
 \references{
 \url{https://ieeexplore.ieee.org/abstract/document/1054142}
 }

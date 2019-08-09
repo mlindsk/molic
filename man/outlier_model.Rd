@@ -25,3 +25,9 @@ It is assumed that all cell values in \code{A}, for all variables,
 are represented as a single character. If \code{validate_A} is \code{TRUE} this is checked.
 If cell values are not single characters, one may exploit \code{letters} and \code{LETTERS} e.g.
 }
+\examples{
+G  <- adj_list(efs(tgp_dat[, 5:8]))
+om <- outlier_model(as.matrix(tgp_dat[, 5:8]), G)
+# pmf(om)
+
+}

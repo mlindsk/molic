@@ -24,7 +24,7 @@ A efs object
 Efficient forward selection in decomposable graphical models
 }
 \examples{
-## TBA
+efs(tgp_dat[, 5:8])
 
 }
 \references{

@@ -4,6 +4,8 @@
 #'
 #' @param x matrix
 #' @seealso \code{\link{csptable}}
+#' @examples
+#' sptable(as.matrix(tgp_dat[, 5:8]))
 #' @export
 sptable <- function(x) {
   stopifnot(is.matrix(x))
@@ -39,6 +41,10 @@ print.sptable <- function(x, ...) {
 #' @param b A named vector of indicies for which the variables are fixed
 #' @description The names of \code{b} are the fixed values of the variables corresponding to the indicies
 #' @seealso \code{\link{sptable}}
+#' @examples
+#' sp <- sptable(as.matrix(tgp_dat[, 5:8]))
+#' y  <- structure(c(1, 3), names = c("T", "T"))
+#' csptable(sp, y)
 #' @export
 csptable <- function(x, b) {
   stopifnot( "sptable" %in% class(x))
@@ -92,17 +98,16 @@ as_adj_mat <- function(adj) {
 #' This function returns \code{TRUE} if the graph is decomposable and \code{FALSE} otherwise
 #'
 #' @param adj Adjacency list of an undirected graph
+#' @examples
+#' # 4-cycle:
+#' adj1 <- list(a = c("b", "d"), b = c("a", "c"), c = c("b", "d"), d = c("a", "c"))
+#' is_decomposable(adj1) # FALSE
+#' # Two triangles:
+#' adj2 <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+#' is_decomposable(adj2) # TRUE
 #' @export
 is_decomposable <- function(adj) {
   m <- try(mcs(adj), silent = TRUE)
   if( class(m) == "list" ) return(TRUE)
     else return(FALSE)
 }
-
-## examples:
-## 4-cycle:
-## adj <- list(a = c("b", "d"), b = c("a", "c"), c = c("b", "d"), d = c("a", "c"))
-## is_decomposable(adj) # FALSE
-## Two triangles:
-## adj <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
-## is_decomposable(adj) # TRUE
