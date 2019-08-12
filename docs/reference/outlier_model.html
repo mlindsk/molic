@@ -151,6 +151,32 @@ are represented as a single character. If <code>validate_A</code> is <code>TRUE<
 If cell values are not single characters, one may exploit <code>letters</code> and <code>LETTERS</code> e.g.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+
+<span class='co'># DNA data for Europeans</span>
+<span class='no'>df</span>   <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"EUR"</span>)
+
+<span class='co'># DNA profile from Africa</span>
+<span class='no'>z</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"AFR"</span>)[<span class='fl'>1</span>, -<span class='fl'>1</span>])
+
+<span class='co'># Fit an interactiongraph</span>
+<span class='no'>G</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_list.html'>adj_list</a></span>(<span class='fu'><a href='efs.html'>efs</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  Edges: 1 of 15 - xic = -35.376121 
+#&gt;  Edges: 2 of 15 - xic = -99.781075 
+#&gt;  Edges: 3 of 15 - xic = -3.086017 
+#&gt;  Edges: 4 of 15 - xic = 1.963592 </div><div class='input'>
+<span class='co'># Append z to df</span>
+<span class='no'>df_z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>], <span class='no'>z</span>)
+
+<span class='co'># The outlier model</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)
+<span class='no'>M</span>    <span class='kw'>&lt;-</span> <span class='fu'>outlier_model</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df_z</span>), <span class='no'>G</span>)
+
+<span class='co'># Declared outlier on 0.05 significance level </span>
+<span class='fu'><a href='p_val.html'>p_val</a></span>(<span class='no'>M</span>, <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>M</span>, <span class='no'>z</span>))</div><div class='output co'>#&gt; [1] 0.006</div><div class='input'>
+<span class='co'># Plot the distribution of the deviance</span>
+<span class='fu'><a href='pmf.html'>pmf</a></span>(<span class='no'>M</span>)</div><div class='img'><img src='outlier_model-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -158,7 +184,9 @@ If cell values are not single characters, one may exploit <code>letters</code> a
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

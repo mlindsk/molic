@@ -18,3 +18,7 @@ Maximum Cardinality Search
 \details{
 If adj is not the adjacency list of a decomposable graph an error is raised
 }
+\examples{
+x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+mcs(x)
+}

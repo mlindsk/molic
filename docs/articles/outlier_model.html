@@ -123,32 +123,32 @@
 <tr class="odd">
 <td align="center">Rejected</td>
 <td align="center">Female</td>
-<td align="center">D</td>
-</tr>
-<tr class="even">
-<td align="center">Admitted</td>
-<td align="center">Male</td>
-<td align="center">B</td>
-</tr>
-<tr class="odd">
-<td align="center">Admitted</td>
-<td align="center">Male</td>
-<td align="center">A</td>
+<td align="center">C</td>
 </tr>
 <tr class="even">
 <td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">D</td>
+<td align="center">Male</td>
+<td align="center">C</td>
 </tr>
 <tr class="odd">
-<td align="center">Admitted</td>
-<td align="center">Male</td>
-<td align="center">A</td>
+<td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">C</td>
 </tr>
 <tr class="even">
 <td align="center">Rejected</td>
 <td align="center">Female</td>
 <td align="center">E</td>
+</tr>
+<tr class="odd">
+<td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">B</td>
+</tr>
+<tr class="even">
+<td align="center">Rejected</td>
+<td align="center">Female</td>
+<td align="center">C</td>
 </tr>
 </tbody>
 </table>
@@ -272,33 +272,32 @@ The set of vertices is <span class="math inline">\(V = \{a,b,c,d,e\}\)</span> an
 <p>For simplicity, we focus on a single microhaplotype containing <span class="math inline">\(3\)</span> DNA markers which we rename to <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> to have shorter names.</p>
 <p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(molic)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
 
 vars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(tgp_haps[[<span class="dv">29</span>]], <span class="dt">names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Y"</span>, <span class="st">"Z"</span>))
 
 df_EUR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">!!</span>vars)
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">!!</span>vars)
 
 df_AFR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">!!</span>vars)</code></pre></div>
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">!!</span>vars)</code></pre></div>
 <p><code>molic</code> has a nice function <code>sptable</code> for creating sparse contingency tables. The input is a <code>matrix</code>. It is sparse in the sense, that it do not show the combinations with zero counts. The European table is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR))</code></pre></div>
-<pre><code>## GAA GAG GGA TAG 
-## 125 706  19 156 
-## attr(,"vars")
-## [1] "X" "Y" "Z"
-## attr(,"class")
-## [1] "sptable" "integer"</code></pre>
+<pre><code>## X-Y-Z 
+## ----- 
+## GAA : 125 
+## GAG : 706 
+## GGA : 19 
+## TAG : 156</code></pre>
 <p>and the African table is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_AFR))</code></pre></div>
-<pre><code>## GAA GAG GGA TAG 
-## 118 473 708  23 
-## attr(,"vars")
-## [1] "X" "Y" "Z"
-## attr(,"class")
-## [1] "sptable" "integer"</code></pre>
+<pre><code>## X-Y-Z 
+## ----- 
+## GAA : 118 
+## GAG : 473 
+## GGA : 708 
+## TAG : 23</code></pre>
 <p>From the EUR table we see that only 19 profiles have the combination <span class="math inline">\((X,Y,Z) = (G,G,A)\)</span> whereas in the AFR table 708 profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
 <p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> with a decomposable graph. We use the <code>efs</code> function to fit the graph and use the <code>igraph</code> package to plot it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(igraph)
@@ -330,28 +329,24 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
 \]</span></p>
 <p>and we can now form the <em>marginal tables</em>. The marginal table of clique <span class="math inline">\(C_1\)</span> is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"X"</span>, <span class="st">"Z"</span>)]))</code></pre></div>
-<pre><code>##  GA  GG  TG 
-## 144 706 156 
-## attr(,"vars")
-## [1] "X" "Z"
-## attr(,"class")
-## [1] "sptable" "integer"</code></pre>
+<pre><code>## X-Z 
+## --- 
+## GA : 144 
+## GG : 706 
+## TG : 156</code></pre>
 <p>and for <span class="math inline">\(C_2\)</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Y"</span>, <span class="st">"Z"</span>)]))</code></pre></div>
-<pre><code>##  AA  AG  GA 
-## 125 862  19 
-## attr(,"vars")
-## [1] "Y" "Z"
-## attr(,"class")
-## [1] "sptable" "integer"</code></pre>
+<pre><code>## Y-Z 
+## --- 
+## AA : 125 
+## AG : 862 
+## GA : 19</code></pre>
 <p>and for <span class="math inline">\(S\)</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sptable.html">sptable</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR[, <span class="st">"Z"</span>]))</code></pre></div>
-<pre><code>##   A   G 
-## 144 862 
-## attr(,"vars")
-## [1] "Z"
-## attr(,"class")
-## [1] "sptable" "integer"</code></pre>
+<pre><code>## Z 
+## - 
+## A : 144 
+## G : 862</code></pre>
 <p>We can then count the number of profiles with a specific combination for the cliques and the separator. The number of profiles having the combination <span class="math inline">\((X, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_1\)</span> is for example <span class="math inline">\(n_{XZ}(G,A) = 144\)</span>. The number of profiles having combination <span class="math inline">\((Y, Z) = (G,A)\)</span> for clique <span class="math inline">\(C_2\)</span> is <span class="math inline">\({n_{YZ}(G,A) = 19}\)</span> and for the separator the number of profiles with <span class="math inline">\(Z = A\)</span> is <span class="math inline">\(n_Z(A) = 144\)</span>. It can be shown that the <em>joint probability</em> of having the combination <span class="math inline">\((X, Y, Z) = (G, G, A)\)</span> is given by</p>
 <span class="math display">\[\begin{equation*}
   \frac{n_{XZ}(G,A) \cdot n_{YZ}(G,A) }{ 1006 \cdot n_{Z}(A) } = \frac{ 144 \cdot 19 }{ 1006 \cdot 144} = 0.0188867,
@@ -366,7 +361,7 @@ C_{1} = \{ X, Z\}, \quad C_{2} = \{Y, Z \} \quad \mbox{and} \quad S = \{ Z \}.
 <p>Under the null hypothesis, <span class="math inline">\(z_{new}\)</span> belongs to the hypothesised data base (EUR in this case) and so we append the profile to <code>df_EUR</code>. Assume <span class="math inline">\(z_{new}\)</span> is the <span class="math inline">\(7'\)</span>th profile from AFR.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
 df_EUR_z_new &lt;-<span class="st"> </span>df_EUR <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)</code></pre></div>
+<span class="st">  </span><span class="kw">bind_rows</span>(z_new)</code></pre></div>
 <p>Lets see what the specific value of <span class="math inline">\(z_{new}\)</span> is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(z_new)</code></pre></div>
 <pre><code>## [1] "G" "G" "A"</code></pre>
@@ -393,12 +388,12 @@ om &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocument
 vars   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(microhaps))
 
 df_EUR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(vars)
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "EUR"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(vars)
 
 df_AFR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">!!</span>vars)</code></pre></div>
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(pop_meta <span class="op">==</span><span class="st"> "AFR"</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">!!</span>vars)</code></pre></div>
 <p>Then we fit an interaction graph on each microhaplotype</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">micro_graphs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(microhaps, <span class="cf">function</span>(x) {
   df_x &lt;-<span class="st"> </span>df_EUR_micro[, x]
@@ -424,7 +419,7 @@ df_AFR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span
 z_new &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(df_AFR_micro[<span class="dv">7</span>, ]) <span class="co"># It is important to unlist here!</span>
 
 df_EUR_micro_z_new &lt;-<span class="st"> </span>df_EUR_micro <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(z_new)
+<span class="st">  </span><span class="kw">bind_rows</span>(z_new)
 
 om_micro &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(df_EUR_micro_z_new) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/outlier_model.html">outlier_model</a></span>(G_union, <span class="dt">nsim =</span> <span class="dv">10000</span>)
