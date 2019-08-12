@@ -14,6 +14,10 @@
 //' @param adj A named adjacency list of a decomposable grah
 //' @param root The node from which the component should be found
 //' @return All nodes connected to \code{root}
+//' @examples
+//' x <- list(a = c("b", "d"), b = c("a", "d"), c = c("b", "a"),
+//'           d = c("e", "f"), e = c("d", "f"), f = c("d", "e"))
+//' dfs(x, "a")
 //' @export
 // [[Rcpp::export]]
 VS dfs(Rcpp::List adj, std::string root) {

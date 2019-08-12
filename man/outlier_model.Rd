@@ -26,8 +26,28 @@ are represented as a single character. If \code{validate_A} is \code{TRUE} this 
 If cell values are not single characters, one may exploit \code{letters} and \code{LETTERS} e.g.
 }
 \examples{
-G  <- adj_list(efs(tgp_dat[, 5:8]))
-om <- outlier_model(as.matrix(tgp_dat[, 5:8]), G)
-# pmf(om)
+
+
+# DNA data for Europeans
+df   <- subset(tgp_dat[, c(2, 5:10)], pop_meta == "EUR")                
+
+# DNA profile from Africa
+z    <- unlist(subset(tgp_dat[, c(2, 5:10)], pop_meta == "AFR")[1, -1])
+
+# Fit an interactiongraph
+G    <- adj_list(efs(df[, -1]))
+
+# Append z to df
+df_z <- rbind(df[, -1], z)
+
+# The outlier model
+set.seed(7)
+M    <- outlier_model(as.matrix(df_z), G)
+
+# z is declared as an outlier in the Europe data on a 0.05 significance level 
+p_val(M, deviance(M, z))
+
+# Plot the distribution of the deviance
+pmf(M)
 
 }

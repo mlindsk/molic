@@ -9,6 +9,9 @@
 //' @param adj A named adjacency list of a decomposable grah
 //' @details If adj is not the adjacency list of a decomposable graph an error is raised
 //' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
+//' @examples
+//' x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+//' mcs(x)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List mcs(Rcpp::List & adj) {
@@ -117,6 +120,14 @@ Rcpp::List perfect_separators(VVS & x) {
 //' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 //'
 //' @param adj A named adjacency list of a decomposable graph
+//' @seealso \code{\link{mcs}}, \code{\link{is_decomposable}} 
+//' @examples
+//' x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+//' y <- rip(x)
+//' # Cliques:
+//' y$C
+//' # Separators:
+//' y$S
 //' @export
 // [[Rcpp::export]]
 Rcpp::List rip(Rcpp::List & adj) {

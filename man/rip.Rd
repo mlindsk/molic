@@ -12,3 +12,14 @@ rip(adj)
 \description{
 Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 }
+\examples{
+x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+y <- rip(x)
+# Cliques:
+y$C
+# Separators:
+y$S
+}
+\seealso{
+\code{\link{mcs}}, \code{\link{is_decomposable}}
+}
