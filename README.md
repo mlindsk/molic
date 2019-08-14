@@ -20,7 +20,7 @@ Installation
 You can install the development version of the package by using the `devtools` package:
 
 ``` r
-# devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
+devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
 ```
 
 Main Functions
