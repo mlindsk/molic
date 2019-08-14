@@ -68,14 +68,6 @@ To demonstrate the outlier method we use the `car` data set from the [UCI Machin
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data",
   header = FALSE, sep = ",", dec = ".") %>%
   as_tibble() %>%
@@ -100,20 +92,14 @@ unacc_cars <- car %>%
 
 ### Fitting an interaction graph
 
-    #> 
-    #> Attaching package: 'molic'
-    #> The following object is masked from 'package:stats':
-    #> 
-    #>     deviance
-
 Fit the interaction graph for the `vgood` cars and plot the result.
 
 ``` r
-G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # adj_list(efs(vgood_cars, p = 0, trace = FALSE))
+G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE)
 plot(G_vgood)
 ```
 
-<img src="man/figures/README-acc-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-acc-1.png" width="100%" style="display: block; margin: auto;" />
 
 For comparison we also fit the interaction graph for the `unacc_cars`
 
@@ -122,7 +108,7 @@ G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
 plot(G_unacc)
 ```
 
-<img src="man/figures/README-unacc-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unacc-1.png" width="100%" style="display: block; margin: auto;" />
 
 It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
 
@@ -162,7 +148,7 @@ G_car <- efs(car, trace = FALSE)
 plot(G_car)
 ```
 
-<img src="man/figures/README-var-select-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-var-select-1.png" width="100%" style="display: block; margin: auto;" />
 
 So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
@@ -173,18 +159,6 @@ adj_list(G_car)$class
 
 We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as *conditional independence*.
 
-<!-- ## Example - Specify a Priori Knowledge -->
-<!-- If you know some relations between variables in advance it is possible to take this into account before fitting the graph. Assume, that we know the `doors` variable is associated with the `class` variable. We could then initialize an adjacency list with this information as follows. -->
-<!-- # A variable with no neighbors have value = character(0) -->
-<!-- ## adj <- lapply(colnames(car), function(x) character(0)) -->
-<!-- ## names(adj) <- colnames(car) -->
-<!-- ## adj$class <- "doors" -->
-<!-- ## X <- as_efs(car, adj) -->
-<!-- ## X$G_adj -->
-<!-- ## ls(envir = X$ht) -->
-<!-- ## ls(envir = cl_tree(car)$ht) -->
-<!-- ## efs(df, cl_tree(car)) -->
-<!-- ## efs(car, as_efs(car, adj)) -->
 How To Cite
 -----------
 

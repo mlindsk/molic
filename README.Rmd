@@ -58,7 +58,7 @@ To demonstrate the outlier method we use the `car` data set from the [UCI Machin
 
 ### Reading data
 
-```{r reading_car}
+```{r reading_car, message = FALSE, warning = FALSE}
 library(dplyr)
 car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data",
   header = FALSE, sep = ",", dec = ".") %>%
@@ -84,20 +84,20 @@ unacc_cars <- car %>%
 
 ### Fitting an interaction graph
 
-```{r echo = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(molic)
 ```
 
 Fit the interaction graph for the `vgood` cars and plot the result.
 
-```{r acc, out.width = '50%', fig.align = "center"}
-G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # adj_list(efs(vgood_cars, p = 0, trace = FALSE))
+```{r acc, fig.align = "center"}
+G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE)
 plot(G_vgood)
 ```
 
 For comparison we also fit the interaction graph for the `unacc_cars`
 
-```{r unacc, out.width = '50%', fig.align = "center"}
+```{r unacc, fig.align = "center"}
 G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
 plot(G_unacc)
 ```
@@ -131,7 +131,7 @@ All five randomly selected cars are thus declared outliers on a $0.05$ significa
 ## Example - Variable Selection
 The `efs` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
 
-```{r var-select, out.width = '50%', fig.align = "center"}
+```{r var-select, fig.align = "center"}
 G_car <- efs(car, trace = FALSE)
 plot(G_car)
 ```
@@ -142,23 +142,6 @@ So the class of a car is actually determined by all variables except for `doors`
 adj_list(G_car)$class
 ```
 We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as _conditional independence_. 
-
-<!-- ## Example - Specify a Priori Knowledge -->
-<!-- If you know some relations between variables in advance it is possible to take this into account before fitting the graph. Assume, that we know the `doors` variable is associated with the `class` variable. We could then initialize an adjacency list with this information as follows. -->
-
-<!-- # A variable with no neighbors have value = character(0) -->
-<!-- ## adj <- lapply(colnames(car), function(x) character(0)) -->
-<!-- ## names(adj) <- colnames(car) -->
-<!-- ## adj$class <- "doors" -->
-
-<!-- ## X <- as_efs(car, adj) -->
-<!-- ## X$G_adj -->
-
-<!-- ## ls(envir = X$ht) -->
-<!-- ## ls(envir = cl_tree(car)$ht) -->
-
-<!-- ## efs(df, cl_tree(car)) -->
-<!-- ## efs(car, as_efs(car, adj)) -->
 
 ## How To Cite
 TBA
