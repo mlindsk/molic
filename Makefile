@@ -22,9 +22,12 @@ run_main:
 
 readme:
 	Rscript -e "rmarkdown::render('README.Rmd')"; \
-	convert man/figures/README-acc-1.png -fuzz 10% -trim +repage man/figures/README-acc-1.png; \
-	convert man/figures/README-unacc-1.png -fuzz 10% -trim +repage man/figures/README-unacc-1.png; \
-	convert man/figures/README-var-select-1.png -fuzz 10% -trim +repage man/figures/README-var-select-1.png; \
+	convert man/figures/README-acc-1.png -gravity south -chop 0x100 man/figures/README-acc-1.png; \
+	convert man/figures/README-acc-1.png -gravity north -chop 0x80 man/figures/README-acc-1.png; \
+	convert man/figures/README-unacc-1.png -gravity south -chop 0x100 man/figures/README-unacc-1.png; \
+	convert man/figures/README-unacc-1.png -gravity north -chop 0x80 man/figures/README-unacc-1.png; \
+	convert man/figures/README-var-select-1.png -gravity south -chop 0x100 man/figures/README-var-select-1.png; \
+	convert man/figures/README-var-select-1.png -gravity north -chop 0x80 man/figures/README-var-select-1.png; \
 	firefox README.html
 
 clean:

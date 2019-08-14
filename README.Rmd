@@ -29,7 +29,7 @@ If you want to learn the "behind the scenes" of the model it is recommended to g
 You can install the development version of the package by using the `devtools` package:
 
 ```{r, eval = FALSE}
-# devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
+devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
 ```
 
 ## Main Functions
