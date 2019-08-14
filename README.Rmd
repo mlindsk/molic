@@ -90,14 +90,14 @@ library(molic)
 
 Fit the interaction graph for the `vgood` cars and plot the result.
 
-```{r acc, out.width = '20%', fig.align = "center"}
+```{r acc, out.width = '50%', fig.align = "center"}
 G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # adj_list(efs(vgood_cars, p = 0, trace = FALSE))
 plot(G_vgood)
 ```
 
 For comparison we also fit the interaction graph for the `unacc_cars`
 
-```{r unacc, out.width = '20%', fig.align = "center"}
+```{r unacc, out.width = '50%', fig.align = "center"}
 G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
 plot(G_unacc)
 ```
@@ -131,10 +131,11 @@ All five randomly selected cars are thus declared outliers on a $0.05$ significa
 ## Example - Variable Selection
 The `efs` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
 
-```{r var-select, out.width = '20%', fig.align = "center"}
+```{r var-select, out.width = '50%', fig.align = "center"}
 G_car <- efs(car, trace = FALSE)
 plot(G_car)
 ```
+
 So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
 ```{r}

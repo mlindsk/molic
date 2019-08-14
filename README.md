@@ -113,7 +113,7 @@ G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # adj_list(efs(vgood_cars, p =
 plot(G_vgood)
 ```
 
-<img src="man/figures/README-acc-1.png" width="20%" style="display: block; margin: auto;" />
+<img src="man/figures/README-acc-1.png" width="50%" style="display: block; margin: auto;" />
 
 For comparison we also fit the interaction graph for the `unacc_cars`
 
@@ -122,7 +122,7 @@ G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
 plot(G_unacc)
 ```
 
-<img src="man/figures/README-unacc-1.png" width="20%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unacc-1.png" width="50%" style="display: block; margin: auto;" />
 
 It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
 
@@ -162,7 +162,9 @@ G_car <- efs(car, trace = FALSE)
 plot(G_car)
 ```
 
-<img src="man/figures/README-var-select-1.png" width="20%" style="display: block; margin: auto;" /> So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
+<img src="man/figures/README-var-select-1.png" width="50%" style="display: block; margin: auto;" />
+
+So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
 ``` r
 adj_list(G_car)$class
