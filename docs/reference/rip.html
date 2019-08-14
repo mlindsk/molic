@@ -128,13 +128,37 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><code><a href='mcs.html'>mcs</a></code>, <code><a href='is_decomposable.html'>is_decomposable</a></code></p></div>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"d"</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"c"</span>, <span class='st'>"d"</span>), <span class='kw'>c</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"d"</span>), <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"c"</span>, <span class='st'>"b"</span>))
+<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'>rip</span>(<span class='no'>x</span>)
+<span class='co'># Cliques:</span>
+<span class='no'>y</span>$<span class='no'>C</span></div><div class='output co'>#&gt; [[1]]
+#&gt; [1] "a" "b" "d"
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] "b" "c" "d"
+#&gt; </div><div class='input'><span class='co'># Separators:</span>
+<span class='no'>y</span>$<span class='no'>S</span></div><div class='output co'>#&gt; [[1]]
+#&gt; NULL
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] "b" "d"
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

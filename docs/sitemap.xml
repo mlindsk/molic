@@ -37,6 +37,9 @@
     <loc>https://mlindsk.github.io/molic/reference/efs.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/efs_init.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/efs_step.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/p_val.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.efs.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>

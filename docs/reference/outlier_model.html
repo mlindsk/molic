@@ -172,7 +172,7 @@ If cell values are not single characters, one may exploit <code>letters</code> a
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)
 <span class='no'>M</span>    <span class='kw'>&lt;-</span> <span class='fu'>outlier_model</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df_z</span>), <span class='no'>G</span>)
 
-<span class='co'># Declared outlier on 0.05 significance level </span>
+<span class='co'># z is declared as an outlier in the Europe data on a 0.05 significance level </span>
 <span class='fu'><a href='p_val.html'>p_val</a></span>(<span class='no'>M</span>, <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>M</span>, <span class='no'>z</span>))</div><div class='output co'>#&gt; [1] 0.006</div><div class='input'>
 <span class='co'># Plot the distribution of the deviance</span>
 <span class='fu'><a href='pmf.html'>pmf</a></span>(<span class='no'>M</span>)</div><div class='img'><img src='outlier_model-1.png' alt='' width='700' height='433' /></div><div class='input'>

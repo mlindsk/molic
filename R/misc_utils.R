@@ -89,6 +89,7 @@ as_adj_mat <- function(adj) {
   for( d in seq_along(Delta) ) {
     idx <- match(adj[[d]], Delta)
     A[idx, d] <- 1L
+    A[d, idx] <- 1L
   }
   A
 }

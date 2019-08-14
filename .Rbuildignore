@@ -12,4 +12,5 @@ TODO\.org
 ^\.travis\.yml$
 .yaml$
 ^README\.Rmd$
+^README.html$
 ^appveyor\.yml$

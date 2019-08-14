@@ -29,6 +29,15 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
 ## -----------------------------------------------------------------------------
 ##                             INITIALIZATION
 ## -----------------------------------------------------------------------------
+#' Initialize
+#' @description Initialize The EFS algorithm
+#' @param df data.frame
+#' @return A efs object
+#' @examples
+#' efs_init(tgp_dat[, 5:8])
+#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
+#' @seealso \code{\link{cl_tree}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+#' @export
 efs_init <- function(df) { ## Should be a character matrix in the future
   nodes   <- colnames(df)
   n       <- length(nodes)
@@ -309,16 +318,16 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
 ## -----------------------------------------------------------------------------
 
 #' Stepwise efficient forward selection in decomposable graphical models
-#' 
 #' @description Stepwise efficient forward selection in decomposable graphical models
-#' 
 #' @param df data.frame
 #' @param x A efs object
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A efs object
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 #' @seealso \code{\link{efs}}
-#' 
+#' @examples
+#' x <- tgp_dat[, 5:8]
+#' efs_step(x, efs_init(x))
 #' @export
 efs_step <- function(df, x, thres = 5) {
   ## -----------------------------------------------------------------------------
@@ -354,8 +363,9 @@ efs_step <- function(df, x, thres = 5) {
   msi_prime    <- msi
         
   ## Vertices connected to a and b in G_dbl_prime
-  cta <- dfs(as_adj_lst(G_dbl_prime), va) # FIX - expensive to convert?
-  ctb <- dfs(as_adj_lst(G_dbl_prime), vb) # FIX - expensive to convert?
+  G_dbl_prime_lst <- as_adj_lst(G_dbl_prime)
+  cta <- dfs(G_dbl_prime_lst, va)
+  ctb <- dfs(G_dbl_prime_lst, vb)
 
   ## OLD APPROACH USING igraph:
   ## --------------------------

@@ -20,5 +20,12 @@ build_site:
 run_main:
 	Rscript src/mainR.R
 
+readme:
+	Rscript -e "rmarkdown::render('README.Rmd')"; \
+	convert man/figures/README-acc-1.png -fuzz 10% -trim +repage man/figures/README-acc-1.png; \
+	convert man/figures/README-unacc-1.png -fuzz 10% -trim +repage man/figures/README-unacc-1.png; \
+	convert man/figures/README-var-select-1.png -fuzz 10% -trim +repage man/figures/README-var-select-1.png; \
+	firefox README.html
+
 clean:
 	cd src/ && rm -f *.o && rm -f *.so

@@ -137,6 +137,25 @@
     <p>If adj is not the adjacency list of a decomposable graph an error is raised</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"d"</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"c"</span>, <span class='st'>"d"</span>), <span class='kw'>c</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"d"</span>), <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"c"</span>, <span class='st'>"b"</span>))
+<span class='fu'>mcs</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; $po
+#&gt; [1] "a" "b" "d" "c"
+#&gt; 
+#&gt; $ps
+#&gt; $ps[[1]]
+#&gt; [1] "a"
+#&gt; 
+#&gt; $ps[[2]]
+#&gt; [1] "a" "b"
+#&gt; 
+#&gt; $ps[[3]]
+#&gt; [1] "a" "b" "d"
+#&gt; 
+#&gt; $ps[[4]]
+#&gt; [1] "b" "c" "d"
+#&gt; 
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -146,7 +165,9 @@
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

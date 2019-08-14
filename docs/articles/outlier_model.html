@@ -122,32 +122,32 @@
 <tbody>
 <tr class="odd">
 <td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">C</td>
-</tr>
-<tr class="even">
-<td align="center">Rejected</td>
 <td align="center">Male</td>
-<td align="center">C</td>
-</tr>
-<tr class="odd">
-<td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">C</td>
+<td align="center">A</td>
 </tr>
 <tr class="even">
-<td align="center">Rejected</td>
-<td align="center">Female</td>
-<td align="center">E</td>
+<td align="center">Admitted</td>
+<td align="center">Male</td>
+<td align="center">A</td>
 </tr>
 <tr class="odd">
 <td align="center">Rejected</td>
 <td align="center">Male</td>
-<td align="center">B</td>
+<td align="center">F</td>
 </tr>
 <tr class="even">
 <td align="center">Rejected</td>
+<td align="center">Male</td>
+<td align="center">A</td>
+</tr>
+<tr class="odd">
+<td align="center">Admitted</td>
 <td align="center">Female</td>
+<td align="center">C</td>
+</tr>
+<tr class="even">
+<td align="center">Admitted</td>
+<td align="center">Male</td>
 <td align="center">C</td>
 </tr>
 </tbody>
@@ -299,26 +299,12 @@ df_AFR &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span>
 ## GGA : 708 
 ## TAG : 23</code></pre>
 <p>From the EUR table we see that only 19 profiles have the combination <span class="math inline">\((X,Y,Z) = (G,G,A)\)</span> whereas in the AFR table 708 profiles have that combination. Thus, the two populations seems to differ quite substantially.</p>
-<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> with a decomposable graph. We use the <code>efs</code> function to fit the graph and use the <code>igraph</code> package to plot it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(igraph)
-DG_EUR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/efs.html">efs</a></span>(df_EUR, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
+<p>Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables <span class="math inline">\(X, Y\)</span> and <span class="math inline">\(Z\)</span> with a decomposable graph. We use the <code>efs</code> function to fit the graph and then plot it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">DG_EUR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/efs.html">efs</a></span>(df_EUR, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
 G_adj  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_list.html">adj_list</a></span>(DG_EUR)   <span class="co"># Used for input to the outlier model</span>
-G_A    &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adj_matrix.html">adj_matrix</a></span>(DG_EUR) <span class="co"># Used for igraph plots</span>
-iG_A   &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_adjacency_matrix">graph_from_adjacency_matrix</a></span>(G_A, <span class="dt">mode =</span> <span class="st">"undirected"</span>)
 
-## The arguments to the plot function are included
-## to get a feel of how igraph can be used to plot graphs
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(iG_A,
-     <span class="dt">edge.arrow.size=</span><span class="dv">1</span>, 
-     <span class="dt">vertex.label.cex=</span><span class="fl">1.5</span>, 
-     <span class="dt">vertex.label.family=</span><span class="st">"Helvetica"</span>,
-     <span class="dt">vertex.label.font=</span><span class="dv">1</span>,
-     <span class="dt">vertex.shape=</span><span class="st">"circle"</span>, 
-     <span class="dt">vertex.size=</span><span class="dv">40</span>, 
-     <span class="dt">vertex.label.color=</span><span class="st">"blue"</span>, 
-     <span class="dt">edge.width=</span><span class="dv">5</span>
-)</code></pre></div>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(DG_EUR, <span class="dt">vertex.size =</span> <span class="dv">35</span>)</code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="outlier_model_files/figure-html/unnamed-chunk-4-1.png" alt="\label{fig:DG_EUR} $G$: Interaction graph for EUR." width="672"><p class="caption">
  <span class="math inline">\(G\)</span>: Interaction graph for EUR.
@@ -405,14 +391,10 @@ df_AFR_micro &lt;-<span class="st"> </span>tgp_dat <span class="op">%&gt;%</span
 <span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(<span class="cf">function</span>(x) <span class="kw"><a href="../reference/adj_list.html">adj_list</a></span>(x)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(<span class="dt">recursive =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>Plotting the fitted interaction graph</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iG_union &lt;-<span class="st"> </span><span class="kw"><a href="../reference/as_adj_mat.html">as_adj_mat</a></span>(G_union) <span class="op">%&gt;%</span>
-<span class="st">  </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_adjacency_matrix">graph_from_adjacency_matrix</a></span>(<span class="dt">mode =</span> <span class="st">"undirected"</span>)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(iG_union,
-     <span class="dt">vertex.label.cex =</span> <span class="fl">0.2</span>, 
-     <span class="dt">vertex.size      =</span> <span class="dv">2</span>, 
-     <span class="dt">edge.width       =</span> <span class="dv">1</span>
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cheating a little so we can plot the graph</span>
+x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">G_A =</span> <span class="kw"><a href="../reference/as_adj_mat.html">as_adj_mat</a></span>(G_union)) <span class="co"># The plot function just needs the "G_A" argument</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(x) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(x), <span class="st">"efs"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(x, <span class="dt">vertex.size =</span> <span class="dv">2</span>, <span class="dt">vertex.label.cex =</span> <span class="fl">0.2</span>)</code></pre></div>
 <p><img src="outlier_model_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>Constructing the outlier model where we first append the hypothesized outlier from AFR</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)

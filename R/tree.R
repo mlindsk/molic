@@ -89,16 +89,16 @@ as_efs <- function(df, t) {
       Ci   <- CG[[i]]
       Cj   <- CG[[j]]
       Sij  <- intersect(Ci, Cj)
-      if ( neq_empt_chr(Sij) ) { # Note: This ONLY work for trees (otherwise we need more test using dfs)
+      if ( neq_empt_chr(Sij) ) { # Note: This ONLY work for trees  
         CG_A[i,j] = 1L
         CG_A[j,i] = 1L
-        Ci_minus_Sij  <- setdiff(Ci, Sij)
-        Cj_minus_Sij  <- setdiff(Cj, Sij)
-        edge   <- sort_( c(Ci_minus_Sij, Cj_minus_Sij))
-        ee     <- edge_entropy(edge, Sij, df, t$ht)
-        ent_ij <- ee$ent
-        x$ht   <- ee$ht
-        if( ent_ij > max_dst ) {
+        Ci_minus_Sij <- setdiff(Ci, Sij)
+        Cj_minus_Sij <- setdiff(Cj, Sij)
+        edge         <- sort_( c(Ci_minus_Sij, Cj_minus_Sij))
+        ee           <- edge_entropy(edge, Sij, df, t$ht)
+        ent_ij       <- ee$ent
+        t$ht         <- ee$ht
+        if( ent_ij >= max_dst ) {
           max_dst  <- ent_ij
           max_edge <- edge
           max_idx  <- k

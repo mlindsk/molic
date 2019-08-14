@@ -12,12 +12,11 @@ msg <- function(k, complete, val, stop_crit) {
 #' @return A efs object
 #' @examples
 #' efs(tgp_dat[, 5:8])
-#'
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
 #' @seealso \code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
-#' 
 #' @export
 efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
+  if (!("efs" %in% class(x)) ) stop("x is not a efs class")
   lv       <- sapply(df, function(x) length(unique(x)))
   n        <- ncol(df)
   ## FIX THIS SO IT CAN HANDLE SINGLETONS!
@@ -68,6 +67,26 @@ print.efs <- function(x, ...) {
     "\n  <efs>",
     "\n -------------------------\n"
   )
+}
+
+#' Plot efs
+#'
+#' A wrapper around igraphs plot method for \code{efs} objects
+#' @param x A \code{efs} object
+#' @param ... Extra arguments. See the igraph package
+#' @import igraph
+#' @export
+plot.efs <- function(x, ...) {
+  G      <- igraph::graph_from_adjacency_matrix(x$G_A, "undirected")
+  args   <- list(...)
+  args$x <- G
+  if( is.null(args$vertex.frame.color) ) args$vertex.frame.color = "black"
+  if( is.null(args$vertex.label.color) ) args$vertex.label.color = "black"
+  if( is.null(args$vertex.color)       ) args$vertex.color       = "lightsteelblue2"
+  if( is.null(args$vertex.size)        ) args$vertex.size        = 20
+  if( is.null(args$vertex.label.cex)   ) args$vertex.label.cex   = 1
+  # if( is.null(args$vertex.label.dist)  ) args$vertex.label.dist  = 2
+  do.call("plot.igraph", args)
 }
 
 #' Adjacency List
