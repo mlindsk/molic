@@ -68,6 +68,14 @@ To demonstrate the outlier method we use the `car` data set from the [UCI Machin
 
 ``` r
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data",
   header = FALSE, sep = ",", dec = ".") %>%
   as_tibble() %>%
@@ -91,6 +99,12 @@ unacc_cars <- car %>%
 ```
 
 ### Fitting an interaction graph
+
+    #> 
+    #> Attaching package: 'molic'
+    #> The following object is masked from 'package:stats':
+    #> 
+    #>     deviance
 
 Fit the interaction graph for the `vgood` cars and plot the result.
 
