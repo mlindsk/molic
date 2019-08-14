@@ -20,7 +20,7 @@ Installation
 You can install the development version of the package by using the `devtools` package:
 
 ``` r
-devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
+# devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
 ```
 
 Main Functions
@@ -59,8 +59,6 @@ A list of some core functions in the **molic** package is listed below
 </tbody>
 </table>
 
-To better understand the followings examples it is suggested to read the paper \[TBA\] and the more thorough introduction to the model [The Outlier Model](https://mlindsk.github.io/molic/articles/).
-
 Example - Outlier Detection
 ---------------------------
 
@@ -75,7 +73,7 @@ car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car
   as_tibble() %>%
   mutate_all(as.character)
 
-colnames(car) <- c("buying", "maint", "doors", "persons", "lug_boot", "safety", "class")
+colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "class")
 ```
 
 ### Defining subclasses
@@ -94,45 +92,23 @@ unacc_cars <- car %>%
 
 ### Fitting an interaction graph
 
-First load the `molic` package and the `igraph` package for plotting
-
-``` r
-library(molic)
-```
-
 Fit the interaction graph for the `vgood` cars and plot the result.
 
 ``` r
-G_vgood  <- adj_list(efs(vgood_cars, p = 0, trace = FALSE))
-
-# Convert to an igraph object so we can plot the interaction graph
-iG_vgood <- G_vgood %>%
-  as_adj_mat %>%
-  igraph::graph_from_adjacency_matrix("undirected")
-
-plot(iG_vgood, vertex.color="gold", vertex.size=15, 
-     vertex.frame.color="gray", vertex.label.color="black", 
-     vertex.label.cex=0.8, vertex.label.dist=2, main = "Interaction graph for very good cars")
+G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # adj_list(efs(vgood_cars, p = 0, trace = FALSE))
+plot(G_vgood)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-acc-1.png" width="20%" style="display: block; margin: auto;" />
 
 For comparison we also fit the interaction graph for the `unacc_cars`
 
 ``` r
-G_unacc  <- adj_list(efs(unacc_cars, p = 0, trace = FALSE))
-
-# Convert to an igraph object so we can plot the interaction graph
-iG_unacc <- G_unacc %>%
-  as_adj_mat %>%
-  igraph::graph_from_adjacency_matrix("undirected")
-
-plot(iG_unacc, vertex.color="gold", vertex.size=15, 
-     vertex.frame.color="gray", vertex.label.color="black", 
-     vertex.label.cex=0.8, vertex.label.dist=2, main = "Interaction graph for unacceptable cars")
+G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
+plot(G_unacc)
 ```
 
-<img src="man/figures/README-unacc-1.png" width="100%" />
+<img src="man/figures/README-unacc-1.png" width="20%" style="display: block; margin: auto;" />
 
 It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
 
@@ -153,7 +129,7 @@ sapply(seq_along(outs), function(i) {
   z   <- unlist(zs[i, ])
   # Include z in vgood_cars (the hypothesis is, that z belongs here)
   D_z <- as.matrix(vgood_cars %>% bind_rows(z))
-  M   <- outlier_model(D_z, G_vgood, nsim = 5000)
+  M   <- outlier_model(D_z, adj_list(G_vgood), nsim = 5000)
   p   <- p_val(M, deviance(M, z))
   ifelse(p <= 0.05, TRUE, FALSE)  # significance level = 0.05 used
 })
@@ -168,26 +144,31 @@ Example - Variable Selection
 The `efs` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
 
 ``` r
-G_car <- adj_matrix(efs(car, trace = FALSE))
-# use adj_list instead if you need an adjacency list instead
-
-iG_car <- G_car %>%
-  igraph::graph_from_adjacency_matrix("undirected")
-
-plot(iG_car, vertex.color="gold", vertex.size=15, 
-     vertex.frame.color="gray", vertex.label.color="black", 
-     vertex.label.cex=0.8, vertex.label.dist=2, main = "Interaction graph for variable selection")
+G_car <- efs(car, trace = FALSE)
+plot(G_car)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" /> So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
+<img src="man/figures/README-var-select-1.png" width="20%" style="display: block; margin: auto;" /> So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
 ``` r
-as_adj_lst(G_car)$class
-#> [1] "buying"   "maint"    "persons"  "lug_boot" "safety"
+adj_list(G_car)$class
+#> [1] "safety"  "persons" "buying"  "maint"   "lug"
 ```
 
 We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as *conditional independence*.
 
+<!-- ## Example - Specify a Priori Knowledge -->
+<!-- If you know some relations between variables in advance it is possible to take this into account before fitting the graph. Assume, that we know the `doors` variable is associated with the `class` variable. We could then initialize an adjacency list with this information as follows. -->
+<!-- # A variable with no neighbors have value = character(0) -->
+<!-- ## adj <- lapply(colnames(car), function(x) character(0)) -->
+<!-- ## names(adj) <- colnames(car) -->
+<!-- ## adj$class <- "doors" -->
+<!-- ## X <- as_efs(car, adj) -->
+<!-- ## X$G_adj -->
+<!-- ## ls(envir = X$ht) -->
+<!-- ## ls(envir = cl_tree(car)$ht) -->
+<!-- ## efs(df, cl_tree(car)) -->
+<!-- ## efs(car, as_efs(car, adj)) -->
 How To Cite
 -----------
 

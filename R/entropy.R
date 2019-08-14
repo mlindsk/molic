@@ -38,7 +38,6 @@ entropy <- function(df, thres = 5) {
   else return(joint_entropy2(df))
 }
 
-
 edge_entropy <- function(e, S, df, ht, thres = 5) {
   v <- unlist(es_to_vs(e))
   H_S   <- 0L

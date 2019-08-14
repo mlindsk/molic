@@ -19,6 +19,10 @@ A efs object
 \description{
 Stepwise efficient forward selection in decomposable graphical models
 }
+\examples{
+x <- tgp_dat[, 5:8]
+efs_step(x, efs_init(x))
+}
 \references{
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }

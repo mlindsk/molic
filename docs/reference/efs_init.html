@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Depth First Search — dfs • molic</title>
+<title>Initialize — efs_init • molic</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Depth First Search — dfs" />
+<meta property="og:title" content="Initialize — efs_init" />
 
-<meta property="og:description" content="Finds the elements in the component of root" />
+<meta property="og:description" content="Initialize The EFS algorithm" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,41 +106,49 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Depth First Search</h1>
+    <h1>Initialize</h1>
     
-    <div class="hidden name"><code>dfs.Rd</code></div>
+    <div class="hidden name"><code>efs_init.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Finds the elements in the component of <code>root</code></p>
+    <p>Initialize The EFS algorithm</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>dfs</span>(<span class='no'>adj</span>, <span class='no'>root</span>)</pre>
+    <pre class="usage"><span class='fu'>efs_init</span>(<span class='no'>df</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>adj</th>
-      <td><p>A named adjacency list of a decomposable grah</p></td>
-    </tr>
-    <tr>
-      <th>root</th>
-      <td><p>The node from which the component should be found</p></td>
+      <th>df</th>
+      <td><p>data.frame</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>All nodes connected to <code>root</code></p>
+    <p>A efs object</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href='https://arxiv.org/abs/1301.2267'>https://arxiv.org/abs/1301.2267</a>, <a href='https://doi.org/10.1109/ictai.2004.100'>https://doi.org/10.1109/ictai.2004.100</a></p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='cl_tree.html'>cl_tree</a></code>, <code><a href='efs.html'>efs</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='adj_list.html'>adj_list.efs</a></code>, <code><a href='adj_matrix.html'>adj_matrix.efs</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"d"</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"d"</span>), <span class='kw'>c</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"b"</span>, <span class='st'>"a"</span>),
-          <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"e"</span>, <span class='st'>"f"</span>), <span class='kw'>e</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"d"</span>, <span class='st'>"f"</span>), <span class='kw'>f</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"d"</span>, <span class='st'>"e"</span>))
-<span class='fu'>dfs</span>(<span class='no'>x</span>, <span class='st'>"a"</span>)</div><div class='output co'>#&gt; [1] "a" "d" "f" "e" "b"</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>efs_init</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>])</div><div class='output co'>#&gt;  A Decomposable Graph With 
+#&gt;  ------------------------- 
+#&gt;   Nodes: 4 
+#&gt;   Edges: 0 / 6 
+#&gt;   Cliques: 4 
+#&gt;   &lt;efs&gt; 
+#&gt;  -------------------------</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -148,6 +156,10 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

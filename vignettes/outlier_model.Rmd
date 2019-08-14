@@ -166,28 +166,14 @@ sptable(as.matrix(df_AFR))
 
 From the EUR table we see that only `r unname(EUR_tab["GGA"])` profiles have the combination $(X,Y,Z) = (G,G,A)$ whereas in the AFR table `r unname(AFR_tab["GGA"])` profiles have that combination. Thus, the two populations seems to differ quite substantially.
 
-Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables $X, Y$ and $Z$ with a decomposable graph. We use the `efs` function to fit the graph and use the `igraph` package to plot it.
+Our goal is to test a profile in AFR for being an outlier in EUR. The first step is to model the interaction graph for the variables $X, Y$ and $Z$ with a decomposable graph. We use the `efs` function to fit the graph and then plot it.
 
 ```{r fig.align = "center", fig.cap = "\\label{fig:DG_EUR} $G$: Interaction graph for EUR.", fig.width = 7}
-library(igraph)
 DG_EUR <- efs(df_EUR, trace = FALSE)
 G_adj  <- adj_list(DG_EUR)   # Used for input to the outlier model
-G_A    <- adj_matrix(DG_EUR) # Used for igraph plots
-iG_A   <- igraph::graph_from_adjacency_matrix(G_A, mode = "undirected")
 
-## The arguments to the plot function are included
-## to get a feel of how igraph can be used to plot graphs
 set.seed(7)
-plot(iG_A,
-     edge.arrow.size=1, 
-     vertex.label.cex=1.5, 
-     vertex.label.family="Helvetica",
-     vertex.label.font=1,
-     vertex.shape="circle", 
-     vertex.size=40, 
-     vertex.label.color="blue", 
-     edge.width=5
-)
+plot(DG_EUR, vertex.size = 35)
 ```
 
 Notice that $G$ is in fact a tree (no cycles). The cliques and separator of $G$ are given by
@@ -318,19 +304,17 @@ G_union <- micro_graphs %>%
   unname() %>%
   lapply(function(x) adj_list(x)) %>%
   unlist(recursive = FALSE)
+
+
 ```
 
 Plotting the fitted interaction graph
 
 ```{r fig.width = 8, fig.height = 8, fig.align = "center"}
-iG_union <- as_adj_mat(G_union) %>%
-  igraph::graph_from_adjacency_matrix(mode = "undirected")
-
-plot(iG_union,
-     vertex.label.cex = 0.2, 
-     vertex.size      = 2, 
-     edge.width       = 1
-)
+# Cheating a little so we can plot the graph
+x <- list(G_A = as_adj_mat(G_union)) # The plot function just needs the "G_A" argument
+class(x) <- c(class(x), "efs")
+plot(x, vertex.size = 2, vertex.label.cex = 0.2)
 ```
 
 Constructing the outlier model where we first append the hypothesized outlier from AFR

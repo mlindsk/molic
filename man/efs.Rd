@@ -25,7 +25,6 @@ Efficient forward selection in decomposable graphical models
 }
 \examples{
 efs(tgp_dat[, 5:8])
-
 }
 \references{
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}

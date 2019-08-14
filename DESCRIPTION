@@ -17,13 +17,13 @@ Imports:
     Rcpp,
     Matrix,
     doParallel,
-    foreach
+    foreach,
+    igraph
 Suggests:
     knitr,
     rmarkdown,
     pander,
     dplyr,
-    igraph,
     testthat
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
