@@ -55,7 +55,7 @@ edge_entropy <- function(e, S, df, ht, thres = 5) {
     H_S_y <- ht[[Sy]]
   } else {
     H_S_y  <- entropy(df[c(S, v[2])], thres)
-        ht[[Sy]] <- H_S_y 
+    ht[[Sy]] <- H_S_y 
   }
   H_S_x_y <- 0L
   Sxy <- sort_(c(S, v))
@@ -65,6 +65,9 @@ edge_entropy <- function(e, S, df, ht, thres = 5) {
     H_S_xy  <- entropy(df[c(S, v)], thres)
     ht[[Sxy]] <- H_S_xy  
   }
-  return( list(ent = H_S_x + H_S_y - H_S_xy - H_S, ht = ht ))
+  # Test needed to avoid < 0 due to floating point errors
+  H_x_y    <- H_S_x + H_S_y
+  edge_ent <- ifelse( isTRUE(all.equal(H_x_y, H_S_xy)), 0L,  H_x_y - H_S_xy - H_S )
+  return( list(ent = edge_ent, ht = ht ))
 }
 

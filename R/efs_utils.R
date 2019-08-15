@@ -44,7 +44,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   G_A     <- Matrix::Matrix(0L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
   G_adj   <- as_adj_lst(G_A)
   CG      <- as.list(nodes)
-  CG_A    <- Matrix::Matrix(1L, n, n, dimnames = list(nodes[1:n], nodes[1:n]))
+  CG_A    <- Matrix::Matrix(1L, n, n) #, dimnames = list(nodes[1:n], nodes[1:n]))
   diag(CG_A) <- 0L
   pairs     <- utils::combn(nodes, 2,  simplify = FALSE) ## USE C++ version here!
   max_dst   <- 0L
@@ -304,7 +304,10 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
         H_Sp_xy  <- entropy(df[c(Sp, v)], thres)
         ht[[Spxy]] <<- H_Sp_xy  
       }
-      return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )
+      # Test needed to avoid < 0 due to floating point errors
+      H_Sp_x_y    <- H_Sp_x + H_Sp_y
+      edge_ent <- ifelse( isTRUE(all.equal(H_Sp_x_y, H_Sp_xy)), 0L,  H_Sp_x_y - H_Sp_xy - H_Sp )
+      return(edge_ent) # return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )
     })
     
     names(eligs) <- eligs_names
@@ -340,7 +343,7 @@ efs_step <- function(df, x, thres = 5) {
   msi   <- MSI$S  
   mab   <- MSI$max
   eab   <- mab$e
-  if(class(eab) != "character") browser()
+  # if(class(eab) != "character") browser
   vab   <- unlist(strsplit(eab, "\\|"))
   va    <- vab[1]
   vb    <- vab[2]
@@ -512,7 +515,6 @@ efs_step <- function(df, x, thres = 5) {
     if( cond ) return(x)
   }))
   MSI_prime <- list(S = msi_prime, max = list(e = e_max, idx = idx_max, ins = ins_max))
-  # MSI_prime <- list(S = msi_prime, max = list(e = names(e_max), idx = idx_max, ins = ins_max))
   out <- list(G_adj = G_prime_adj,
     # G    = G_prime,
     G_A  = G_prime_A,
@@ -524,3 +526,4 @@ efs_step <- function(df, x, thres = 5) {
   class(out) <- c("efs")
   return(out)
 }
+
