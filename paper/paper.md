@@ -35,30 +35,9 @@ header-includes:
 
 The **molic** package have been written to facilitate the novel outlier detection method in [@outlier_detection_in_contingency_tables]. The method can be used to detect anomalies in high-dimensional contingency tables. In other words, the method works for data sets in which all variables can only take on a finite set of values (also called _levels_). We also say, that such variables are _discrete variables_ or _categorical variables_. 
 
-The method can be described by Algorithm \ref{alg:outlier_test}. Assume we are interested in whether or not a new observation $z$ is an outlier in some data set $D$. First an _interaction graph_ $G$ is fitted to the variables in $D$; a decomposable undirected graph that describes the association structure between variables in $D$. If the assumption that $z$ belongs to $D$ is true, $z$ should be included in $D$. Denote by $D_z$ the new data set including $z$. Finally the outlier model $M$ is constructed using $G$ and $D_z$ from which we can query the p-value, $p$, for the test about $z$ belonging to $D$. If $p$ is less than some chosen threshold (significance level), say $0.05$, $z$ is declared an outlier in $D$.
+The method can be described by the **outlier test** procedure below. Assume we are interested in whether or not a new observation $z$ is an outlier in some data set $D$. First an _interaction graph_ $G$ is fitted to the variables in $D$; a decomposable undirected graph that describes the association structure between variables in $D$. If the assumption that $z$ belongs to $D$ is true, $z$ should be included in $D$. Denote by $D_z$ the new data set including $z$. Finally the outlier model $M$ is constructed using $G$ and $D_z$ from which we can query the p-value, $p$, for the test about $z$ belonging to $D$. If $p$ is less than some chosen threshold (significance level), say $0.05$, $z$ is declared an outlier in $D$.
 
-
-\begin{algorithm}[H]
-\caption{}
-\label{alg:outlier_test}
-\begin{algorithmic}[1]
-  \Procedure{}{$D$: data, $z:$ new obs.}
-  
-  \Comment{\textbf{\textcolor{gray}{Fit interaction graph to data}}}
-  \State $G:=$ \texttt{efs(D)}
-  
-  \Comment{\textbf{\textcolor{gray}{Append the new profile to the data}}}
-  \State $D_z :=$ $D$ with $z$ included
-
-  \Comment{\textbf{\textcolor{gray}{Compute distribution of deviances}}}
-  \State $M:=$ \texttt{outlier\textunderscore model(D\textunderscore z, G)}
-
-  \Comment{\textbf{\textcolor{gray}{Compute the p-value of z being an outlier}}}
-  \State $p:=$ \texttt{p\textunderscore val(M, deviance(M, z))}
-  \State \textbf{return} $p$
-  \EndProcedure
-\end{algorithmic}
-\end{algorithm}
+![""](outlier_test_alg.pdf)
 
 The `efs` algorithm is an implementation of the efficient step-wise selection procedure [@deshpande01_efficient] used for model selection in decomposable graphs. This function can be used to explore dependencies between any kind of discrete variables and make statements about conditional dependencies and independencies. A thorough description of the outlier detection method and how to use the software can be found at 
 

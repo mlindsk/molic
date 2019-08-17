@@ -1,0 +1,25 @@
+\documentclass[preview]{standalone}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+
+\algrenewcommand\algorithmicprocedure{\textbf{outlier test}}
+\renewcommand{\algorithmiccomment}[1]{\hspace{-3em}// #1}
+
+
+\begin{document}
+\centering
+\begin{algorithmic}[1]
+  \Procedure{}{$D$: data, $z:$ new obs.}
+  \State $G:=$ \texttt{efs(D)} 
+  \State $D_z :=$ $D$ with $z$ included
+  \State $M:=$ \texttt{outlier\textunderscore model(D\textunderscore z, G)}
+  \State $p:=$ \texttt{p\textunderscore val(M, deviance(M, z))}
+  \State \textbf{return} $p$
+  \EndProcedure
+\end{algorithmic}
+\end{document}
+
+  % \Comment{\textbf{\textcolor{gray}{Fit interaction graph to data}}}
+  % \Comment{\textbf{\textcolor{gray}{Append the new profile to the data}}}
+  % \Comment{\textbf{\textcolor{gray}{Compute distribution of deviances}}}
+  % \Comment{\textbf{\textcolor{gray}{Compute the p-value of z being an outlier}}}
