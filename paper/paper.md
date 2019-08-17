@@ -21,10 +21,6 @@ bibliography: paper.bib
 output: pdf_document
 ---
 
-\algrenewcommand\algorithmicprocedure{\textbf{outlier test}}
-
-\renewcommand{\algorithmiccomment}[1]{\hspace{-3em}// #1}
-
 <!-- pandoc --filter pandoc-citeproc --bibliography=paper.bib --variable papersize=a4paper -s paper.md -o paper.pdf & evince paper.pdf -->
 
 # Summary
