@@ -19,10 +19,6 @@ affiliations:
    index: 2
 bibliography: paper.bib
 output: pdf_document
-header-includes:
- - \usepackage{algorithm}
- - \usepackage{algpseudocode}
- - \usepackage{xcolor}
 ---
 
 \algrenewcommand\algorithmicprocedure{\textbf{outlier test}}
