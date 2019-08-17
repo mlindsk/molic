@@ -14,57 +14,39 @@ Getting Started
 
 If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. See also the examples below and the paper \[TBA\].
 
-Installation
-------------
-
 You can install the development version of the package by using the `devtools` package:
 
 ``` r
-devtools::install_github("mlindsk/molic", build_vignettes = TRUE)
+devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
-Main Functions
---------------
+How To Cite
+-----------
 
-A list of some core functions in the **molic** package is listed below
+-   If you want to cite the **outlier method** please use
 
-<table style="width:67%;">
-<colgroup>
-<col width="25%" />
-<col width="41%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Function</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left"><code>outlier_model</code></td>
-<td align="left">Fits an outlier detection model</td>
-</tr>
-<tr class="even">
-<td align="left"><code>p_val</code></td>
-<td align="left">Calculates the p-value of an observation being an outlier</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>efs</code></td>
-<td align="left">Fits a decomposable graph using forward selection.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>cl_tree</code></td>
-<td align="left">Fits a tree (decomposable graph) using the Chow-Liu method.</td>
-</tr>
-</tbody>
-</table>
+``` latex
+@article{key,
+  title={Outlier Detection in Contingency Tables using Decomposable Graphical Models},
+  author={Lindskou, Mads and Eriksen, Poul Svante and Tvedebrink, Torben},
+  journal={Scandinavian Journal of Statistics},
+  doi={10.1111/sjos.12407},
+  year={2019}
+}
+```
+
+-   If you want to cite the **molic** package please use
+
+``` latex
+TBA
+```
 
 Example - Outlier Detection
 ---------------------------
 
 To demonstrate the outlier method we use the `car` data set from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php). The data have 4 classes that labels the evaluation of a car; `unacceptable, acc, vgood` and `good`. These classes are determined by the other variables in the data - and theses are *not* necessarily independent of each other and we must therefore "fit their association".
 
-### Reading data
+### Reading Data
 
 ``` r
 library(dplyr)
@@ -76,7 +58,7 @@ car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car
 colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "class")
 ```
 
-### Defining subclasses
+### Defining Sub-Classes
 
 ``` r
 vgood_cars <- car %>%
@@ -90,7 +72,7 @@ unacc_cars <- car %>%
   mutate_all(.funs = function(x) substr(x, 1, 1))
 ```
 
-### Fitting an interaction graph
+### Fitting an Interaction Graph
 
 Fit the interaction graph for the `vgood` cars and plot the result.
 
@@ -112,7 +94,7 @@ plot(G_unacc)
 
 It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
 
-### Outlier test
+### Outlier Test
 
 We randomly select five cars from the `unacc_cars` data and test if they are outliers in `vgood_cars`.
 
@@ -158,8 +140,3 @@ adj_list(G_car)$class
 ```
 
 We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as *conditional independence*.
-
-How To Cite
------------
-
-TBA
