@@ -29,6 +29,8 @@ The **molic** package have been written to facilitate the novel outlier detectio
 
 The method can be described by the **outlier test** procedure below. Assume we are interested in whether or not a new observation $z$ is an outlier in some data set $D$. First an _interaction graph_ $G$ is fitted to the variables in $D$; a decomposable undirected graph that describes the association structure between variables in $D$. If the assumption that $z$ belongs to $D$ is true, $z$ should be included in $D$. Denote by $D_z$ the new data set including $z$. Finally the outlier model $M$ is constructed using $G$ and $D_z$ from which we can query the p-value, $p$, for the test about $z$ belonging to $D$. If $p$ is less than some chosen threshold (significance level), say $0.05$, $z$ is declared an outlier in $D$.
 
+\vspace{0.2cm}
+
 ![](outlier_test_alg.pdf)\
 
 The `efs` algorithm is an implementation of the efficient step-wise selection procedure [@deshpande01_efficient] used for model selection in decomposable graphs. This function can be used to explore dependencies between any kind of discrete variables and make statements about conditional dependencies and independencies. A thorough description of the outlier detection method and how to use the software can be found at 
