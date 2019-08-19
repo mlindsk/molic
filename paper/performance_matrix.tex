@@ -1,0 +1,54 @@
+\documentclass[preview]{standalone}
+\usepackage{multirow,
+  diagbox,
+  dcolumn,
+  colortbl,
+  booktabs,
+  tabularx
+}
+
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+\newcommand*\rot{\rotatebox{90}}
+\newcommand{\ccc}{\cellcolor[gray]{0.7}}
+\newcommand{\cc}{\cellcolor[gray]{0.85}}
+\definecolor{ccc}{gray}{0.7}
+\definecolor{cc}{gray}{0.85}
+\newcommand{\colbox}[2]{\fcolorbox{black}{#1}{\textcolor{#1}{#2}}}
+\newcommand{\mathsl}[1]{\ensuremath{\text{\textsl{#1}}}}
+\newcommand{\CR}{\mathsl{CR}}
+\newcommand{\AFR}{\mathsl{AFR}}
+\newcommand{\SAS}{\mathsl{SAS}}
+\newcommand{\EAS}{\mathsl{EAS}}
+\newcommand{\EUR}{\mathsl{EUR}}
+\newcommand{\AMR}{\mathsl{AMR}}
+
+\begin{document}
+\begin{table}[h!] \centering
+  \begin{tabular}{@{\extracolsep{15pt}} cccccc} 
+    \\[-1.8ex]\hline 
+    \hline \\[-1.8ex] 
+    \diagbox[innerwidth=0.5cm]{$z$}{$H_0$} & EUR & EAS & AMR & SAS & AFR \\ 
+    \hline \\[-1.8ex]
+    \multirow{3}{*}{EUR} & \ccc 0.054 & \ccc 1 & \ccc 0.191 & \ccc 0.509 & \ccc  1\\
+                          & 0.046 & 1 & 0.145 & 0.231 &  1\\
+    \hline \\[-10pt]
+    \multirow{3}{*}{EAS}  & \ccc 1 & \ccc 0.054 & \ccc 0.994 & \ccc 0.966 & \ccc 1\\
+                          & 1 & 0.063 & 0.994 & 0.980 & 1\\
+    \hline \\[-10pt]
+    \multirow{3}{*}{AMR}  & \ccc 0.778 & \ccc 1 & \ccc 0.095 & \ccc 0.769 & \ccc 1\\
+                          & 0.697 & 1 & 0.049 & 0.565 & 1\\
+    \hline \\[-10pt]
+    \multirow{3}{*}{SAS}  & \ccc 0.922 & \ccc 1 & \ccc 0.710 & \ccc 0.037 & \ccc 1\\
+                          & 0.863 & 1 & 0.620 & 0.047 & 1\\
+    \hline \\[-10pt]
+    \multirow{3}{*}{AFR}  & \ccc 1 & \ccc 1 & \ccc 0.997 & \ccc 1 & \ccc 0.101\\
+                          & 0.998 & 1 & 0.918 & 0.834 & 0.106\\
+    \hline \\[-1.8ex]
+    \multicolumn{6}{c}{\colbox{ccc}{I} $G$ \qquad \colbox{white}{I} $G^{\emptyset}$} 
+  \end{tabular}
+  \label{tab:performance_matrix}
+  \caption{Performance matrix of outlier tests.}
+\end{table}
+
+\end{document}
+
