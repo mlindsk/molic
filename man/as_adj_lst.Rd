@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc_utils.R
 \name{as_adj_lst}
 \alias{as_adj_lst}
-\title{Converts and an adjacency matrix to an adjacency list}
+\title{Converts an adjacency matrix to an adjacency list}
 \usage{
 as_adj_lst(A)
 }
@@ -10,5 +10,5 @@ as_adj_lst(A)
 \item{A}{Adjacency matrix}
 }
 \description{
-Converts and an adjacency matrix to an adjacency list
+Converts an adjacency matrix to an adjacency list
 }

@@ -65,7 +65,7 @@ print.csptable <- function(x, ...) {
   print.sptable(x, ...)
 }
 
-#' Converts and an adjacency matrix to an adjacency list
+#' Converts an adjacency matrix to an adjacency list
 #'
 #' @param A Adjacency matrix
 #' @export
@@ -83,6 +83,7 @@ as_adj_lst <- function(A) {
 #' @param adj Adjacency list
 #' @export
 as_adj_mat <- function(adj) {
+  stopifnot(length(names(adj)) == length(adj))
   Delta <- names(adj)
   N     <- length(Delta)
   A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(Delta, Delta))
