@@ -26,9 +26,9 @@ output: pdf_document
 
 # Summary
 
-Outlier detection is an important task in statistical analyses. An outlier is a case-specific unit since it may be interpreted as natural extreme noise in some applications, whereas in other applications it may be the most interesting observation. The **molic** package have been written to facilitate the novel outlier detection method in high-dimensional contingency tables [@outlier_detection_in_contingency_tables]. In other words, the method works for data sets in, which all variables are _categorical_, implying that they can only take on a finite set of values (also called _levels_).
+Outlier detection is an important task in statistical analyses. An outlier is a case-specific unit since it may be interpreted as natural extreme noise in some applications, whereas in other applications it may be the most interesting observation. The **molic** package have been written to facilitate the novel outlier detection method in high-dimensional contingency tables [@outlier_detection_in_contingency_tables]. In other words, the method works for data sets in which all variables are _categorical_, implying that they can only take on a finite set of values (also called _levels_).
 
-The software uses decomposable graphical models (DGMs), where the probability mass function can be associated with an interaction graph, from which conditional independences among the variables can be inferred. This gives a way to investigate the underlying nature of outliers. This is also called _understandability_ in the litterature. Outlier detection has many applications including areas such as
+The software uses decomposable graphical models (DGMs), where the probability mass function can be associated with an interaction graph, from which conditional independences among the variables can be inferred. This gives a way to investigate the underlying nature of outliers. This is also called _understandability_ in the literature. Outlier detection has many applications including areas such as
 
  - Fraud detection
  - Medical and public health
@@ -51,7 +51,7 @@ https://mlindsk.github.io/molic/
 
 # A Use Case in Genetics
 
-Recently, advances in DNA sequencing has made it possible to sequence short segments of DNA ($< 200$ basepairs) including two or more SNPs. These are called \textsl{microhaplotypes} (or microhaps for short) [@kidd2014microhaplo]. They have been demonstrated to be well suited for ancestry assessment. The short distance between SNPs within a microhap implies that recombination among them rarely occurs. Hence, the methodology of @tvedebrink2018aims can not be used as this assumes mutually independence of the SNPs within a population.
+Recently, advances in DNA sequencing has made it possible to sequence short segments of DNA ($< 200$ basepairs) including two or more SNPs. These are called \textsl{microhaplotypes} (or microhaps for short) [@kidd2014microhaplo]. They have been demonstrated to be well suited for ancestry assessment. The short distance between SNPs within a microhap implies that recombination among them rarely occurs. Hence, the methodology of @tvedebrink2018aims can not be used as this assumes mutual independence of the SNPs within a population.
 
 In @outlier_detection_in_contingency_tables the **molic** package was used to detect outliers in microhap data from the 1000 Genomes Project [@10002015global]. This data contains DNA profiles from five different continental regions (CRs); Europe (EUR), America (AMR), East Asia (EAS), South Asia (SAS) and Africa (AFR). 
 
