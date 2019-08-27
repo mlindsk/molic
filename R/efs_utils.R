@@ -180,7 +180,12 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##   return(d_aic)
 ## }
 
+
 delta_xic <- function(x, lv, M, p = 0.5) {
+  UseMethod("delta_xic")
+}
+
+delta_xic.efs <- function(x, lv, M, p = 0.5) {
   # x : efs object
   penalty     <- log(M)*p + (1 - p)*2
   n           <- length(lv) # ncol(df)
