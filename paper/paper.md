@@ -49,6 +49,9 @@ The `efs` algorithm is an implementation of the efficient step-wise selection pr
 https://mlindsk.github.io/molic/
 \end{center}
 
+# Expert Knowledge
+If one has prior knowledge of the underlying nature of the association between variables, this can easily be exploited. One can choose to model only the relationship between variables which have no other associations to any of the remaining variables. This will result in a number of interaction graphs which can then be unified as the union of these graphs. This approach was taken in the example below.
+
 # A Use Case in Genetics
 
 Recently, advances in DNA sequencing has made it possible to sequence short segments of DNA ($< 200$ basepairs) including two or more SNPs. These are called \textsl{microhaplotypes} (or microhaps for short) [@kidd2014microhaplo]. They have been demonstrated to be well suited for ancestry assessment. The short distance between SNPs within a microhap implies that recombination among them rarely occurs. Hence, the methodology of @tvedebrink2018aims can not be used as this assumes mutual independence of the SNPs within a population.
@@ -58,6 +61,8 @@ In @outlier_detection_in_contingency_tables the **molic** package was used to de
 Consider for example the region SAS as the hypothesized region and all profiles in AFR as profiles to be tested against the hypothesis that their origin is SAS. Two different interaction graphs are used; $G$ which is the result of using the `efs` algorithm and $G^{\emptyset}$ where all microhap SNPs are assumed to be independent (a graph with no edges). The proportion of profiles from AFR that are outliers in SAS according to the model, is $1$ for $G$ and only $0.834$ for $G^{\emptyset}$, see Table 1. The outlier test was conducted for all pairs of continental regions. It is seen, that $G$ outperforms $G^{\emptyset}$ in general and the dependency between microhap SNPs cannot be neglected. All tests was conducted on a significance level of $0.05$.
 
 ![](performance_matrix.pdf)\
+
+Another model could come in to play is the saturated model (a complete graph) corresponding to using frequency estimates. However, for high-dimensional data the saturated model breaks down since you would need an impossible amount of observations to catch rare events. Our approach remedies this, by focusing on local information (cliques in the fitted graph) from which it is way easier to investigate the nature of an outlier.
 
 
 # References
