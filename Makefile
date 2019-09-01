@@ -31,4 +31,5 @@ readme:
 	firefox README.html
 
 clean:
+	rm -f README.html
 	cd src/ && rm -f *.o && rm -f *.so

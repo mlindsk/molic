@@ -46,6 +46,7 @@ Consider for example the built in discrete data set in `R` on `4526` applicants 
 
 ```{r admission, echo = FALSE, message = FALSE, warning = FALSE}
 ## https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/UCBAdmissions.html
+if( !requireNamespace("dplyr", quietly = TRUE) ) install.packages("dplyr")
 library(dplyr)
 adm_ <- as.data.frame(UCBAdmissions) 
 adm <-data.frame(Admit = c(), Gender = c(), Dept = c())
@@ -58,6 +59,7 @@ for( i in 1:nrow(adm_) ) {
 adm <- adm[sample(nrow(adm)), ] %>%
   as_tibble() %>%
   mutate_all(.funs = as.character)
+if( !requireNamespace("pander", quietly = TRUE) ) install.packages("pander")
 pander::pander(head(adm))
 ```
 
