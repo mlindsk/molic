@@ -9,6 +9,7 @@ src/efs_cpp
 Makefile
 TODO\.org
 ^LICENSE\.md$
+^CONTRIBUTING\.md$
 ^\.travis\.yml$
 .yaml$
 ^README\.Rmd$
