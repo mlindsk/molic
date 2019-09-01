@@ -11,17 +11,28 @@ efs(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5)
 
 \item{x}{A efs object}
 
-\item{p}{Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)}
+\item{p}{Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)}
 
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
-\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.}
+\item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy.}
 }
 \value{
-A efs object
+A efs object (a list) with values:
+\describe{
+\item{\code{G_adj}}{The fitted graph. Can be extracted with \code{as_adj_lst}}
+\item{\code{G_A}}{The edge that was just deleted and the entropy attached to it. Can be extracted using \code{as_adj_mat}}
+\item{\code{CG}}{The cliques of the graph.}
+\item{\code{CG_A}}{A neighbor matrix of the clique graph.}
+\item{\code{MSI}}{Minimal separator info list}
+\item{\code{ht}}{An updated version of the input argument \code{ht}.}
+}
 }
 \description{
 Efficient forward selection in decomposable graphical models
+}
+\details{
+The algorithm relies on calculating lots of entropies (see \url{https://arxiv.org/abs/1301.2267}). If \code{thres} is equal to a number, say \code{a}, the entropy will be calculated using the \code{table} function for all situations where the number of variables is less than or equal to \code{a}. Otherwise, the entropies will be calculated by pasting rows in the subset of \code{df} over the relevant variables. For small values of \code{a} the former method is generally faster whereas for large values of \code{a} it breaks down and it is necessary to use the latter method.
 }
 \examples{
 efs(tgp_dat[, 5:8])
@@ -30,5 +41,5 @@ efs(tgp_dat[, 5:8])
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+\code{\link{efs_init}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}}, \code{\link{cl_tree}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 }

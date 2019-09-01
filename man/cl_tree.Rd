@@ -15,11 +15,13 @@ cl_tree(df, wrap = TRUE)
 This functions uses Kruskals algorithm to fit a tree structure to variables in \code{df}
 }
 \examples{
-cl_tree(tgp_dat[, 5:8])
+G <- cl_tree(tgp_dat[, 5:8])
+print(G)
+plot(G)
 }
 \references{
 \url{https://ieeexplore.ieee.org/abstract/document/1054142}
 }
 \seealso{
-\code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+\code{\link{efs}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}},\code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 }

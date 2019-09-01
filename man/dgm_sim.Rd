@@ -16,12 +16,12 @@ dgm_sim(A, adj, nsim = 1000, ncores = 1)
 \item{ncores}{Number of cores to use in parallelization}
 }
 \value{
-This function returns a matrix of dimension `nsim x ncol(A)` where each row correspond to a simulated observation from a DGM represented by `adj`.
+This function returns a matrix of dimension \code{nsim x ncol(A)} where each row correspond to a simulated observation from a DGM represented by \code{adj}.
 }
 \description{
 This function simulates observations from a DGM
 }
 \examples{
 G  <- adj_list(efs(tgp_dat[, 5:8]))
-dgm_sim(as.matrix(tgp_dat[, 5:8]), G)
+dgm_sim(as.matrix(tgp_dat[, 5:8]), G, nsim = 10)
 }

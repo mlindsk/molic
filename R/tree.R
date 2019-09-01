@@ -129,9 +129,11 @@ as_efs <- function(df, t) {
 #' @param df data.frame
 #' @param wrap Logical indicating if the object should be converted to a \code{efs} object or not (can increase runtime significantly if FALSE)
 #' @references \url{https://ieeexplore.ieee.org/abstract/document/1054142}
-#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}},\code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 #' @examples
-#' cl_tree(tgp_dat[, 5:8])
+#' G <- cl_tree(tgp_dat[, 5:8])
+#' print(G)
+#' plot(G)
 #' @export
 cl_tree <- function(df, wrap = TRUE) {
   if( wrap ) return( as_efs(df, kruskal(df)) )

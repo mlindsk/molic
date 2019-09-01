@@ -16,6 +16,15 @@
     <loc>https://mlindsk.github.io/molic/reference/as_adj_mat.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/bws.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/bws_init.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/bws_step.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/cdf.html</loc>
   </url>
   <url>
@@ -49,6 +58,9 @@
     <loc>https://mlindsk.github.io/molic/reference/is_decomposable.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/make_complete_graph.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/mcs.html</loc>
   </url>
   <url>
@@ -64,10 +76,16 @@
     <loc>https://mlindsk.github.io/molic/reference/p_val.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.bws.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/plot.efs.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/print.bws.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/print.csptable.html</loc>

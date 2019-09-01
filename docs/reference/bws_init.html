@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Outlier model — outlier_model • molic</title>
+<title>Initialize a bws object — bws_init • molic</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Outlier model — outlier_model" />
+<meta property="og:title" content="Initialize a bws object — bws_init" />
 
-<meta property="og:description" content="A model based on decomposable graphical models for outlier detection" />
+<meta property="og:description" content="Initialize a bws object" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,83 +106,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Outlier model</h1>
+    <h1>Initialize a bws object</h1>
     
-    <div class="hidden name"><code>outlier_model.Rd</code></div>
+    <div class="hidden name"><code>bws_init.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>A model based on decomposable graphical models for outlier detection</p>
+    <p>Initialize a bws object</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>outlier_model</span>(<span class='no'>A</span>, <span class='no'>adj</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>ncores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>validateA</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>bws_init</span>(<span class='no'>adj</span>, <span class='kw'>ht</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/environment'>new.env</a></span>(<span class='kw'>hash</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>A</th>
-      <td><p>Character Matrix (data)</p></td>
-    </tr>
-    <tr>
       <th>adj</th>
-      <td><p>Adjacency list of a decomposable graph</p></td>
+      <td><p>An adjacency list</p></td>
     </tr>
     <tr>
-      <th>nsim</th>
-      <td><p>Number of simulations</p></td>
-    </tr>
-    <tr>
-      <th>ncores</th>
-      <td><p>Number of cores to use in parallelization</p></td>
-    </tr>
-    <tr>
-      <th>validateA</th>
-      <td><p>Logical. See details.</p></td>
+      <th>ht</th>
+      <td><p>An environment (hashtable) containing precomputed entropies</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>It is assumed that all cell values in <code>A</code>, for all variables,
-are represented as a single character. If <code>validate_A</code> is <code>TRUE</code> this is checked.
-If cell values are not single characters, one may exploit <code>letters</code> and <code>LETTERS</code> e.g.</p>
+    <p>A bws object. See <code>bws</code> for more details about the returning object.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='bws_step.html'>bws_step</a></code>, <code><a href='bws.html'>bws</a></code>, <code><a href='make_complete_graph.html'>make_complete_graph</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-
-<span class='co'># DNA data for Europeans</span>
-<span class='no'>df</span>   <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"EUR"</span>)
-
-<span class='co'># DNA profile from Africa</span>
-<span class='no'>z</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"AFR"</span>)[<span class='fl'>1</span>, -<span class='fl'>1</span>])
-
-<span class='co'># Fit an interactiongraph</span>
-<span class='no'>G</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_list.html'>adj_list</a></span>(<span class='fu'><a href='efs.html'>efs</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  Edges: 1 of 15 - xic = -35.376121 
-#&gt;  Edges: 2 of 15 - xic = -99.781075 
-#&gt;  Edges: 3 of 15 - xic = -3.086017 </div><div class='input'>
-<span class='co'># Append z to df</span>
-<span class='no'>df_z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>], <span class='no'>z</span>)
-
-<span class='co'># The outlier model</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)
-<span class='no'>M</span>    <span class='kw'>&lt;-</span> <span class='fu'>outlier_model</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df_z</span>), <span class='no'>G</span>)
-
-<span class='co'># z is declared as an outlier in the Europe data on a 0.05 significance level </span>
-<span class='fu'><a href='p_val.html'>p_val</a></span>(<span class='no'>M</span>, <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>M</span>, <span class='no'>z</span>))</div><div class='output co'>#&gt; [1] 0.006</div><div class='input'>
-<span class='co'># Plot the distribution of the deviance</span>
-<span class='fu'><a href='pmf.html'>pmf</a></span>(<span class='no'>M</span>)</div><div class='img'><img src='outlier_model-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]
+<span class='fu'>bws_init</span>(<span class='fu'><a href='make_complete_graph.html'>make_complete_graph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>)))</div><div class='output co'>#&gt;  A Decomposable Graph With 
+#&gt;  ------------------------- 
+#&gt;   Nodes: 4 
+#&gt;   Edges: 6 / 6 
+#&gt;   Cliques: 0 
+#&gt;   &lt;efs&gt; 
+#&gt;  -------------------------</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
