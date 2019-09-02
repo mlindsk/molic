@@ -154,8 +154,8 @@
     <p>A bws object (a list) with values:</p><dl class='dl-horizontal'>
 <dt><code>G_adj</code></dt><dd><p>The fitted graph as an adjacency list.</p></dd>
 <dt><code>G_A</code></dt><dd><p>The fitted graph as an adjacency matrix.</p></dd>
-<dt><code>e</code></dt><dd><p>The edge that was just deleted and the entropy attached to it.</p></dd>
-<dt><code>S</code></dt><dd><p>The minimal separator that now separates the nodes in <code>e</code>.</p></dd>
+<dt><code>e</code></dt><dd><p>The edge that was just deleted and the stopping criteria attached to it.</p></dd>
+<dt><code>S</code></dt><dd><p>The minimal separator that now separated the nodes in <code>e</code> before deletion</p></dd>
 <dt><code>C</code></dt><dd><p>A list with the (maximal) cliques of the graph.</p></dd>
 <dt><code>ht</code></dt><dd><p>An updated version of the input argument <code>ht</code>.</p></dd>
 </dl>
@@ -172,12 +172,130 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]
-<span class='fu'>bws</span>(<span class='no'>d</span>, <span class='fu'><a href='make_complete_graph.html'>make_complete_graph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>)))</div><div class='output co'>#&gt;  Edges: 5 of 6 - xic = -19.17848 </div><div class='output co'>#&gt;  A Decomposable Graph With 
+<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='make_complete_graph.html'>make_complete_graph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>))
+<span class='fu'>bws</span>(<span class='no'>d</span>, <span class='no'>G</span>)</div><div class='output co'>#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[c(S, v[1])], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[c(S, v[2])], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[c(S, v)], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[c(S, v[2])], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[c(S, v[2])], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt;  Edges: 5 of 6 - pic = -19.17848 
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)
+#&gt; Called from: entropy(df[S], thres)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)</div><div class='output co'>#&gt;  A Decomposable Graph With 
 #&gt;  ------------------------- 
 #&gt;   Nodes: 4 
 #&gt;   Edges: 4 / 6 
 #&gt;   Cliques: 2 
-#&gt;   &lt;efs&gt; 
+#&gt;   &lt;bws&gt; 
 #&gt;  -------------------------</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

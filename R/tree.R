@@ -13,7 +13,7 @@ tree_weights <- function(df) {
   for (p in seq_along(pairs) ) {
     x  <- pairs[[p]]
     edge_x <- sort_(x)
-    ee <-  edge_entropy(edge_x, character(0), df, ht)
+    ee <-  entropy_difference(edge_x, character(0), df, ht)
     weights[p] <- ee$ent # ht[[edge_x]]
     names(weights)[p] <- edge_x
     ht <- ee$ht
@@ -72,7 +72,7 @@ print.tree <- function(x, ...) {
   )
 }
 
-as_efs <- function(df, t) {
+tree_as_efs <- function(df, t) {
   x    <- rip(t$G_adj)
   CG   <- x$C
   nC   <- length(CG)
@@ -95,7 +95,7 @@ as_efs <- function(df, t) {
         Ci_minus_Sij <- setdiff(Ci, Sij)
         Cj_minus_Sij <- setdiff(Cj, Sij)
         edge         <- sort_( c(Ci_minus_Sij, Cj_minus_Sij))
-        ee           <- edge_entropy(edge, Sij, df, t$ht)
+        ee           <- entropy_difference(edge, Sij, df, t$ht)
         ent_ij       <- ee$ent
         t$ht         <- ee$ht
         if( ent_ij >= max_dst ) {
@@ -118,7 +118,7 @@ as_efs <- function(df, t) {
     MSI      = msi,
     ht       = t$ht
   )
-  class(out) <- c("efs")
+  class(out) <- c("efs", "list")
   return(out)  
 }
 
@@ -136,6 +136,6 @@ as_efs <- function(df, t) {
 #' plot(G)
 #' @export
 cl_tree <- function(df, wrap = TRUE) {
-  if( wrap ) return( as_efs(df, kruskal(df)) )
+  if( wrap ) return( tree_as_efs(df, kruskal(df)) )
   else return( kruskal(df) )
 }

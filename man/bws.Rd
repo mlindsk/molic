@@ -25,8 +25,8 @@ A bws object (a list) with values:
 \describe{
 \item{\code{G_adj}}{The fitted graph as an adjacency list.}
 \item{\code{G_A}}{The fitted graph as an adjacency matrix.}
-\item{\code{e}}{The edge that was just deleted and the entropy attached to it.}
-\item{\code{S}}{The minimal separator that now separates the nodes in \code{e}.}
+\item{\code{e}}{The edge that was just deleted and the stopping criteria attached to it.}
+\item{\code{S}}{The minimal separator that now separated the nodes in \code{e} before deletion}
 \item{\code{C}}{A list with the (maximal) cliques of the graph.}
 \item{\code{ht}}{An updated version of the input argument \code{ht}.}
 }
@@ -39,7 +39,8 @@ See \code{\link{efs}} for details about \code{thres}.
 }
 \examples{
 d <- tgp_dat[, 5:8]
-bws(d, make_complete_graph(colnames(d)))
+G <- make_complete_graph(colnames(d))
+bws(d, G)
 }
 \seealso{
 \code{\link{bws_step}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}}

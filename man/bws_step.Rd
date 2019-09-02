@@ -9,7 +9,9 @@ bws_step(df, x, p = 0.5, thres = 5)
 \arguments{
 \item{df}{data.frame}
 
-\item{x}{A bws object. Can be initialized with \code{bws_init}}
+\item{x}{A bws object. Can be created explicitly with \code{bws_class}}
+
+\item{p}{Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)}
 
 \item{thres}{A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.}
 }
@@ -25,9 +27,6 @@ See \code{\link{efs}} for details about \code{thres}.
 \examples{
 d <- tgp_dat[, 5:8]
 bws_step(d, bws_init(make_complete_graph(colnames(d))))
-}
-\references{
-\url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
 \code{\link{bws}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}}

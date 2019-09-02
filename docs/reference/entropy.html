@@ -139,7 +139,15 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Joint entropy over five variables in tgp_dat</span>
-<span class='fu'>entropy</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>9</span>])</div><div class='output co'>#&gt; [1] 2.343273</div><div class='input'>
+<span class='fu'>entropy</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>9</span>])</div><div class='output co'>#&gt; Called from: entropy(tgp_dat[, 5:9])
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: if (ncol(df) &lt;= thres) return(joint_entropy(df)) else return(joint_entropy2(df))
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#39: return(joint_entropy(df))
+#&gt; Called from: joint_entropy(df)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#11: Nx &lt;- sum(x)
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#12: entropy_table &lt;- apply(x, seq_along(dim(x)), function(y) {
+#&gt;     ifelse(y == 0, 0, y/Nx * log(y/Nx))
+#&gt; })
+#&gt; debug at /home/mads/Documents/phd/publications/molic/R/entropy.R#15: -sum(entropy_table)</div><div class='output co'>#&gt; [1] 2.343273</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -117,7 +117,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>bws_step</span>(<span class='no'>df</span>, <span class='no'>x</span>, <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
+    <pre class="usage"><span class='fu'>bws_step</span>(<span class='no'>df</span>, <span class='no'>x</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,7 +128,11 @@
     </tr>
     <tr>
       <th>x</th>
-      <td><p>A bws object. Can be initialized with <code>bws_init</code></p></td>
+      <td><p>A bws object. Can be created explicitly with <code>bws_class</code></p></td>
+    </tr>
+    <tr>
+      <th>p</th>
+      <td><p>Penalty term in the stopping criterion  (<code>0</code> = AIC and <code>1</code> = BIC)</p></td>
     </tr>
     <tr>
       <th>thres</th>
@@ -144,10 +148,6 @@
 
     <p>See <code><a href='efs.html'>efs</a></code> for details about <code>thres</code>.</p>
     
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://arxiv.org/abs/1301.2267'>https://arxiv.org/abs/1301.2267</a>, <a href='https://doi.org/10.1109/ictai.2004.100'>https://doi.org/10.1109/ictai.2004.100</a></p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='bws.html'>bws</a></code>, <code><a href='make_complete_graph.html'>make_complete_graph</a></code>, <code><a href='efs.html'>efs</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='cl_tree.html'>cl_tree</a></code></p></div>
@@ -155,13 +155,7 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]
-<span class='fu'>bws_step</span>(<span class='no'>d</span>, <span class='fu'><a href='bws_init.html'>bws_init</a></span>(<span class='fu'><a href='make_complete_graph.html'>make_complete_graph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>))))</div><div class='output co'>#&gt;  A Decomposable Graph With 
-#&gt;  ------------------------- 
-#&gt;   Nodes: 4 
-#&gt;   Edges: 5 / 6 
-#&gt;   Cliques: 1 
-#&gt;   &lt;efs&gt; 
-#&gt;  -------------------------</div></pre>
+<span class='fu'>bws_step</span>(<span class='no'>d</span>, <span class='fu'>bws_init</span>(<span class='fu'><a href='make_complete_graph.html'>make_complete_graph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>))))</div><div class='output co'>#&gt; <span class='error'>Error in bws_init(make_complete_graph(colnames(d))): could not find function "bws_init"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -171,8 +165,6 @@
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
       

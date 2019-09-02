@@ -10,60 +10,45 @@
 #' \describe{
 #' \item{\code{G_adj}}{The fitted graph as an adjacency list.}
 #' \item{\code{G_A}}{The fitted graph as an adjacency matrix.}
-#' \item{\code{e}}{The edge that was just deleted and the entropy attached to it.}
-#' \item{\code{S}}{The minimal separator that now separates the nodes in \code{e}.}
+#' \item{\code{e}}{The edge that was just deleted and the stopping criteria attached to it.}
+#' \item{\code{S}}{The minimal separator that now separated the nodes in \code{e} before deletion}
 #' \item{\code{C}}{A list with the (maximal) cliques of the graph.}
 #' \item{\code{ht}}{An updated version of the input argument \code{ht}.}
 #' }
 #' @details See \code{\link{efs}} for details about \code{thres}.
 #' @examples
 #' d <- tgp_dat[, 5:8]
-#' bws(d, make_complete_graph(colnames(d)))
+#' G <- make_complete_graph(colnames(d))
+#' bws(d, G)
 #' @seealso \code{\link{bws_step}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}} 
 #' @export
 bws <- function(df, adj, p = 0.5, ht = new.env(hash = TRUE), trace = TRUE, thres = 5) {
-  x  <- bws_init(adj, ht)
-  ## lv <- sapply(df, function(x) length(unique(x)))
+  stopifnot( is_decomposable(adj) )
+  x  <- bws_class(df, adj, ht)
   n  <- ncol(df)
-  M    <- nrow(df)
   if ( n < 2 ) stop("df must have at least two variables")
   if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
   complete <- n * (n-1L) / 2L
   null     <- 0L
   k    <- sum(x$G_A)/2
   if (k == null) return(x)
-  x  <- bws_step(df, x, thres)
+  x  <- bws_step(df, x, p = p, thres)
   k <- k - 1L
   if (k == null) return(x)
-  stop_val  <- attr(x$e, "ent") # delta_xic(x, lv, M, p)
+  stop_val  <- attr(x$e, "d_aic")
   if (stop_val >= 0 ) return(x)
   while (stop_val < 0) {
-    if (trace) msg(k, complete, stop_val, "xic")
-    x <- bws_step(df, x, thres)
+    if (trace) msg(k, complete, stop_val, "pic")
+    x <- bws_step(df, x, p, thres)
     k <- k - 1L
     if( k == null ) {
-      if (trace) msg(k, complete, stop_val, "xic")
+      if (trace) msg(k, complete, stop_val, "pic")
       return(x)
     }
-    stop_val <- attr(x$e, "ent") # delta_xic(x, lv, M, p)
+    stop_val <- attr(x$e, "d_aic")
   } 
   return(x)
 }
-
-## df <- tgp_dat %>%
-##   as_tibble() %>%
-##   filter(pop_meta == "EUR") %>%
-##   select(3:100) %>%
-##   mutate_all(as.factor)
-
-## E <- efs(df, p = 1)
-## E2 <- E
-## for (i in 1:100 ) E2 <- efs_step(df, E2)
-## B <- bws(df, E2$G_adj, p = 0)
-
-## par(mfrow = c(1,2))
-## plot(E, vertex.size = 1)
-## plot(B, vertex.size = 1)
 
 #' Print bws
 #'
@@ -80,7 +65,7 @@ print.bws <- function(x, ...) {
     "\n  Nodes:", nv,
     "\n  Edges:", ne, "/", nv*(nv-1)/2,
     "\n  Cliques:", length(x$C),
-    "\n  <efs>",
+    "\n  <bws>",
     "\n -------------------------\n"
   )
 }
@@ -92,18 +77,7 @@ print.bws <- function(x, ...) {
 #' @param ... Extra arguments. See the igraph package
 #' @import igraph
 #' @export
-plot.bws <- function(x, ...) {
-  G      <- igraph::graph_from_adjacency_matrix(x$G_A, "undirected")
-  args   <- list(...)
-  args$x <- G
-  if( is.null(args$vertex.frame.color) ) args$vertex.frame.color = "black"
-  if( is.null(args$vertex.label.color) ) args$vertex.label.color = "black"
-  if( is.null(args$vertex.color)       ) args$vertex.color       = "lightsteelblue2"
-  if( is.null(args$vertex.size)        ) args$vertex.size        = 20
-  if( is.null(args$vertex.label.cex)   ) args$vertex.label.cex   = 1
-  # if( is.null(args$vertex.label.dist)  ) args$vertex.label.dist  = 2
-  do.call("plot.igraph", args)
-}
+plot.bws <- function(x, ...) plot.efs(x, ...)
 
 #' @rdname adj_list
 #' @export
@@ -112,3 +86,24 @@ adj_list.bws <- function(x) x$G_adj
 #' @rdname adj_matrix
 #' @export
 adj_matrix.bws <- function(x) x$G_A
+
+
+## Debugging
+## ---------
+## df <- tgp_dat %>%
+##   as_tibble() %>%
+##   filter(pop_meta == "EUR") %>%
+##   select(unlist(tgp_haps[1:2]))
+
+## df[1, 1] <- NA
+
+## E <- efs(df)
+## B <- bws(df, make_complete_graph(colnames(df)))
+
+## E2 <- E
+## for (i in 1:20 ) E2 <- efs_step(df, E2)
+## B <- bws(df, E2$G_adj, p = 1)
+
+## par(mfrow = c(1,2))
+## plot(E, vertex.size = 1)
+## plot(B, vertex.size = 1)

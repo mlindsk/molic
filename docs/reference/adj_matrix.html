@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Adjacency Matrix — adj_matrix • molic</title>
+<title>Adjacency Matrix — adj_matrix.bws • molic</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Adjacency Matrix — adj_matrix" />
+<meta property="og:title" content="Adjacency Matrix — adj_matrix.bws" />
 
-<meta property="og:description" content="Extracts the adjacency matrix of a efs object" />
+<meta property="og:description" content="Extracts the adjacency matrix of a efs or bws object" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,11 +113,14 @@
 
     <div class="ref-description">
     
-    <p>Extracts the adjacency matrix of a <code>efs</code> object</p>
+    <p>Extracts the adjacency matrix of a <code>efs</code> or <code>bws</code> object</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>adj_matrix</span>(<span class='no'>x</span>)
+    <pre class="usage"><span class='co'># S3 method for bws</span>
+<span class='fu'>adj_matrix</span>(<span class='no'>x</span>)
+
+<span class='fu'>adj_matrix</span>(<span class='no'>x</span>)
 
 <span class='co'># S3 method for efs</span>
 <span class='fu'>adj_matrix</span>(<span class='no'>x</span>)</pre>
@@ -127,17 +130,13 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>efs object</p></td>
+      <td><p><code>efs</code> or <code>bws</code> object</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An adjacency matrix</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='adj_list.html'>adj_list.efs</a></code></p></div>
     
 
   </div>
@@ -147,8 +146,6 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

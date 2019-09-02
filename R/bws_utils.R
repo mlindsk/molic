@@ -13,42 +13,47 @@ remove_edge_mat <- function(A, e) {
   A
 }
 
-#' Initialize a bws object
-#' @description Initialize a bws object
+
+#' Construct a bws object
+#' @description A constructor for bws class
 #' @param adj An adjacency list
 #' @param ht An environment (hashtable) containing precomputed entropies
 #' @return A bws object. See \code{bws} for more details about the returning object.
 #' @examples
 #' d <- tgp_dat[, 5:8]
-#' bws_init(make_complete_graph(colnames(d)))
+#' bws_class(d, make_complete_graph(colnames(d)))
 #' @seealso \code{\link{bws_step}}, \code{\link{bws}}, \code{\link{make_complete_graph}}
 #' @export
-bws_init <- function(adj, ht = new.env(hash = TRUE)) {
+bws_class <- function(df, adj, ht = new.env(hash = TRUE)) {
   stopifnot(is.environment(ht))
   stopifnot( is.list(adj) || names(adj) != length(adj))
   structure(list(
     G_adj = adj,
     G_A   = as_adj_mat(adj),
-    e     = NULL,
-    S     = character(0),
-    C     = list(), # Clique list,
-    lv    = sapply(df, function(l) length(unique(l))),
+    e     = NULL,            # Best edge to delete
+    S     = character(0),    # Minimal separator for vertices in e
+    C     = list(),          # Clique list,
+    lv    = vapply(df, function(x) length(unique(x)), 1L),
     ht    = ht),
-    class = "bws"
+    class = c("bws", "list")
   )
 }
+
+## Make a bws constructor and call it in bws step at the end
+## init <- function() UseMethod("init")
+## bws_class.init <- function() ...  - call this in bws
 
 #' Stepwise backward selection in decomposable graphical models
 #' @description Stepwise backward selection in decomposable graphical models
 #' @param df data.frame
-#' @param x A bws object. Can be initialized with \code{bws_init}
+#' @param x A bws object. Can be created explicitly with \code{bws_class}
+#' @param p Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A bws object. See \code{bws} for details about the returning object.
 #' @details See \code{\link{efs}} for details about \code{thres}.
 #' @examples
 #' d <- tgp_dat[, 5:8]
 #' bws_step(d, bws_init(make_complete_graph(colnames(d))))
-#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 #' @seealso \code{\link{bws}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}}
 #' @export
 bws_step <- function(df, x, p = 0.5, thres = 5) {
@@ -58,6 +63,7 @@ bws_step <- function(df, x, p = 0.5, thres = 5) {
   cliques <- rip(adj)$C # Make a rip function that does not test for decomposability
   A       <- x$G_A
   nodes   <- names(adj)
+  M       <- nrow(df)
   e_min   <- Inf
   e_del   <- vector("character", 2L)
   S_e     <- character(0)
@@ -79,18 +85,16 @@ bws_step <- function(df, x, p = 0.5, thres = 5) {
           Cb  <- setdiff(C, va)
           S   <- intersect(Ca, Cb)
           es  <- sort_(pair)
-          ee  <- edge_entropy(es, S, df, ht, thres)
-          M           <- nrow(df)
+          ed  <- entropy_difference(es, S, df, ht, thres)
+          ht  <- ed$ht
           penalty     <- log(M)*p + (1 - p)*2
           vs          <- pair
-          HM_HM_prime <- ee$ent
+          HM_HM_prime <- ed$ent
           dev         <- 2*M*HM_HM_prime
           d_parms     <- -prod(x$lv[pair] - 1) * prod(x$lv[S])
-          ## d_aic       <- dev + penalty * d_parms
-          ent <- dev + penalty * d_parms # ee$ent
-          ht  <- ee$ht
-          if ( ent <= e_min ) {
-            e_min <- ent
+          d_aic       <- dev + penalty * d_parms
+          if ( d_aic <= e_min ) {
+            e_min <- d_aic
             e_del <- c(va, vb)
             S_e   <- S
           }
@@ -98,9 +102,11 @@ bws_step <- function(df, x, p = 0.5, thres = 5) {
       }
     }  
   }
-  adj     <- remove_edge_list(adj, e_del)
-  A       <- remove_edge_mat(A, e_del)
-  attr(e_del, "ent") <- e_min
+  adj <- remove_edge_list(adj, e_del)
+  A   <- remove_edge_mat(A, e_del)
+  attr(e_del, "d_aic") <- e_min
+  ## Instantiate a new bws object here
+  ## bws_class(adj, A, e_del, S_e, ...)
   structure(list(
     G_adj = adj,
     G_A   = A,
@@ -109,11 +115,12 @@ bws_step <- function(df, x, p = 0.5, thres = 5) {
     C     = cliques,
     lv    = x$lv,
     ht    = ht),
-    class = "bws"
+    class = c("bws", "list")
   )
 }
 
-## delta_xic.bws <- function(x, lv, M, p = 0.5) {
+
+## delta_pic <- function(x, lv, M, p = 0.5) {
 ##   # x : bws object
 ##   penalty     <- log(M)*p + (1 - p)*2
 ##   S           <- x$S
