@@ -39,9 +39,9 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
   stop_val    <- delta_xic(x, lv, M, p)
   if (stop_val >= 0 ) return(x)
   while (stop_val < 0) {
-    if (trace) msg(k, complete, stop_val, "xic")
     x <- efs_step(df, x, thres)
     k <- k + 1L
+    if (trace) msg(k, complete, stop_val, "xic")
     if (k == complete) {
       if( trace) msg(k, complete, stop_val, "xic")
       return(x)
