@@ -11,7 +11,6 @@
 #' \item{\code{G_adj}}{The fitted graph as an adjacency list.}
 #' \item{\code{G_A}}{The fitted graph as an adjacency matrix.}
 #' \item{\code{e}}{The edge that was just deleted and the stopping criteria attached to it.}
-#' \item{\code{S}}{The minimal separator that now separated the nodes in \code{e} before deletion}
 #' \item{\code{C}}{A list with the (maximal) cliques of the graph.}
 #' \item{\code{ht}}{An updated version of the input argument \code{ht}.}
 #' }
@@ -23,8 +22,7 @@
 #' @seealso \code{\link{bws_step}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}} 
 #' @export
 bws <- function(df, adj, p = 0.5, ht = new.env(hash = TRUE), trace = TRUE, thres = 5) {
-  stopifnot( is_decomposable(adj) )
-  x  <- bws_class(df, adj, ht)
+  x  <- bws_init(df, adj, ht)
   n  <- ncol(df)
   if ( n < 2 ) stop("df must have at least two variables")
   if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
@@ -86,24 +84,3 @@ adj_list.bws <- function(x) x$G_adj
 #' @rdname adj_matrix
 #' @export
 adj_matrix.bws <- function(x) x$G_A
-
-
-## Debugging
-## ---------
-## df <- tgp_dat %>%
-##   as_tibble() %>%
-##   filter(pop_meta == "EUR") %>%
-##   select(unlist(tgp_haps[1:2]))
-
-## df[1, 1] <- NA
-
-## E <- efs(df)
-## B <- bws(df, make_complete_graph(colnames(df)))
-
-## E2 <- E
-## for (i in 1:20 ) E2 <- efs_step(df, E2)
-## B <- bws(df, E2$G_adj, p = 1)
-
-## par(mfrow = c(1,2))
-## plot(E, vertex.size = 1)
-## plot(B, vertex.size = 1)

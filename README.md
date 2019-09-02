@@ -7,7 +7,7 @@ molic: Multivariate OutLIerdetection In Contingency Tables
 About molic
 -----------
 
-An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-timer performance.
+An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
 
 Getting Started
 ---------------
@@ -54,7 +54,6 @@ car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car
   header = FALSE, sep = ",", dec = ".") %>%
   as_tibble() %>%
   mutate_all(as.character)
-
 colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "class")
 ```
 
@@ -74,10 +73,10 @@ unacc_cars <- car %>%
 
 ### Fitting an Interaction Graph
 
-Fit the interaction graph for the `vgood` cars and plot the result.
+The `efs` algorithm is a **forward** model selection algorithm. This means, that the algorithm starts from the **null-graph** with no edges and keep adding edges until a stopping criterion is met. We fit the interaction graph for the `vgood` cars and plot the result.
 
 ``` r
-G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE)
+G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # AIC (p = 0) and BIC (p = 1)
 plot(G_vgood)
 ```
 
@@ -126,11 +125,11 @@ Example - Variable Selection
 The `efs` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
 
 ``` r
-G_car <- efs(car, trace = FALSE)
+G_car <- efs(car, p = 0, trace = FALSE)
 plot(G_car)
 ```
 
-<img src="man/figures/README-var-select-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-var-select1-1.png" width="100%" style="display: block; margin: auto;" />
 
 So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
@@ -139,4 +138,10 @@ adj_list(G_car)$class
 #> [1] "safety"  "persons" "buying"  "maint"   "lug"
 ```
 
-We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as *conditional independence*.
+<!-- We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as _conditional independence_.  -->
+<!-- We could also use the **backward** selection algorithm and start from the **complete graph** where all edges are included and remove edges until a stopping criterion is met. -->
+<!-- ```{r var-select2, fig.align = "center"} -->
+<!-- G_complete <- make_complete_graph(colnames(car)) -->
+<!-- G_car2 <- bws(car, G_complete, p = 0, trace = FALSE) -->
+<!-- plot(G_car2) -->
+<!-- ``` -->

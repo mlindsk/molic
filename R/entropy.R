@@ -7,7 +7,6 @@ na_tab <- function(df, a) {
 joint_entropy <- function(df) {
   ## if( class(df) == "character" ) stop( "From entropy function: df is not a data.frame!" )
   x  <- na_tab(df, colnames(df))
-  browser()
   Nx <- sum(x)
   entropy_table <- apply(x, seq_along(dim(x)), function(y) {
     ifelse(y == 0 , 0, y/Nx * log(y/Nx) )
@@ -35,7 +34,6 @@ joint_entropy2 <- function(df) {
 #' 
 #' @export
 entropy <- function(df, thres = 5) {
-  browser()
   if( ncol(df) <= thres ) return(joint_entropy(df))
   else return(joint_entropy2(df))
 }

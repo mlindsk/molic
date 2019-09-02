@@ -18,17 +18,17 @@ tree_weights <- function(df) {
     names(weights)[p] <- edge_x
     ht <- ee$ht
   }
-  out <- list(G_A = G_A,
-    G_adj         = G_adj,
-    weights       = sort(weights, decreasing = TRUE),
-    ht            = ht
+  out <- list(G_adj = G_adj,
+    G_A             = G_A,
+    weights         = sort(weights, decreasing = TRUE),
+    ht              = ht
   )
   return(out)
 }
 
 kruskal <- function(df) {
   x          <- tree_weights(df)
-  class(x)   <- c(class(x), "tree")
+  class(x)   <- c("tree", class(x))
   n          <- ncol(df)
   nodes      <- colnames(df)
   x$G_adj    <- structure(replicate(n, character(0)), names = nodes)
@@ -118,7 +118,7 @@ tree_as_efs <- function(df, t) {
     MSI      = msi,
     ht       = t$ht
   )
-  class(out) <- c("efs", "list")
+  class(out) <- c("efs", class(out))
   return(out)  
 }
 

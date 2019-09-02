@@ -9,7 +9,7 @@ bws_step(df, x, p = 0.5, thres = 5)
 \arguments{
 \item{df}{data.frame}
 
-\item{x}{A bws object. Can be created explicitly with \code{bws_class}}
+\item{x}{A bws object. Can be created explicitly with \code{bws_init}}
 
 \item{p}{Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)}
 
@@ -25,8 +25,10 @@ Stepwise backward selection in decomposable graphical models
 See \code{\link{efs}} for details about \code{thres}.
 }
 \examples{
-d <- tgp_dat[, 5:8]
-bws_step(d, bws_init(make_complete_graph(colnames(d))))
+d  <- tgp_dat[, 5:8]
+cg <- make_complete_graph(colnames(d))
+bi <- bws_init(d, cg)
+bws_step(d, bi)
 }
 \seealso{
 \code{\link{bws}}, \code{\link{make_complete_graph}}, \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{cl_tree}}

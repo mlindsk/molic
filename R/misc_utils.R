@@ -83,7 +83,7 @@ as_adj_lst <- function(A) {
   out
 }
 
-#' Converts and adjacency list to an adjacency matrix
+#' Converts an adjacency list to an adjacency matrix
 #'
 #' @param adj Adjacency list
 #' @export
@@ -125,7 +125,12 @@ is_decomposable <- function(adj) {
 #'
 #' @param nodes A character vector containing the nodes to be used in the graph
 #' @examples
-#' G <- make_complete_graph(c("a", "b", "c"))
+#' d  <- tgp_dat[, 5:8]
+#' cg <- make_complete_graph(colnames(d))
+#' bi <- bws_init(d, cg)
+#' bws_step(d, bi)
+#'@seealso \code{\link{bws}} 
+#' 
 #' @export
 make_complete_graph <- function(nodes) {
   structure(lapply(seq_along(nodes), function(k) {

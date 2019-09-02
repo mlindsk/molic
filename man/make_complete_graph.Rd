@@ -13,5 +13,11 @@ make_complete_graph(nodes)
 A helper function to make an adjacency list corresponding to a complete graph
 }
 \examples{
-G <- make_complete_graph(c("a", "b", "c"))
+d  <- tgp_dat[, 5:8]
+cg <- make_complete_graph(colnames(d))
+bi <- bws_init(d, cg)
+bws_step(d, bi)
+}
+\seealso{
+\code{\link{bws}}
 }

@@ -26,7 +26,6 @@ A bws object (a list) with values:
 \item{\code{G_adj}}{The fitted graph as an adjacency list.}
 \item{\code{G_A}}{The fitted graph as an adjacency matrix.}
 \item{\code{e}}{The edge that was just deleted and the stopping criteria attached to it.}
-\item{\code{S}}{The minimal separator that now separated the nodes in \code{e} before deletion}
 \item{\code{C}}{A list with the (maximal) cliques of the graph.}
 \item{\code{ht}}{An updated version of the input argument \code{ht}.}
 }
