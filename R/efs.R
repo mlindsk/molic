@@ -21,6 +21,7 @@
 #' @seealso \code{\link{efs_init}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}}, \code{\link{cl_tree}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 #' @export
 efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
+  ## 
   if (!("efs" %in% class(x)) ) stop("x is not a efs class")
   lv       <- sapply(df, function(x) length(unique(x)))
   n        <- ncol(df)

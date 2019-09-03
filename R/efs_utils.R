@@ -26,6 +26,7 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
   })
 }
 
+
 ## -----------------------------------------------------------------------------
 ##                             INITIALIZATION
 ## -----------------------------------------------------------------------------
@@ -58,6 +59,7 @@ efs_init <- function(df) { ## Should be a character matrix in the future
     x  <- pairs[[p]]
     edge_x <- sort_(x)
     ht[[edge_x]] <<- entropy(df[x])
+    ## Add the penalty here
     dst_x  <- ht[[x[1]]] + ht[[x[2]]] - ht[[edge_x]]
     if( dst_x >= max_dst ) {
       max_dst   <<- dst_x
@@ -75,109 +77,9 @@ efs_init <- function(df) { ## Should be a character matrix in the future
     MSI      = msi,
     ht       = ht
   )
-  class(out) <- c("efs")
+  class(out) <- c("efs", class(out))
   return(out)
 }
-
-## -----------------------------------------------------------------------------
-##                         STOPPING CRITERIAS
-## -----------------------------------------------------------------------------
-
-## mdl1 <- function(adj, lv, df, d, thres)  {
-##   # adj: Adjacency list
-##   # lv: not used here. Included for compatability with efs_mdl
-##   RIP      <- rip(adj)
-##   cliqs    <- RIP$C
-##   seps     <- RIP$S
-##   Nobs     <- nrow(df)
-##   Nvars    <- ncol(df)
-##   logNvars <- log(Nvars)
-##   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-##   DL_prob  <- d * sum(sapply(seq_along(cliqs), function(i) {
-##     if( i == 1L ) return( length(cliqs[[i]]) - 1 )
-##     Ci <- cliqs[[i]]
-##     Si <- seps[[i]]
-##     Ci_Si <- setdiff(Ci, Si)
-##     length(Si) * (length(Ci_Si) - 1)
-##   }))
-##   HM_C <- sum(sapply(cliqs, function(z) {
-##     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-##     dst(df[z])
-##   }))
-##   HM_S <- 0L
-##   if( length(seps[-1]) ) {
-##     HM_S <- sum(sapply(seps[-1], function(z) {
-##       if( !neq_empt_chr(z)) return(0L)
-##       dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-##       dst(df[z])
-##     }))    
-##   }
-##   DL_data <- Nobs * (HM_C - HM_S)
-##   return( log(DL_graph + DL_prob + DL_data) )
-## }
-
-## mdl <- function(adj, lv, df, d, thres) {
-##   # adj: Adjacency list
-##   # lv:  Vector of length ncol(df) with number of levels for each var
-##   RIP    <- rip(adj)
-##   cliqs  <- RIP$C
-##   seps   <- RIP$S
-##   Nobs   <- nrow(df)
-##   Nvars  <- ncol(df)
-##   logNvars <- log(Nvars)
-##   DL_graph <- sum(sapply(cliqs, function(z) logNvars + length(z) * logNvars )) 
-##   DL_prob <- d * sum(sapply(seq_along(cliqs), function(i) {
-##     if( i == 1L ) return( prod(lv[cliqs[[i]]]) - 1 )
-##     Ci <- cliqs[[i]]
-##     Si <- seps[[i]]
-##     Ci_Si <- setdiff(Ci, Si)
-##     prod(lv[Si]) * ( prod(lv[Ci_Si]) - 1)
-##   }))
-##   HM_C <- sum(sapply(cliqs, function(z) {
-##     dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-##     dst(df[z])
-##   }))
-##   HM_S <- 0L
-##   if( length(seps[-1]) ) {
-##     HM_S <- sum(sapply(seps[-1], function(z) {
-##       if( !neq_empt_chr(z)) return(0L)
-##       dst  <- if( length(z) <= thres ) metric("entropy") else metric("entropy2")
-##       dst(df[z])
-##     }))    
-##   }
-##   DL_data <- Nobs * (HM_C - HM_S)
-##   return( log(DL_graph + DL_prob + DL_data) )
-## }
-
-## delta_aic <- function(x, lv, M) {
-##   # x : efs object
-##   n           <- length(lv) # ncol(df)
-##   complete    <- n * (n-1L) / 2L
-##   local_info  <- x$MSI$S[[x$MSI$max$idx]]
-##   e           <- local_info$e[x$MSI$max$e]
-##   S           <- local_info$S
-##   vs          <- es_to_vs(names(e))[[1]]
-##   HM_HM_prime <- unname(e)
-##   dev         <- -2*M*HM_HM_prime
-##   d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
-##   d_aic       <- dev + 2 * d_parms
-##   return(d_aic)
-## }
-
-## delta_bic <- function(x, lv, M) {
-##   # x : efs object
-##   n           <- length(lv) # ncol(df)
-##   complete    <- n * (n-1L) / 2L
-##   local_info  <- x$MSI$S[[x$MSI$max$idx]]
-##   e           <- local_info$e[x$MSI$max$e]
-##   S           <- local_info$S
-##   vs          <- es_to_vs(names(e))[[1]]
-##   HM_HM_prime <- unname(e)
-##   dev         <- -2*M*HM_HM_prime
-##   d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
-##   d_aic       <- dev + log(M) * d_parms
-##   return(d_aic)
-## }
 
 delta_xic <- function(x, lv, M, p = 0.5) {
   UseMethod("delta_xic")
@@ -204,9 +106,6 @@ delta_xic.efs <- function(x, lv, M, p = 0.5) {
 ## -----------------------------------------------------------------------------
 make_G_dbl_prime <- function(Sab, G_A) {
   keepers <- setdiff(dimnames(G_A)[[1]], Sab)
-  ## Old approach using igraph:
-  ## --------------------------
-  ## igraph::graph_from_adjacency_matrix(G_A[keepers, keepers], mode = "undirected")
   G_A[keepers, keepers]
 }
 

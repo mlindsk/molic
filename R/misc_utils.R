@@ -137,3 +137,23 @@ make_complete_graph <- function(nodes) {
     nodes[-which(nodes == nodes[k])]
   }), names = nodes)
 }
+
+#' Make a null graph
+#'
+#' A helper function to make an adjacency list corresponding to a null graph (no edges)
+#'
+#' @param nodes A character vector containing the nodes to be used in the graph
+#'@seealso \code{\link{bws}} 
+#' 
+#' @export
+make_null_graph <- function(nodes) {
+  structure(lapply(seq_along(nodes), function(x) {
+    character(0)
+  }), names = nodes)
+}
+
+
+is_graph_null     <- function(x) UseMethod("is_graph_null")
+is_graph_complete <- function(x) UseMethod("is_graph_complete")
+is_graph_null.gengraph <- function(x) length(x$CG) == length(x$G_adj)
+is_graph_complete.gengraph <- function(x) length(x$CG) == 1L
