@@ -1,30 +1,35 @@
-msg <- function(k, complete, val, stop_crit) {
-  cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
-}
-
 #' Efficient forward selection in decomposable graphical models
 #' @description Efficient forward selection in decomposable graphical models
 #' @param df data.frame
 #' @param x A efs object
 #' @param trace Logical indicating whether or not to trace the procedure
-#' @param p Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)
-#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
-#' @return A efs object
+#' @param p Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
+#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy.
+#' @return A efs object (a list) with values:
+#' \describe{
+#' \item{\code{G_adj}}{The fitted graph. Can be extracted with \code{as_adj_lst}}
+#' \item{\code{G_A}}{The edge that was just deleted and the entropy attached to it. Can be extracted using \code{as_adj_mat}}
+#' \item{\code{CG}}{The cliques of the graph.}
+#' \item{\code{CG_A}}{A neighbor matrix of the clique graph.}
+#' \item{\code{MSI}}{Minimal separator info list}
+#' \item{\code{ht}}{An updated version of the input argument \code{ht}.}
+#' }
+#' @details The algorithm relies on calculating lots of entropies (see \url{https://arxiv.org/abs/1301.2267}). If \code{thres} is equal to a number, say \code{a}, the entropy will be calculated using the \code{table} function for all situations where the number of variables is less than or equal to \code{a}. Otherwise, the entropies will be calculated by pasting rows in the subset of \code{df} over the relevant variables. For small values of \code{a} the former method is generally faster whereas for large values of \code{a} it breaks down and it is necessary to use the latter method.
 #' @examples
 #' efs(tgp_dat[, 5:8])
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
-#' @seealso \code{\link{cl_tree}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+#' @seealso \code{\link{efs_init}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}}, \code{\link{cl_tree}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 #' @export
 efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
   if (!("efs" %in% class(x)) ) stop("x is not a efs class")
   lv       <- sapply(df, function(x) length(unique(x)))
   n        <- ncol(df)
-  ## FIX THIS SO IT CAN HANDLE SINGLETONS!
-  if ( n < 2 ) stop("df must have at least two variables")
-  if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
   M        <- nrow(df)
   complete <- n * (n-1L) / 2L
   k        <- sum(x$G_A)/2
+  ## FIX THIS SO IT CAN HANDLE SINGLETONS!
+  if ( n < 2 ) stop("df must have at least two variables")
+  if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
 
   if (k == complete) return(x)
   x     <- efs_step(df, x, thres)
@@ -33,19 +38,16 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
 
   stop_val    <- delta_xic(x, lv, M, p)
   if (stop_val >= 0 ) return(x)
-
   while (stop_val < 0) {
-    if (trace) msg(k, complete, stop_val, "xic")
     x <- efs_step(df, x, thres)
     k <- k + 1L
+    if (trace) msg(k, complete, stop_val, "xic")
     if (k == complete) {
       if( trace) msg(k, complete, stop_val, "xic")
       return(x)
     }
     stop_val <- delta_xic(x, lv, M, p)
-  }
-  
-  if( trace ) msg(k, complete, stop_val, "xic")
+  }  
   return(x)
 }
 
@@ -90,10 +92,9 @@ plot.efs <- function(x, ...) {
 }
 
 #' Adjacency List
-#' @description Extracts the adjacency list of a \code{efs} object
-#' @param x efs object
+#' @description Extracts the adjacency list of a \code{efs} or \code{bws} object
+#' @param x \code{efs} or \code{bws} object
 #' @return An adjacency list
-#' @seealso \code{\link{adj_matrix.efs}}
 #' @export
 adj_list <- function(x) UseMethod("adj_list")
 
@@ -102,23 +103,12 @@ adj_list <- function(x) UseMethod("adj_list")
 adj_list.efs <- function(x) x$G_adj
 
 #' Adjacency Matrix
-#' @description Extracts the adjacency matrix of a \code{efs} object
-#' @param x efs object
+#' @description Extracts the adjacency matrix of a \code{efs} or \code{bws} object
+#' @param x \code{efs} or \code{bws} object
 #' @return An adjacency matrix
-#' @seealso \code{\link{adj_list.efs}}
 #' @export
 adj_matrix <- function(x) UseMethod("adj_matrix")
 
 #' @rdname adj_matrix
 #' @export
 adj_matrix.efs <- function(x) x$G_A
-
-
-## library(dplyr)
-## library(igraph)
-## haps <- tgp_haps[1:3]
-## df   <- tgp_dat
-## df   <- df %>% filter(pop_meta == "EUR") %>% select(unname(unlist(haps)))
-## y <- efs(df, trace = TRUE, stop_crit = "aic")
-## igraph::graph_from_adjacency_matrix
-## igraph::graph_from_adj_list

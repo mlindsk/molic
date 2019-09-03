@@ -2,7 +2,7 @@
 % Please edit documentation in R/efs_utils.R
 \name{efs_init}
 \alias{efs_init}
-\title{Initialize}
+\title{Initialize EFS}
 \usage{
 efs_init(df)
 }
@@ -13,7 +13,7 @@ efs_init(df)
 A efs object
 }
 \description{
-Initialize The EFS algorithm
+Initialize the EFS algorithm
 }
 \examples{
 efs_init(tgp_dat[, 5:8])

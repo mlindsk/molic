@@ -64,18 +64,19 @@ utils::globalVariables('z')
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
-#' @return This function returns a matrix of dimension `nsim x ncol(A)` where each row correspond to a simulated observation from a DGM represented by `adj`.
+#' @return This function returns a matrix of dimension \code{nsim x ncol(A)} where each row correspond to a simulated observation from a DGM represented by \code{adj}.
 #' @examples
 #' G  <- adj_list(efs(tgp_dat[, 5:8]))
-#' dgm_sim(as.matrix(tgp_dat[, 5:8]), G)
-
+#' dgm_sim(as.matrix(tgp_dat[, 5:8]), G, nsim = 10)
 #' @export
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
   RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
   Cms   <- a_marginals(A, RIP$C)
   Sms   <- a_marginals(A, RIP$S)
-  .sim_internal(A, Cms, Sms, nsim = nsim, type = "raw", ncores = ncores)
+  out   <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "raw", ncores = ncores)
+  row.names(out) <- NULL
+  return(out)
 }
 
 #' Outlier model

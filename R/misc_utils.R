@@ -1,3 +1,8 @@
+# For tracing the model selection procedues (efs, bws)
+msg <- function(k, complete, val, stop_crit) {
+  cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
+}
+
 #' Sparse table
 #'
 #' Returns a sparse contingency table for the variables in \code{x} as a vector .
@@ -78,7 +83,7 @@ as_adj_lst <- function(A) {
   out
 }
 
-#' Converts and adjacency list to an adjacency matrix
+#' Converts an adjacency list to an adjacency matrix
 #'
 #' @param adj Adjacency list
 #' @export
@@ -112,4 +117,23 @@ is_decomposable <- function(adj) {
   m <- try(mcs(adj), silent = TRUE)
   if( class(m) == "list" ) return(TRUE)
     else return(FALSE)
+}
+
+#' Make a complete graph
+#'
+#' A helper function to make an adjacency list corresponding to a complete graph
+#'
+#' @param nodes A character vector containing the nodes to be used in the graph
+#' @examples
+#' d  <- tgp_dat[, 5:8]
+#' cg <- make_complete_graph(colnames(d))
+#' bi <- bws_init(d, cg)
+#' bws_step(d, bi)
+#'@seealso \code{\link{bws}} 
+#' 
+#' @export
+make_complete_graph <- function(nodes) {
+  structure(lapply(seq_along(nodes), function(k) {
+    nodes[-which(nodes == nodes[k])]
+  }), names = nodes)
 }

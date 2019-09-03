@@ -8,10 +8,12 @@
 
 <title>Efficient forward selection in decomposable graphical models — efs • molic</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
@@ -30,10 +32,11 @@
 
 
 
-<meta property="og:title" content="Efficient forward selection in decomposable graphical models — efs" />
 
+<meta property="og:title" content="Efficient forward selection in decomposable graphical models — efs" />
 <meta property="og:description" content="Efficient forward selection in decomposable graphical models" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -91,7 +94,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -112,13 +114,11 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Efficient forward selection in decomposable graphical models</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>efs</span>(<span class='no'>df</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='efs_init.html'>efs_init</a></span>(<span class='no'>df</span>), <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -132,7 +132,7 @@
     </tr>
     <tr>
       <th>p</th>
-      <td><p>Penalty term in the stopping criterion  (<code>0</code> = AIC and <code>1</code> = BIC)</p></td>
+      <td><p>Penalty term in the stopping criterion (<code>0</code> = AIC and <code>1</code> = BIC)</p></td>
     </tr>
     <tr>
       <th>trace</th>
@@ -140,29 +140,36 @@
     </tr>
     <tr>
       <th>thres</th>
-      <td><p>A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.</p></td>
+      <td><p>A threshold mechanism for choosing between two different ways of calculating the entropy.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A efs object</p>
-    
+    <p>A efs object (a list) with values:</p><dl class='dl-horizontal'>
+<dt><code>G_adj</code></dt><dd><p>The fitted graph. Can be extracted with <code>as_adj_lst</code></p></dd>
+<dt><code>G_A</code></dt><dd><p>The edge that was just deleted and the entropy attached to it. Can be extracted using <code>as_adj_mat</code></p></dd>
+<dt><code>CG</code></dt><dd><p>The cliques of the graph.</p></dd>
+<dt><code>CG_A</code></dt><dd><p>A neighbor matrix of the clique graph.</p></dd>
+<dt><code>MSI</code></dt><dd><p>Minimal separator info list</p></dd>
+<dt><code>ht</code></dt><dd><p>An updated version of the input argument <code>ht</code>.</p></dd>
+</dl>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The algorithm relies on calculating lots of entropies (see <a href='https://arxiv.org/abs/1301.2267'>https://arxiv.org/abs/1301.2267</a>). If <code>thres</code> is equal to a number, say <code>a</code>, the entropy will be calculated using the <code>table</code> function for all situations where the number of variables is less than or equal to <code>a</code>. Otherwise, the entropies will be calculated by pasting rows in the subset of <code>df</code> over the relevant variables. For small values of <code>a</code> the former method is generally faster whereas for large values of <code>a</code> it breaks down and it is necessary to use the latter method.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p><a href='https://arxiv.org/abs/1301.2267'>https://arxiv.org/abs/1301.2267</a>, <a href='https://doi.org/10.1109/ictai.2004.100'>https://doi.org/10.1109/ictai.2004.100</a></p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='cl_tree.html'>cl_tree</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='adj_list.html'>adj_list.efs</a></code>, <code><a href='adj_matrix.html'>adj_matrix.efs</a></code></p></div>
-    
+    <div class='dont-index'><p><code><a href='efs_init.html'>efs_init</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='bws.html'>bws</a></code>, <code><a href='bws_step.html'>bws_step</a></code>, <code><a href='cl_tree.html'>cl_tree</a></code>, <code><a href='adj_list.html'>adj_list.efs</a></code>, <code><a href='adj_matrix.html'>adj_matrix.efs</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>efs</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>])</div><div class='output co'>#&gt;  Edges: 1 of 6 - xic = -205.695545 
-#&gt;  Edges: 2 of 6 - xic = -111.017746 
-#&gt;  Edges: 3 of 6 - xic = -20.626792 
-#&gt;  Edges: 4 of 6 - xic = -0.970214 
-#&gt;  Edges: 5 of 6 - xic = 19.17848 </div><div class='output co'>#&gt;  A Decomposable Graph With 
+    <pre class="examples"><div class='input'><span class='fu'>efs</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>])</div><div class='output co'>#&gt;  Edges: 2 of 6 - xic = -205.695545 
+#&gt;  Edges: 3 of 6 - xic = -111.017746 
+#&gt;  Edges: 4 of 6 - xic = -20.626792 
+#&gt;  Edges: 5 of 6 - xic = -0.970214 </div><div class='output co'>#&gt;  A Decomposable Graph With 
 #&gt;  ------------------------- 
 #&gt;   Nodes: 4 
 #&gt;   Edges: 5 / 6 
@@ -174,13 +181,10 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
+      <li><a href="#details">Details</a></li>
       <li><a href="#references">References</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

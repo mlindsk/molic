@@ -3,3 +3,6 @@ igraph
 molic
 dplyr
 pander
+testthat
+usethis
+devtools

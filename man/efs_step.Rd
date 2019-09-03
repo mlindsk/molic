@@ -19,6 +19,9 @@ A efs object
 \description{
 Stepwise efficient forward selection in decomposable graphical models
 }
+\details{
+See \code{\link{efs}} for details about \code{thres}
+}
 \examples{
 x <- tgp_dat[, 5:8]
 efs_step(x, efs_init(x))
@@ -27,5 +30,5 @@ efs_step(x, efs_init(x))
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{efs}}
+\code{\link{efs}}, \code{\link{bws}}, \code{\link{bws_step}}, \code{\link{make_complete_graph}}, \code{\link{cl_tree}}
 }

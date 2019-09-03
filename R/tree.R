@@ -11,24 +11,24 @@ tree_weights <- function(df) {
     ht[[nodes[j]]] <- entropy(df[nodes[j]])
   }
   for (p in seq_along(pairs) ) {
-    x  <- pairs[[p]]
+    x      <- pairs[[p]]
     edge_x <- sort_(x)
-    ee <-  edge_entropy(edge_x, character(0), df, ht)
-    weights[p] <- ee$ent # ht[[edge_x]]
+    ed     <-  entropy_difference(edge_x, character(0), df, ht)
+    weights[p]        <- ed$ent
     names(weights)[p] <- edge_x
-    ht <- ee$ht
+    ht <- ed$ht
   }
-  out <- list(G_A = G_A,
-    G_adj         = G_adj,
-    weights       = sort(weights, decreasing = TRUE),
-    ht            = ht
+  out <- list(G_adj = G_adj,
+    G_A             = G_A,
+    weights         = sort(weights, decreasing = TRUE),
+    ht              = ht
   )
   return(out)
 }
 
 kruskal <- function(df) {
   x          <- tree_weights(df)
-  class(x)   <- c(class(x), "tree")
+  class(x)   <- c("tree", class(x))
   n          <- ncol(df)
   nodes      <- colnames(df)
   x$G_adj    <- structure(replicate(n, character(0)), names = nodes)
@@ -53,26 +53,7 @@ kruskal <- function(df) {
   return(x)
 }
 
-#' Print tree 
-#'
-#' A print method for \code{tree} objects
-#'
-#' @param x A \code{tree} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.tree <- function(x, ...) {
-  nv <- ncol(x$G_A)
-  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
-  cat(" A Decomposable Graph With",
-    "\n -------------------------",
-    "\n  Nodes:", nv,
-    "\n  Edges:", ne, "/", nv*(nv-1)/2,
-    "\n  <tree>",
-    "\n -------------------------\n"
-  )
-}
-
-as_efs <- function(df, t) {
+tree_as_efs <- function(df, t) {
   x    <- rip(t$G_adj)
   CG   <- x$C
   nC   <- length(CG)
@@ -95,7 +76,7 @@ as_efs <- function(df, t) {
         Ci_minus_Sij <- setdiff(Ci, Sij)
         Cj_minus_Sij <- setdiff(Cj, Sij)
         edge         <- sort_( c(Ci_minus_Sij, Cj_minus_Sij))
-        ee           <- edge_entropy(edge, Sij, df, t$ht)
+        ee           <- entropy_difference(edge, Sij, df, t$ht)
         ent_ij       <- ee$ent
         t$ht         <- ee$ht
         if( ent_ij >= max_dst ) {
@@ -118,7 +99,7 @@ as_efs <- function(df, t) {
     MSI      = msi,
     ht       = t$ht
   )
-  class(out) <- c("efs")
+  class(out) <- c("efs", class(out))
   return(out)  
 }
 
@@ -129,11 +110,32 @@ as_efs <- function(df, t) {
 #' @param df data.frame
 #' @param wrap Logical indicating if the object should be converted to a \code{efs} object or not (can increase runtime significantly if FALSE)
 #' @references \url{https://ieeexplore.ieee.org/abstract/document/1054142}
-#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
+#' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}},\code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
 #' @examples
-#' cl_tree(tgp_dat[, 5:8])
+#' G <- cl_tree(tgp_dat[, 5:8])
+#' print(G)
+#' plot(G)
 #' @export
 cl_tree <- function(df, wrap = TRUE) {
-  if( wrap ) return( as_efs(df, kruskal(df)) )
+  if( wrap ) return( tree_as_efs(df, kruskal(df)) )
   else return( kruskal(df) )
+}
+
+#' Print tree 
+#'
+#' A print method for \code{tree} objects
+#'
+#' @param x A \code{tree} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.tree <- function(x, ...) {
+  nv <- ncol(x$G_A)
+  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
+  cat(" A Decomposable Graph With",
+    "\n -------------------------",
+    "\n  Nodes:", nv,
+    "\n  Edges:", ne, "/", nv*(nv-1)/2,
+    "\n  <tree>",
+    "\n -------------------------\n"
+  )
 }

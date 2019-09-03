@@ -8,10 +8,12 @@
 
 <title>Fitting a Chow-Liu tree interaction graph — cl_tree • molic</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
@@ -30,10 +32,11 @@
 
 
 
-<meta property="og:title" content="Fitting a Chow-Liu tree interaction graph — cl_tree" />
 
+<meta property="og:title" content="Fitting a Chow-Liu tree interaction graph — cl_tree" />
 <meta property="og:description" content="This functions uses Kruskals algorithm to fit a tree structure to variables in df" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -91,7 +94,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -112,13 +114,11 @@
     </div>
 
     <div class="ref-description">
-    
     <p>This functions uses Kruskals algorithm to fit a tree structure to variables in <code>df</code></p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>cl_tree</span>(<span class='no'>df</span>, <span class='kw'>wrap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -131,34 +131,30 @@
       <td><p>Logical indicating if the object should be converted to a <code>efs</code> object or not (can increase runtime significantly if FALSE)</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p><a href='https://ieeexplore.ieee.org/abstract/document/1054142'>https://ieeexplore.ieee.org/abstract/document/1054142</a></p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='efs.html'>efs</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='adj_list.html'>adj_list.efs</a></code>, <code><a href='adj_matrix.html'>adj_matrix.efs</a></code></p></div>
-    
+    <div class='dont-index'><p><code><a href='efs.html'>efs</a></code>, <code><a href='efs_step.html'>efs_step</a></code>, <code><a href='bws.html'>bws</a></code>, <code><a href='bws_step.html'>bws_step</a></code>,<code><a href='adj_list.html'>adj_list.efs</a></code>, <code><a href='adj_matrix.html'>adj_matrix.efs</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>cl_tree</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>])</div><div class='output co'>#&gt;  A Decomposable Graph With 
+    <pre class="examples"><div class='input'><span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'>cl_tree</span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>])
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>G</span>)</div><div class='output co'>#&gt;  A Decomposable Graph With 
 #&gt;  ------------------------- 
 #&gt;   Nodes: 4 
 #&gt;   Edges: 3 / 6 
 #&gt;   Cliques: 3 
 #&gt;   &lt;efs&gt; 
-#&gt;  -------------------------</div></pre>
+#&gt;  -------------------------</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>G</span>)</div><div class='img'><img src='cl_tree-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#references">References</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

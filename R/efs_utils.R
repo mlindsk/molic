@@ -29,8 +29,8 @@ is_Ca_and_Cb  <- function(m, x, y) { # m: msi object
 ## -----------------------------------------------------------------------------
 ##                             INITIALIZATION
 ## -----------------------------------------------------------------------------
-#' Initialize
-#' @description Initialize The EFS algorithm
+#' Initialize EFS
+#' @description Initialize the EFS algorithm
 #' @param df data.frame
 #' @return A efs object
 #' @examples
@@ -69,7 +69,6 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   })
   msi <- list(S = msi_S, max = list(e = max_edge, idx = max_idx, ins = match(max_nodes, CG)))
   out <- list(G_adj = G_adj,
-    # G        = G,
     G_A      = G_A,
     CG       = CG,
     CG_A     = CG_A,
@@ -180,7 +179,6 @@ efs_init <- function(df) { ## Should be a character matrix in the future
 ##   return(d_aic)
 ## }
 
-
 delta_xic <- function(x, lv, M, p = 0.5) {
   UseMethod("delta_xic")
 }
@@ -188,8 +186,8 @@ delta_xic <- function(x, lv, M, p = 0.5) {
 delta_xic.efs <- function(x, lv, M, p = 0.5) {
   # x : efs object
   penalty     <- log(M)*p + (1 - p)*2
-  n           <- length(lv) # ncol(df)
-  complete    <- n * (n-1L) / 2L
+  # n           <- length(lv) # ncol(df)
+  # complete    <- n * (n-1L) / 2L
   local_info  <- x$MSI$S[[x$MSI$max$idx]]
   e           <- local_info$e[x$MSI$max$e]
   S           <- local_info$S
@@ -275,7 +273,6 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
     eligs       <- expand.grid(eligs_Cp, eligs_Cab)
     eligs       <- apply(eligs, 1, paste, collapse = "|")
     eligs_names <- eligs
-    ## dst         <- if( length(Sp) <= thres ) metric("entropy") else metric("entropy2")
     H_Sp        <- 0L
     if( neq_empt_chr(Sp) ) H_Sp <- ht[[sort_(Sp)]]
     
@@ -331,11 +328,12 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
 #' @param x A efs object
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A efs object
-#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
-#' @seealso \code{\link{efs}}
+#' @details See \code{\link{efs}} for details about \code{thres}
 #' @examples
 #' x <- tgp_dat[, 5:8]
 #' efs_step(x, efs_init(x))
+#' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
+#' @seealso \code{\link{efs}}, \code{\link{bws}}, \code{\link{bws_step}}, \code{\link{make_complete_graph}}, \code{\link{cl_tree}}
 #' @export
 efs_step <- function(df, x, thres = 5) {
   ## -----------------------------------------------------------------------------
