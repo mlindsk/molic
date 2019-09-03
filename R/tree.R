@@ -11,12 +11,12 @@ tree_weights <- function(df) {
     ht[[nodes[j]]] <- entropy(df[nodes[j]])
   }
   for (p in seq_along(pairs) ) {
-    x  <- pairs[[p]]
+    x      <- pairs[[p]]
     edge_x <- sort_(x)
-    ee <-  entropy_difference(edge_x, character(0), df, ht)
-    weights[p] <- ee$ent # ht[[edge_x]]
+    ed     <-  entropy_difference(edge_x, character(0), df, ht)
+    weights[p]        <- ed$ent
     names(weights)[p] <- edge_x
-    ht <- ee$ht
+    ht <- ed$ht
   }
   out <- list(G_adj = G_adj,
     G_A             = G_A,
@@ -51,25 +51,6 @@ kruskal <- function(df) {
     }
   }
   return(x)
-}
-
-#' Print tree 
-#'
-#' A print method for \code{tree} objects
-#'
-#' @param x A \code{tree} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.tree <- function(x, ...) {
-  nv <- ncol(x$G_A)
-  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
-  cat(" A Decomposable Graph With",
-    "\n -------------------------",
-    "\n  Nodes:", nv,
-    "\n  Edges:", ne, "/", nv*(nv-1)/2,
-    "\n  <tree>",
-    "\n -------------------------\n"
-  )
 }
 
 tree_as_efs <- function(df, t) {
@@ -138,4 +119,23 @@ tree_as_efs <- function(df, t) {
 cl_tree <- function(df, wrap = TRUE) {
   if( wrap ) return( tree_as_efs(df, kruskal(df)) )
   else return( kruskal(df) )
+}
+
+#' Print tree 
+#'
+#' A print method for \code{tree} objects
+#'
+#' @param x A \code{tree} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.tree <- function(x, ...) {
+  nv <- ncol(x$G_A)
+  ne <- sum(x$G_A)/2 # length(igraph::E(x$G))
+  cat(" A Decomposable Graph With",
+    "\n -------------------------",
+    "\n  Nodes:", nv,
+    "\n  Edges:", ne, "/", nv*(nv-1)/2,
+    "\n  <tree>",
+    "\n -------------------------\n"
+  )
 }

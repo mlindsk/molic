@@ -1,4 +1,4 @@
-.PHONY: compile doc check install build_site run_main clean
+.PHONY: compile doc check install build_site run_main test clean
 
 all: compile doc check
 
@@ -19,6 +19,9 @@ build_site:
 
 run_main:
 	Rscript src/mainR.R
+
+test:
+	Rscript -e "devtools::test('~/Documents/phd/publications/molic')"
 
 readme:
 	Rscript -e "rmarkdown::render('README.Rmd')"; \

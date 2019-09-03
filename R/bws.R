@@ -24,14 +24,15 @@
 bws <- function(df, adj, p = 0.5, ht = new.env(hash = TRUE), trace = TRUE, thres = 5) {
   x  <- bws_init(df, adj, ht)
   n  <- ncol(df)
+
   if ( n < 2 ) stop("df must have at least two variables")
   if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
   complete <- n * (n-1L) / 2L
   null     <- 0L
-  k    <- sum(x$G_A)/2
+  k        <- sum(x$G_A)/2
   if (k == null) return(x)
   x  <- bws_step(df, x, p = p, thres)
-  k <- k - 1L
+  k  <- k - 1L
   if (k == null) return(x)
   stop_val  <- attr(x$e, "d_aic")
   if (stop_val >= 0 ) return(x)
