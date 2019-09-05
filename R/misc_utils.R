@@ -1,74 +1,69 @@
-# For tracing the model selection procedues (efs, bws)
-msg <- function(k, complete, val, stop_crit) {
-  cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
-}
+## #' Sparse table
+## #'
+## #' Returns a sparse contingency table for the variables in \code{x} as a vector .
+## #'
+## #' @param x matrix
+## #' @seealso \code{\link{csptable}}
+## #' @examples
+## #' sptable(as.matrix(tgp_dat[, 5:8]))
+## #' @export
+## sptable <- function(x) {
+##   stopifnot(is.matrix(x))
+##   sptab <- n_a(x)
+##   class(sptab) <- c("sptable", class(sptab))
+##   sptab
+## }
 
-#' Sparse table
-#'
-#' Returns a sparse contingency table for the variables in \code{x} as a vector .
-#'
-#' @param x matrix
-#' @seealso \code{\link{csptable}}
-#' @examples
-#' sptable(as.matrix(tgp_dat[, 5:8]))
-#' @export
-sptable <- function(x) {
-  stopifnot(is.matrix(x))
-  sptab <- n_a(x)
-  class(sptab) <- c("sptable", class(sptab))
-  sptab
-}
+## #' Print sptable 
+## #'
+## #' A print method for \code{sptable} objects
+## #'
+## #' @param x A \code{sptable} object
+## #' @param ... Not used (for S3 compatability)
+## #' @export
+## print.sptable <- function(x, ...) {
+##   vars  <- attr(x, "vars")
+##   nchr  <- sum(sapply(vars, function(s) nchar(s))) + length(vars) - 1
+##   N     <- length(x)
+##   cells <- names(x)
+##   cat(paste0(vars, collapse = "-"), "\n")
+##   cat(paste0(rep("-", nchr), collapse = ""), "\n")
+##   for( i in 1:N ) {
+##     cat(paste0(cells[i], " : ", x[i]),"\n")
+##   }
+## }
 
-#' Print sptable 
-#'
-#' A print method for \code{sptable} objects
-#'
-#' @param x A \code{sptable} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.sptable <- function(x, ...) {
-  vars  <- attr(x, "vars")
-  nchr  <- sum(sapply(vars, function(s) nchar(s))) + length(vars) - 1
-  N     <- length(x)
-  cells <- names(x)
-  cat(paste0(vars, collapse = "-"), "\n")
-  cat(paste0(rep("-", nchr), collapse = ""), "\n")
-  for( i in 1:N ) {
-    cat(paste0(cells[i], " : ", x[i]),"\n")
-  }
-}
+## #' Conditional sparse table
+## #'
+## #' Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
+## #'
+## #' @param x A sparse table obtained from \code{sptable}
+## #' @param b A named vector of indicies for which the variables are fixed
+## #' @description The names of \code{b} are the fixed values of the variables corresponding to the indicies
+## #' @seealso \code{\link{sptable}}
+## #' @examples
+## #' sp <- sptable(as.matrix(tgp_dat[, 5:8]))
+## #' y  <- structure(c(1, 3), names = c("T", "T"))
+## #' csptable(sp, y)
+## #' @export
+## csptable <- function(x, b) {
+##   stopifnot( "sptable" %in% class(x))
+##   csptab <- n_b(x, b)
+##   class(csptab) <- class(x)
+##   csptab
+## }
 
-#' Conditional sparse table
-#'
-#' Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
-#'
-#' @param x A sparse table obtained from \code{sptable}
-#' @param b A named vector of indicies for which the variables are fixed
-#' @description The names of \code{b} are the fixed values of the variables corresponding to the indicies
-#' @seealso \code{\link{sptable}}
-#' @examples
-#' sp <- sptable(as.matrix(tgp_dat[, 5:8]))
-#' y  <- structure(c(1, 3), names = c("T", "T"))
-#' csptable(sp, y)
-#' @export
-csptable <- function(x, b) {
-  stopifnot( "sptable" %in% class(x))
-  csptab <- n_b(x, b)
-  class(csptab) <- class(x)
-  csptab
-}
-
-#' Print csptable 
-#'
-#' A print method for \code{csptable} objects
-#'
-#' @param x A \code{csptable} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.csptable <- function(x, ...) {
-  ## TODO: Print the conditional information
-  print.sptable(x, ...)
-}
+## #' Print csptable 
+## #'
+## #' A print method for \code{csptable} objects
+## #'
+## #' @param x A \code{csptable} object
+## #' @param ... Not used (for S3 compatability)
+## #' @export
+## print.csptable <- function(x, ...) {
+##   ## TODO: Print the conditional information
+##   print.sptable(x, ...)
+## }
 
 #' Converts an adjacency matrix to an adjacency list
 #'
@@ -119,41 +114,3 @@ is_decomposable <- function(adj) {
     else return(FALSE)
 }
 
-#' Make a complete graph
-#'
-#' A helper function to make an adjacency list corresponding to a complete graph
-#'
-#' @param nodes A character vector containing the nodes to be used in the graph
-#' @examples
-#' d  <- tgp_dat[, 5:8]
-#' cg <- make_complete_graph(colnames(d))
-#' bi <- bws_init(d, cg)
-#' bws_step(d, bi)
-#'@seealso \code{\link{bws}} 
-#' 
-#' @export
-make_complete_graph <- function(nodes) {
-  structure(lapply(seq_along(nodes), function(k) {
-    nodes[-which(nodes == nodes[k])]
-  }), names = nodes)
-}
-
-#' Make a null graph
-#'
-#' A helper function to make an adjacency list corresponding to a null graph (no edges)
-#'
-#' @param nodes A character vector containing the nodes to be used in the graph
-#'@seealso \code{\link{bws}} 
-#' 
-#' @export
-make_null_graph <- function(nodes) {
-  structure(lapply(seq_along(nodes), function(x) {
-    character(0)
-  }), names = nodes)
-}
-
-
-is_graph_null     <- function(x) UseMethod("is_graph_null")
-is_graph_complete <- function(x) UseMethod("is_graph_complete")
-is_graph_null.gengraph <- function(x) length(x$CG) == length(x$G_adj)
-is_graph_complete.gengraph <- function(x) length(x$CG) == 1L
