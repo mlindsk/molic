@@ -28,7 +28,6 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
   M        <- nrow(df)
   complete <- n * (n-1L) / 2L
   k        <- sum(x$G_A)/2
-  ## FIX THIS SO IT CAN HANDLE SINGLETONS!
   if ( n < 2 ) stop("df must have at least two variables")
   if ( p < 0 || p > 1 ) stop("p must be between 0 and 1")
 
@@ -36,10 +35,9 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
   x     <- efs_step(df, x, thres)
   k     <- k + 1L
   if (k == complete) return(x)
-
-  stop_val    <- delta_xic(x, lv, M, p)
-  if (stop_val >= 0 ) return(x)
-  while (stop_val < 0) {
+  stop_val <- stop_v(x)
+  if (stop_val < 0 ) return(x)
+  while (stop_val >= 0) {
     x <- efs_step(df, x, thres)
     k <- k + 1L
     if (trace) msg(k, complete, stop_val, "xic")
@@ -47,10 +45,18 @@ efs <- function(df, x = efs_init(df), p = 0.5, trace = TRUE, thres = 5) {
       if( trace) msg(k, complete, stop_val, "xic")
       return(x)
     }
-    stop_val <- delta_xic(x, lv, M, p)
+    stop_val <- stop_v(x)
   }  
   return(x)
 }
+
+## d  <- tgp_dat[, unlist(tgp_haps[1:2])]
+## E <- efs_init(d)
+## E <- efs_step(d, E)
+## E <- efs_step(d, E)
+## E <- efs_step(d, E)
+## plot(E)
+
 
 #' Print efs
 #'

@@ -29,7 +29,7 @@ step.bwd <- function(x, df, q = 0.5, thres = 5) {
           S     <- intersect(Ca, Cb)
           sp    <- sort_(pair)
           ed    <- entropy_difference(sp, S, df, x$MEM, thres)
-          x$MEM <- ed$ht   ## FIX TO MEM LATER - BUT KEEP FOR COMPATABILITY NOW! ##
+          x$MEM <- ed$mem
           penalty     <- log(M)*q + (1 - q)*2
           HM_HM_prime <- ed$ent
           dev         <- 2*M*HM_HM_prime
@@ -44,8 +44,11 @@ step.bwd <- function(x, df, q = 0.5, thres = 5) {
       }
     }  
   }
-  x$G_adj <- rm_edge_lst(x$G_adj, x$e)
-  x$G_A   <- rm_edge_mat(x$G_A, x$e)
-  x$CG    <- rip(x$G_adj)$C
-  return(g)
+  x$G_adj[[x$e[1]]] <- setdiff(x$G_adj[[x$e[1]]], x$e[2])
+  x$G_adj[[x$e[2]]] <- setdiff(x$G_adj[[x$e[2]]], x$e[1])
+  del_idx <- match(x$e, colnames(x$G_A))
+  x$G_A[del_idx[1], del_idx[2]] <- 0L
+  x$G_A[del_idx[2], del_idx[1]] <- 0L
+  x$CG <- rip(x$G_adj)$C
+  return(x)
 }

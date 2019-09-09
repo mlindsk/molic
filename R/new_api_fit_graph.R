@@ -10,11 +10,11 @@ fit_graph <- function(df,
                       q     = 0.5,
                       trace = TRUE,
                       thres = 5,
-                      mem   = new.env(hash = TRUE))
+                      mem   = new.env(hash = TRUE),
+                      wrap  = TRUE)
 {
-  # if ( type == "tree" ) return(fit_tree(df))
-  # if ( type == "mix"  ) do something
-  x <- gengraph(df, adj, type)
+  x <- gengraph(df, type, adj)
+  if( inherits(x, "tree") ) return(fit_tree(x, df, wrap))
   n <- ncol(df)
   if ( n < 2 ) stop("df must have at least two variables")
   if ( q < 0 || q > 1 ) stop("p must be between 0 and 1")
@@ -42,4 +42,5 @@ fit_graph <- function(df,
 
 ## d <- tgp_dat[1:1000, 5:10]
 ## g <- fit_graph(d)
+## g <- fit_graph(d, type = "tree")
 ## plot(g)

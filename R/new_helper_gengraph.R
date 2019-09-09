@@ -31,6 +31,7 @@ rm_edge_mat <- function(A, e) {
 }
 
 
+
 ## ---------------------------------------------------------
 ##                EXPORTED HELPERS
 ## ---------------------------------------------------------
@@ -78,6 +79,17 @@ print.gengraph <- function(x, ...) {
   )
 }
 
+#' Print
+#'
+#' A print method for \code{tree} objects
+#'
+#' @param x A \code{tree} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.tree <- function(x, ...) print.gengraph(x, ...)
+# Note: print.tree is needed to overwrite the tree method from package "cli".
+
+
 #' Plot
 #'
 #' A wrapper around igraphs plot method for \code{gengraph} objects
@@ -97,6 +109,7 @@ plot.gengraph <- function(x, ...) {
   # if( is.null(args$vertex.label.dist)  ) args$vertex.label.dist  = 2
   do.call("plot.igraph", args)
 }
+
 
 #' Make a complete graph
 #'

@@ -81,25 +81,6 @@ efs_init <- function(df) { ## Should be a character matrix in the future
   return(out)
 }
 
-delta_xic <- function(x, lv, M, p = 0.5) {
-  UseMethod("delta_xic")
-}
-
-delta_xic.efs <- function(x, lv, M, p = 0.5) {
-  # x : efs object
-  penalty     <- log(M)*p + (1 - p)*2
-  # n           <- length(lv) # ncol(df)
-  # complete    <- n * (n-1L) / 2L
-  local_info  <- x$MSI$S[[x$MSI$max$idx]]
-  e           <- local_info$e[x$MSI$max$e]
-  S           <- local_info$S
-  vs          <- es_to_vs(names(e))[[1]]
-  HM_HM_prime <- unname(e)
-  dev         <- -2*M*HM_HM_prime
-  d_parms     <- prod(lv[vs] - 1) * prod(lv[S])
-  d_aic       <- dev + penalty * d_parms
-  return(d_aic)
-}
 
 ## -----------------------------------------------------------------------------
 ##                           SUB-ROUTINES FOR efs_step
@@ -163,8 +144,36 @@ which_Cp_from_Cx_to_Cab <- function(CG_prime, C_prime_Cx, Cx, vx, Cab, Sab,  cty
   list(add = unique(add), add_tvl = unique(add_tvl)) 
 }
 
+## delta_xic <- function(x, lv, M, p = 0.5) {
+##   UseMethod("delta_xic")
+## }
+
+## delta_xic.efs <- function(x, lv, M, p = 0.5) {
+##   # x : efs object
+##   penalty     <- log(M)*p + (1 - p)*2
+##   local_info  <- x$MSI$S[[x$MSI$max$idx]]
+##   e           <- local_info$e[x$MSI$max$e]
+##   S           <- local_info$S
+##   vs          <- es_to_vs(names(e))[[1]]
+##   HM_HM_prime <- unname(e)
+##   dev         <- -2*M*HM_HM_prime               # Fix: remove "-"
+##   d_parms     <- prod(lv[vs] - 1) * prod(lv[S]) # Fix: add    "-"
+##   d_aic       <- dev + penalty * d_parms
+##   return(d_aic)
+## }
+
+stop_v <- function(x) {
+  local_info  <- x$MSI$S[[x$MSI$max$idx]]
+  local_info$e[x$MSI$max$e]  
+}
+
+## get_e.fwd <- function(x, ...)
+
 update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 5) {
   # Cps : C_primes
+  M <- nrow(df)
+  q <- 0
+  LV  <- sapply(df, function(s) length(unique(s)))
   sep <- lapply(Cps, function(Cp) {
     Sp          <- intersect(Cp, Cab)
     eligs_Cab   <- setdiff(Cab, Cp)
@@ -174,45 +183,22 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, ht, thres = 
     eligs_names <- eligs
     H_Sp        <- 0L
     if( neq_empt_chr(Sp) ) H_Sp <- ht[[sort_(Sp)]]
-    
-    eligs  <- sapply(eligs, function(e) {
-      ## See the proof of Theorem 4.3 in Jordan to optimize! (Dont need to use exists for all cases)
-      v <- unlist(es_to_vs(e))
-      H_Sp_x <- 0L        
-      Spx <- sort_(c(Sp, v[1]))
-      if( exists(Spx, envir = ht, inherits = FALSE) ) {
-        H_Sp_x <- ht[[Spx]]
-      } else {
-        ## H_Sp_x  <- dst(df[c(Sp, v[1])])
-        H_Sp_x  <- entropy(df[c(Sp, v[1])], thres)
-        ht[[Spx]] <<- H_Sp_x 
-      }
-      H_Sp_y <- 0L
-      Spy <- sort_(c(Sp, v[2]))
-      if( exists(Spy, envir = ht, inherits = FALSE) ) {
-        H_Sp_y <- ht[[Spy]]
-      } else {
-        ## H_Sp_y  <- dst(df[c(Sp, v[2])])
-        H_Sp_y  <- entropy(df[c(Sp, v[2])], thres)
-        ht[[Spy]] <<- H_Sp_y 
-      }
-      H_Sp_x_y <- 0L
-      Spxy <- sort_(c(Sp, v))
-      if( exists(Spxy, envir = ht, inherits = FALSE) ) {
-        H_Sp_xy <- ht[[Spxy]]
-      } else {
-        ## H_Sp_xy  <-dst(df[c(Sp, v)])
-        H_Sp_xy  <- entropy(df[c(Sp, v)], thres)
-        ht[[Spxy]] <<- H_Sp_xy  
-      }
-      # Test needed to avoid < 0 due to floating point errors
-      H_Sp_x_y    <- H_Sp_x + H_Sp_y
-      edge_ent <- ifelse( isTRUE(all.equal(H_Sp_x_y, H_Sp_xy)), 0L,  H_Sp_x_y - H_Sp_xy - H_Sp )
-      return(edge_ent) # return( H_Sp_x + H_Sp_y - H_Sp_xy - H_Sp )
+
+    eligs <- sapply(eligs, function(e) {
+      el <- entropy_difference(e, Sp, df, ht)
+      ht <<- el$mem
+      el$ent
     })
     
     names(eligs) <- eligs_names
-    list(S = Sp, e = eligs, C1 = Cp, C2 = Cab)
+    penalty  <- log(M)*q + (1 - q)*2
+    dev <- 2 * M * eligs
+    d_parms <- sapply(es_to_vs(names(eligs)), function(x) {
+      -prod(LV[x] - 1) * prod(LV[Sp]) # needs to be updated inside eligs
+    })
+    d_qic <- dev + penalty * d_parms
+    list(S = Sp, e = d_qic, C1 = Cp, C2 = Cab)
+    # list(S = Sp, e = eligs, C1 = Cp, C2 = Cab)
   })
   return(list(Filter(neq_null, sep), ht))
 }
@@ -261,7 +247,6 @@ efs_step <- function(df, x, thres = 5) {
   G_prime_adj[[vb]] <- c(G_prime_adj[[vb]], va)
   G_prime_A[va, vb] <- 1L # Adding the new edge (va, vb)
   G_prime_A[vb, va] <- 1L
-  # G_prime      <- igraph::add_edges(G_prime, c(va, vb))
   CG_prime     <- x$CG    
   CG_prime_A   <- x$CG_A
   G_dbl_prime  <- make_G_dbl_prime(Sab, x$G_A)
@@ -272,13 +257,6 @@ efs_step <- function(df, x, thres = 5) {
   cta <- dfs(G_dbl_prime_lst, va)
   ctb <- dfs(G_dbl_prime_lst, vb)
 
-  ## OLD APPROACH USING igraph:
-  ## --------------------------
-  ## cta <- names(as.list(igraph::bfs(G_dbl_prime, va, unreachable = FALSE)$order))
-  ## cta <- cta[!is.na(cta)]
-  ## ctb <- names(as.list(igraph::bfs(G_dbl_prime, vb, unreachable = FALSE)$order))
-  ## ctb <- ctb[!is.na(ctb)]
-  
   ## -----------------------------------------------------------------------------
   ##       INSERTING Cab BETWEEN Ca AND Cb IN CG_prime AND REMOVE (Ca, Cb)
   ## -----------------------------------------------------------------------------
@@ -389,15 +367,18 @@ efs_step <- function(df, x, thres = 5) {
     C_primes <- c(C_primes, list(Ca), list(Cb)) # Since Ca and Cb not in Cab then
   }
 
-  ## -----------------------------------------------------------------------------
+  ## ---------------------------------------------------------
   ##                       CALCULATE NEW ENTROPIES
-  ## -----------------------------------------------------------------------------
+  ## ---------------------------------------------------------
   ue         <- update_edges_from_C_primes_to_Cab(df, C_primes, Cab, va, vb, ht, thres)
   ht         <- ue[[2]]
   msi_prime  <- c(msi_prime, ue[[1]])
+
+  ## ---------------------------------------------------------
+  ##                RETURN THE GRAPH IF COMPLETE
+  ## ---------------------------------------------------------
   if( !neq_empt_lst(msi_prime) ) { # If the graph is complete
     out <- list(G_adj = G_prime_adj,
-      # G     = G_prime,
       G_A   = G_prime_A,
       CG    = CG_prime,
       CG_A  = CG_prime_A,
@@ -407,6 +388,10 @@ efs_step <- function(df, x, thres = 5) {
     class(out) <- c("efs")
     return(out)
   }
+  
+  ## ---------------------------------------------------------
+  ##                LOCATE THE EDGE TO BE ADDED
+  ## ---------------------------------------------------------
   max_es     <- sapply(msi_prime, function(x) x$e[which.max(x$e)])
   wm_max_es  <- which.max(max_es)
   maxy       <- msi_prime[[wm_max_es]]
@@ -416,9 +401,12 @@ efs_step <- function(df, x, thres = 5) {
     cond <- setequal(CG_prime[[x]], maxy$C1) || setequal(CG_prime[[x]], maxy$C2)
     if( cond ) return(x)
   }))
+  
+  ## ---------------------------------------------------------
+  ##                       RETURN THE GRAPH
+  ## ---------------------------------------------------------
   MSI_prime <- list(S = msi_prime, max = list(e = e_max, idx = idx_max, ins = ins_max))
   out <- list(G_adj = G_prime_adj,
-    # G    = G_prime,
     G_A  = G_prime_A,
     CG   = CG_prime,
     CG_A = CG_prime_A,
