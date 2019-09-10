@@ -9,31 +9,38 @@ msg <- function(k, complete, val, stop_crit) {
   cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
 }
 
-# x: gengraph object
-is_graph_null              <- function(x) UseMethod("is_graph_null")
-is_graph_complete          <- function(x) UseMethod("is_graph_complete")
-is_graph_null.gengraph     <- function(x) length(x$CG) == length(x$G_adj)
-is_graph_complete.gengraph <- function(x) length(x$CG) == 1L
-
-
-rm_edge_lst <- function(adj, e) {
-    # e is a 2-dim vector of chars
-  adj[[e[1]]] <- setdiff(adj[[e[1]]], e[2])
-  adj[[e[2]]] <- setdiff(adj[[e[2]]], e[1])
-  return(adj)
+trivial <- function(x, null, complete) {
+  # x: gengraph
+  if( inherits(x, "bwd") ) return(null) 
+  if( inherits(x, "fwd") ) return(complete)
 }
 
-rm_edge_mat <- function(A, e) {
-  del_idx <- match(e, colnames(A))
-  A[del_idx[1], del_idx[2]] <- 0L
-  A[del_idx[2], del_idx[1]] <- 0L
-  return(A)
+update_iteration <- function(x) {
+  # x: gengraph
+  if( inherits(x, "bwd") ) {
+    f <- function(k) return(k - 1L)
+    return(f)
+  }
+  if( inherits(x, "fwd") ) {
+    f <- function(k) return(k + 1L)
+    return(f)
+  }
 }
 
-
+stop_condition <- function(x) {
+  # x: gengraph
+  if( inherits(x, "bwd") ) {
+    f <- function(stop_val) return( stop_val >= 0L)
+    return(f)
+  }
+  if( inherits(x, "fwd") ) {
+    f <- function(stop_val) return( stop_val <= 0L)
+    return(f)
+  }  
+}
 
 ## ---------------------------------------------------------
-##                EXPORTED HELPERS
+##                      EXPORTED HELPERS
 ## ---------------------------------------------------------
 #' Adjacency List
 #' @description Extracts the adjacency list of a \code{gengraph}
@@ -57,6 +64,35 @@ adj_mat <- function(x) UseMethod("adj_mat")
 #' @export
 adj_mat.gengraph <- function(x) x$G_A
 
+#' Converts an adjacency matrix to an adjacency list
+#'
+#' @param A Adjacency matrix
+#' @export
+as_adj_lst <- function(A) {
+  Delta <- colnames(A)
+  out <- lapply(seq_along(Delta), function(r) {
+    Delta[as.logical(A[, r])]
+  })
+  names(out) <- Delta
+  out
+}
+
+#' Converts an adjacency list to an adjacency matrix
+#'
+#' @param adj Adjacency list
+#' @export
+as_adj_mat <- function(adj) {
+  stopifnot(length(names(adj)) == length(adj))
+  Delta <- names(adj)
+  N     <- length(Delta)
+  A     <- matrix(0L, nrow = N, ncol = N, dimnames = list(Delta, Delta))
+  for( d in seq_along(Delta) ) {
+    idx <- match(adj[[d]], Delta)
+    A[idx, d] <- 1L
+    A[d, idx] <- 1L
+  }
+  A
+}
 
 #' Print
 #'
@@ -110,32 +146,5 @@ plot.gengraph <- function(x, ...) {
   do.call("plot.igraph", args)
 }
 
-
-#' Make a complete graph
-#'
-#' A helper function to make an adjacency list corresponding to a complete graph
-#'
-#' @param nodes A character vector containing the nodes to be used in the graph
-#' @examples
-#' d  <- tgp_dat[, 5:8]
-#' cg <- make_complete_graph(colnames(d))
-#' @export
-make_complete_graph <- function(nodes) {
-  structure(lapply(seq_along(nodes), function(k) {
-    nodes[-which(nodes == nodes[k])]
-  }), names = nodes)
-}
-
-#' Make a null graph
-#'
-#' A helper function to make an adjacency list corresponding to a null graph (no edges)
-#'
-#' @param nodes A character vector containing the nodes to be used in the graph
-#' @export
-make_null_graph <- function(nodes) {
-  structure(lapply(seq_along(nodes), function(x) {
-    character(0)
-  }), names = nodes)
-}
 
 

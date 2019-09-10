@@ -5,6 +5,8 @@
 #' @param q Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A \code{bwd} object (a subclass of \code{gengraph})
+#' @details A \code{bwd} object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
+#' @seealso \code{\link{fit_graph}}, \code{\link{step.fwd}}, \code{\link{gengraph}}
 #' @export
 step.bwd <- function(x, df, q = 0.5, thres = 5) {
   nodes   <- names(x$G_adj)
