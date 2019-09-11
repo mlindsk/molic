@@ -10,7 +10,7 @@ adj_lst(x)
 \method{adj_lst}{gengraph}(x)
 }
 \arguments{
-\item{g}{\code{gengraph}}
+\item{x}{\code{gengraph}}
 }
 \value{
 An adjacency list

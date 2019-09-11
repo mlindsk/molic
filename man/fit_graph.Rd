@@ -29,7 +29,7 @@ A \code{gengraph} object with values:
 A generic method for structure learning in decomposable graphical models
 }
 \examples{
-d <- tgp_dat[, 5:8]
+d <- tgp_dat[1:100, 5:8]
 g <- fit_graph(d)
 # plot(g)
 # adj_mat(g)
@@ -39,5 +39,5 @@ g <- fit_graph(d)
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{adj_lst.efs}}, \code{\link{adj_mat.efs}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}, \code{\link{gengraph}}
+\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}, \code{\link{gengraph}}
 }

@@ -44,7 +44,7 @@ stop_condition <- function(x) {
 ## ---------------------------------------------------------
 #' Adjacency List
 #' @description Extracts the adjacency list of a \code{gengraph}
-#' @param g \code{gengraph}
+#' @param x \code{gengraph}
 #' @return An adjacency list
 #' @export
 adj_lst <- function(x) UseMethod("adj_lst")

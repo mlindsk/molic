@@ -10,7 +10,7 @@ es_to_vs     <- function(e) strsplit(e, "\\|")
 vs_to_es     <- function(e) lapply(e, paste0, collapse = "|")
 rev_es       <- function(e) sapply(es_to_vs(e), function(x) paste0(rev(x), collapse = "|"))
 sort_        <- function(x) paste0(sort(x), collapse = "|")
-
+.split_chars <- function(x) unlist(strsplit(x, ""))
 
 
 ## ---------------------------------------------------------
@@ -32,7 +32,7 @@ sort_        <- function(x) paste0(sort(x), collapse = "|")
 #' @export
 is_decomposable <- function(adj) {
   m <- try(mcs(adj), silent = TRUE)
-  if( class(m) == "list" ) return(TRUE)
+  if( inherits(m, "list") ) return(TRUE)
     else return(FALSE)
 }
 

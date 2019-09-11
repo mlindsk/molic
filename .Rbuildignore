@@ -2,6 +2,7 @@ tests
 examples
 docs
 paper
+R/TAGS
 src/GPATH
 src/GRTAGS
 src/GTAGS

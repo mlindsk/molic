@@ -44,19 +44,31 @@ new_tree <- function(df) {
   structure(g, class = c("tree", class(g)))
 }
 
-# Export this constructor
+new_edge <- function(e = character(0), d_qic = numeric(0), idx = integer(0), ins = vector("integer", 2L)) {
+  # e     : edge to be deletede or added
+  # d_aic : entropy difference in the two competing models
+  # idx   : in fwd procedure this is the index in MSI where e lives
+  # ins   : in fwd procedure this is the indicies in CG where a new clique must be inserted
+  structure(e, d_qic = d_qic, idx = idx, ins = ins)
+}
+
+#' Fit a decomposable graphical model
+#' @description A generic method for structure learning in decomposable graphical models
+#' @param df data.frame
+#' @param type character ("fwd", "bwd", "tree")
+#' @param adj A userspecified adjacency list
+#' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
+#' @param ... Not used (for extendibility)
+#' @return A \code{gengraph} object
+#' @examples
+#' d <- tgp_dat[1:100, 5:8]
+#' gengraph(d)
+#' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}
+#' @export
 gengraph <- function(df, type = "fwd", adj = NULL, q = 0.5, ...) {
   switch(type,
     "fwd"  = new_fwd(df, adj, q),
     "bwd"  = new_bwd(df, adj, q),
     "tree" = new_tree(df)
   ) 
-}
-
-new_edge <- function(e = character(0), d_qic = 0L, idx = numeric(0), ins = vector("integer", 2L)) {
-  # e     : edge to be deletede or added
-  # d_aic : entropy difference in the two competing models
-  # idx   : in fwd procedure this is the index in MSI where e lives
-  # ins   : in fwd procedure this is the indicies in CG where a new clique must be inserted
-  structure(e, d_qic = d_qic, idx = idx, ins = ins)
 }
