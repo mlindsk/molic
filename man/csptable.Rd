@@ -18,8 +18,9 @@ The names of \code{b} are the fixed values of the variables corresponding to the
 Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
 }
 \examples{
-sp <- sptable(as.matrix(tgp_dat[, 5:8]))
-y  <- structure(c(1, 3), names = c("T", "T"))
+sp <- sptable(as.matrix(digits[, 1:3]))
+sp
+y  <- structure(2, names = "a")
 csptable(sp, y)
 }
 \seealso{

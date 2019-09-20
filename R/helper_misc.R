@@ -43,7 +43,7 @@ is_decomposable <- function(adj) {
 #'
 #' @param nodes A character vector containing the nodes to be used in the graph
 #' @examples
-#' d  <- tgp_dat[, 5:8]
+#' d  <- digits[, 5:8]
 #' cg <- make_complete_graph(colnames(d))
 #' @export
 make_complete_graph <- function(nodes) {
@@ -57,6 +57,9 @@ make_complete_graph <- function(nodes) {
 #' A helper function to make an adjacency list corresponding to a null graph (no edges)
 #'
 #' @param nodes A character vector containing the nodes to be used in the graph
+#' @examples
+#' d  <- digits[, 5:8]
+#' ng <- make_null_graph(colnames(d))
 #' @export
 make_null_graph <- function(nodes) {
   structure(lapply(seq_along(nodes), function(x) {

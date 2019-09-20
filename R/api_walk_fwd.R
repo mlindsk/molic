@@ -7,9 +7,16 @@
 #' @return A \code{fwd} object
 #' @details A \code{fwd} object can be created using the \code{gengraph} constructor with \code{type = "fwd"}
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
-#' @seealso \code{\link{fit_graph}}, \code{\link{step.bwd}}, \code{\link{gengraph}}
+#' @examples
+#' d <- subset(digits, class == "1")[, 20:30]
+#' g <- gengraph(d, type = "fwd")
+#' s <- walk(g, d)
+#' # plot(s)
+#' # adj_mat(s)
+#' # adj_lst(s)
+#' @seealso \code{\link{fit_graph}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
 #' @export
-step.fwd <- function(x, df, q = 0.5, thres = 5) {
+walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   ## -----------------------------------------------------------------------------
   ##                    STORE CURRENT INFORMATION
   ## -----------------------------------------------------------------------------

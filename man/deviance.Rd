@@ -12,7 +12,7 @@ deviance(x, y, ...)
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{y}{An observation (Character vector)}
+\item{y}{An observation (name character vector)}
 
 \item{...}{Not used (for S3 compatability)}
 }

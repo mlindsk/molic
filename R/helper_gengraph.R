@@ -1,9 +1,6 @@
 ## ---------------------------------------------------------
 ##                NON-EXPORTED HELPERS
 ## ---------------------------------------------------------
-# Generic for methods step.fwd and step.bwd
-step <- function(x, df, q, thres) UseMethod("step")
-
 # For tracing the model selection procedure in git_graph
 msg <- function(k, complete, val, stop_crit) {
   cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
@@ -42,6 +39,26 @@ stop_condition <- function(x) {
 ## ---------------------------------------------------------
 ##                      EXPORTED HELPERS
 ## ---------------------------------------------------------
+#' Stepwise model selection
+#' @description Stepwise model selection in decomposable graphical models
+#' @param x \code{fwd} or \code{bwd} objects
+#' @param df data.frame
+#' @param q Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)
+#' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
+#' @details A \code{bwd} (or \code{fwd}) object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
+#' @examples
+#' d <- subset(digits, class == "1")[, 30:35]
+#' gb <- gengraph(d, type = "bwd")
+#' gf <- gengraph(d, type = "fwd")
+#' wb <- walk(gb, d)
+#' wf <- walk(gf, d)
+#' # plot(wf)
+#' # adj_mat(wf)
+#' # adj_lst(wf)
+#' @seealso \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{gengraph}}
+#' @export
+walk <- function(x, df, q, thres) UseMethod("walk")
+
 #' Adjacency List
 #' @description Extracts the adjacency list of a \code{gengraph}
 #' @param x \code{gengraph}
@@ -131,6 +148,12 @@ print.tree <- function(x, ...) print.gengraph(x, ...)
 #' A wrapper around igraphs plot method for \code{gengraph} objects
 #' @param x A \code{gengraph} object
 #' @param ... Extra arguments. See the igraph package
+#' @examples
+#' d <- subset(digits, class == "1")[, 20:30]
+#' g <- gengraph(d, type = "fwd")
+#' plot(g)
+#' G <- fit_graph(d)
+#' plot(G)
 #' @import igraph
 #' @export
 plot.gengraph <- function(x, ...) {

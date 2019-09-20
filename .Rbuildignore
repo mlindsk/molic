@@ -16,3 +16,4 @@ TODO\.org
 ^README\.Rmd$
 ^README.html$
 ^appveyor\.yml$
+^data-raw$

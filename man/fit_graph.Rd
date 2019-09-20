@@ -10,9 +10,9 @@ fit_graph(df, type = "fwd", adj = NULL, q = 0.5, trace = TRUE,
 \arguments{
 \item{df}{data.frame}
 
-\item{type}{character ("fwd", "bwd", "tree")}
+\item{type}{Character ("fwd", "bwd", "tree")}
 
-\item{adj}{A userspecified adjacency list}
+\item{adj}{Adjacency list of a decomposable graph}
 
 \item{q}{Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)}
 
@@ -29,9 +29,11 @@ A \code{gengraph} object with values:
 A generic method for structure learning in decomposable graphical models
 }
 \examples{
-d <- tgp_dat[1:100, 5:8]
+## All handwritten digits that have true class equal to a "1".
+d <- subset(digits, class == "1")
+d[, "class"] <- NULL
 g <- fit_graph(d)
-# plot(g)
+# plot(g, vertex.size = 1)
 # adj_mat(g)
 # adj_lst(g)
 }
@@ -39,5 +41,5 @@ g <- fit_graph(d)
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}, \code{\link{gengraph}}
+\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
 }

@@ -16,11 +16,12 @@ new_outlier_model <- function(A, sims, mu, sigma, cdf, Cms, Sms) {
   )
 }
 
-new_outlier <- function(m, dev, pv, g) {
+new_outlier <- function(m, dev, pv, cv, a) {
   # m : outlier_model object
-  m$dev  <- dev
-  m$pval <- pv
-  m$g    <- g
+  m$dev    <- dev
+  m$pval   <- pv
+  m$cv     <- cv
+  m$alpha  <- a
   class(m) <- c("outlier", class(m))
   return(m)
 }
@@ -81,6 +82,14 @@ utils::globalVariables('z')
   y
 }
 
+only_1chars <- function(A) {
+  for (i in seq_along(nrow(A))) {
+    for (j in seq_along(ncol(A)))
+      if ( nchar(A[i,j]) != 1L ) return(FALSE)
+  }
+  return(TRUE)
+}
+
 ## ---------------------------------------------------------
 ##                   EXPORTED HELPERS
 ## ---------------------------------------------------------
@@ -95,9 +104,9 @@ utils::globalVariables('z')
 #' @param ncores Number of cores to use in parallelization
 #' @return This function returns a matrix of dimension \code{nsim x ncol(A)} where each row correspond to a simulated observation from a DGM represented by \code{adj}.
 #' @examples
-#' d <- tgp_dat[1:1000, 5:8]
-#' G  <- adj_lst(fit_graph(d))
-#' dgm_sim(as.matrix(d), G, nsim = 100)
+#' d <- subset(digits, class == "1")[1:100, 20:30]
+#' G <- adj_lst(fit_graph(d))
+#' dgm_sim(as.matrix(d), G, nsim = 10)
 #' @export
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
@@ -131,12 +140,38 @@ print.outlier_model <- function(x, ...) {
   )
 }
 
+#' Print outlier
+#'
+#' A print method for \code{outlier} objects
+#'
+#' @param x A \code{outlier} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.outlier <- function(x, ...) {
+  cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
+  cat(
+    "\n --------------------------------",
+    "\n  Simulations:",         length(x$sims),
+    "\n  Variables:",           ncol(x$A),
+    "\n  Observations:",        nrow(x$A),
+    "\n  Estimated mean:",      round(x$mu, 2),
+    "\n  Estimated variance:",  round(x$sigma, 2),
+    "\n    ---------------------------  ",
+    "\n  Critical value:", x$cv,
+    "\n  Deviance:", x$dev,
+    "\n  P-value:", x$pval,
+    "\n  Alpha:", x$alpha,
+    paste0("\n  ", cls),
+    "\n --------------------------------\n"
+  )
+}
+
 #' Calculate deviance
 #'
 #' This function calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic which is also called the deviance
 #'
 #' @param x A \code{outlier_model} object
-#' @param y An observation (Character vector)
+#' @param y An observation (name character vector)
 #' @param ... Not used (for S3 compatability)
 #' @export
 deviance <- function(x, y, ...) {
@@ -201,24 +236,22 @@ pval.outlier_model <- function(x, dz, ...) return(1 - x$cdf(dz))
 #'
 #' Calculate the critical value for test statistic under \code{H_0}
 #'
-#' @param x A \code{outlier_model} object
-#' @param dz The deviance of the observation \code{z}.
+#' @param m A \code{outlier_model} object
 #' @param alpha Significance level (between \code{0} and \code{1})
-#' @param ... Not used (for S3 compatability)
 #' @details The value \code{dz} can be obtained used the \code{deviance} function.
 #' @seealso \code{\link{deviance}}
 #' @export
-cv <- function(x, dz, alpha = 0.05, ...) UseMethod("cv")
+critval <- function(m, alpha = 0.05) UseMethod("critval")
 
-#' @rdname cv
+#' @rdname critval
 #' @export
-cv.outlier_model <- function(x, dz, alpha = 0.05, ...) {
-  # to come
+critval.outlier_model <- function(m, alpha = 0.05) {
+  stats::uniroot(function(x) pval(m, x) - alpha, interval = range(m$sims))$root
 }
 
 #' Mean
 #'
-#' Estimated mean of \code{T(Y)}
+#' Estimated mean of deviance statistic \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
@@ -227,7 +260,7 @@ mean.outlier_model <- function(x, ...) return(x$mu)
 
 #' Variance
 #'
-#' Estimated variance of \code{T(Y)}
+#' Estimated variance of of the deviance statistic \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
@@ -238,3 +271,21 @@ variance <- function(x) UseMethod("variance")
 #' @export
 variance.outlier_model <- function(x, ...) return(x$sigma)
 
+
+#' To Single Chars
+#'
+#' Convert all values in a dataframe or matrix of characters to a single character representation
+#'
+#' @param x Data frame or matrix of characters
+#' @examples
+#' d <- data.frame(x = c("11", "2"), y = c("2", "11"))
+#' to_single_chars(d)
+#' @export
+to_single_chars <- function(x) {
+  ## Implicitly assumes that no columns has more than length(letters) = 26 unique levels
+  apply(x, 2, function(z) {
+    f <- as.factor(z)
+    levels(f) <- letters[1:length(levels(f))]
+    as.character(f)
+  })
+}

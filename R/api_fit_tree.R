@@ -37,7 +37,7 @@ kruskal.tree <- function(x) {
       number_of_nodes_added <- number_of_nodes_added + 1L
     }
   }
-  # FIX: Update CG - the print method is not corr
+  # FIX: Update CG - the print method is not correct
   return(x)
 }
 
@@ -93,19 +93,6 @@ tree_as_fwd <- function(x, df) {
   return(out)  
 }
 
-# #' Fitting a Chow-Liu tree interaction graph
-# #' 
-# #' @description This functions uses Kruskals algorithm to fit a tree structure to variables in \code{df}
-# #' 
-# #' @param df data.frame
-# #' @param wrap Logical indicating if the object should be converted to a \code{fwd} object or not (can increase runtime significantly if FALSE)
-# #' @references \url{https://ieeexplore.ieee.org/abstract/document/1054142}
-# #' @seealso \code{\link{efs}}, \code{\link{efs_step}}, \code{\link{bws}}, \code{\link{bws_step}},\code{\link{adj_list.efs}}, \code{\link{adj_matrix.efs}}
-# #' @examples
-# #' G <- cl_tree(tgp_dat[, 5:8])
-# #' print(G)
-# #' plot(G)
-# #' @export
 fit_tree <- function(x, df, wrap = TRUE) {
   if( wrap ) return( tree_as_fwd(kruskal(x), df) )
   else return( kruskal(x) )

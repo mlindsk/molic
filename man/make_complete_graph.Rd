@@ -13,6 +13,6 @@ make_complete_graph(nodes)
 A helper function to make an adjacency list corresponding to a complete graph
 }
 \examples{
-d  <- tgp_dat[, 5:8]
+d  <- digits[, 5:8]
 cg <- make_complete_graph(colnames(d))
 }

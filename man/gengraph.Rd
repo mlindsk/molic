@@ -24,9 +24,9 @@ A \code{gengraph} object
 A generic method for structure learning in decomposable graphical models
 }
 \examples{
-d <- tgp_dat[1:100, 5:8]
+d <- digits[1:100, 1:5]
 gengraph(d)
 }
 \seealso{
-\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}
+\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}
 }

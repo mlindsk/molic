@@ -15,5 +15,5 @@ variance(x)
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-Estimated variance of \code{T(Y)}
+Estimated variance of of the deviance statistic \code{T(Y)}
 }

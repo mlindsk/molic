@@ -12,3 +12,7 @@ make_null_graph(nodes)
 \description{
 A helper function to make an adjacency list corresponding to a null graph (no edges)
 }
+\examples{
+d  <- digits[, 5:8]
+ng <- make_null_graph(colnames(d))
+}

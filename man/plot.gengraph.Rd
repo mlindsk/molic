@@ -14,3 +14,10 @@
 \description{
 A wrapper around igraphs plot method for \code{gengraph} objects
 }
+\examples{
+d <- subset(digits, class == "1")[, 20:30]
+g <- gengraph(d, type = "fwd")
+plot(g)
+G <- fit_graph(d)
+plot(G)
+}

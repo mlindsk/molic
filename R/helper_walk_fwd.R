@@ -1,6 +1,7 @@
 fwd_init <- function(x, df, q = 0.5) {
   # x : fwd object
-  M     <- nrow(df)
+  M       <- nrow(df)
+  penalty <- log(M)*q + (1 - q)*2
   nodes <- colnames(df)
   n     <- length(nodes)
   pairs <- utils::combn(nodes, 2,  simplify = FALSE)
@@ -10,7 +11,6 @@ fwd_init <- function(x, df, q = 0.5) {
     edge_v <- sort_(v)
     x$MEM[[edge_v]] <<- entropy(df[v])
     ed       <- x$MEM[[v[1]]] + x$MEM[[v[2]]] - x$MEM[[edge_v]]
-    penalty  <- log(M)*q + (1 - q)*2
     dev      <- 2 * M * ed
     d_parms  <- -prod(x$LV[v] - 1)
     d_qic    <- dev + penalty * d_parms
@@ -97,7 +97,7 @@ which_Cp_from_Cx_to_Cab <- function(CG_prime, C_prime_Cx, Cx, vx, Cab, Sab,  cty
     Sn    <- intersect(Cp, Cab)
     Sab_x <- c(Sab, vx)
     if( neq_empt_chr(Sab) ) {
-      if( all(Sp %in% Sab_x) ) { # NOT A PROPER SUBSET!!??
+      if( all(Sp %in% Sab_x) ) {
         add <- c(add, k)
       }
       if( setequal(Sn, Sab_x) && !(any(setdiff(Cp, Sab_x) %in% cty)) ) {
@@ -116,7 +116,8 @@ which_Cp_from_Cx_to_Cab <- function(CG_prime, C_prime_Cx, Cx, vx, Cab, Sab,  cty
 
 update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, mem, LV, q = 0.5, thres = 5) {
   # Cps : C_primes
-  M <- nrow(df)
+  M       <- nrow(df)
+  penalty <- log(M)*q + (1 - q)*2
   sep <- lapply(Cps, function(Cp) {
     Sp          <- intersect(Cp, Cab)
     eligs_Cab   <- setdiff(Cab, Cp)
@@ -124,21 +125,18 @@ update_edges_from_C_primes_to_Cab <- function(df, Cps, Cab, va, vb, mem, LV, q =
     eligs       <- expand.grid(eligs_Cp, eligs_Cab)
     eligs       <- apply(eligs, 1, paste, collapse = "|")
     eligs_names <- eligs
-    ## H_Sp        <- 0L
-    ## if( neq_empt_chr(Sp) ) H_Sp <- mem[[sort_(Sp)]]
     eligs <- sapply(eligs, function(e) {
       el <- entropy_difference(e, Sp, df, mem)
       mem <<- el$mem
       el$ent
     })
     names(eligs) <- eligs_names
-    penalty  <- log(M)*q + (1 - q)*2
     dev <- 2 * M * eligs
     d_parms <- sapply(es_to_vs(names(eligs)), function(x) {
       -prod(LV[x] - 1) * prod(LV[Sp])
     })
     d_qic <- dev + penalty * d_parms
-    list(S = Sp, e = d_qic, C1 = Cp, C2 = Cab)
+    list(C1 = Cp, C2 = Cab, S = Sp, e = d_qic)
   })
   return(list(msi = Filter(neq_null, sep) , mem = mem))
 }

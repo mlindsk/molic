@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-Estimated mean of \code{T(Y)}
+Estimated mean of deviance statistic \code{T(Y)}
 }

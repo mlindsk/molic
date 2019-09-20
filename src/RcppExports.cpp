@@ -189,6 +189,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mcs2
+Rcpp::List mcs2(Rcpp::List& adj);
+RcppExport SEXP _molic_mcs2(SEXP adjSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
+    rcpp_result_gen = Rcpp::wrap(mcs2(adj));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rip2
+Rcpp::List rip2(Rcpp::List& adj);
+RcppExport SEXP _molic_rip2(SEXP adjSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
+    rcpp_result_gen = Rcpp::wrap(rip2(adj));
+    return rcpp_result_gen;
+END_RCPP
+}
 // set_intersect
 VS set_intersect(VS& v1, VS& v2);
 RcppExport SEXP _molic_set_intersect(SEXP v1SEXP, SEXP v2SEXP) {
@@ -290,6 +312,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_molic_perfect_cliques", (DL_FUNC) &_molic_perfect_cliques, 1},
     {"_molic_perfect_separators", (DL_FUNC) &_molic_perfect_separators, 1},
     {"_molic_rip", (DL_FUNC) &_molic_rip, 1},
+    {"_molic_mcs2", (DL_FUNC) &_molic_mcs2, 1},
+    {"_molic_rip2", (DL_FUNC) &_molic_rip2, 1},
     {"_molic_set_intersect", (DL_FUNC) &_molic_set_intersect, 2},
     {"_molic_set_union", (DL_FUNC) &_molic_set_union, 2},
     {"_molic_set_diff", (DL_FUNC) &_molic_set_diff, 2},

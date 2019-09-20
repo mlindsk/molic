@@ -5,7 +5,7 @@
 #' @param x Character matrix
 #' @seealso \code{\link{csptable}}
 #' @examples
-#' sptable(as.matrix(tgp_dat[, 5:8]))
+#' sptable(as.matrix(digits[, 1:2]))
 #' @export
 sptable <- function(x) {
   stopifnot(is.matrix(x))
@@ -23,8 +23,9 @@ sptable <- function(x) {
 #' @description The names of \code{b} are the fixed values of the variables corresponding to the indicies
 #' @seealso \code{\link{sptable}}
 #' @examples
-#' sp <- sptable(as.matrix(tgp_dat[, 5:8]))
-#' y  <- structure(c(1, 3), names = c("T", "T"))
+#' sp <- sptable(as.matrix(digits[, 1:3]))
+#' sp
+#' y  <- structure(2, names = "a")
 #' csptable(sp, y)
 #' @export
 csptable <- function(x, b) {
@@ -52,15 +53,3 @@ print.sptable <- function(x, ...) {
     cat(paste0(cells[i], " : ", x[i]),"\n")
   }
 }
-
-## #' Print csptable 
-## #'
-## #' A print method for \code{csptable} objects
-## #'
-## #' @param x A \code{csptable} object
-## #' @param ... Not used (for S3 compatability)
-## #' @export
-## print.csptable <- function(x, ...) {
-##   ## TODO: Print the conditional information
-##   print.sptable(x, ...)
-## }

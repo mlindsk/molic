@@ -1,5 +1,5 @@
 na_tab <- function(df, a) {
-  ct <- table(df[, a])
+  ct <- table(df[, a, drop = FALSE])
   names(dimnames(ct)) <- a # Needed for the onedimensional separators
   ct
 }
@@ -29,8 +29,7 @@ joint_entropy2 <- function(df) {
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A numeric
 #' @examples
-#' # Joint entropy over five variables in tgp_dat
-#' entropy(tgp_dat[, 5:9])
+#' entropy(digits[1:100, 1:3])
 #' 
 #' @export
 entropy <- function(df, thres = 5) {

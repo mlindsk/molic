@@ -137,3 +137,64 @@ Rcpp::List rip(Rcpp::List & adj) {
   Rcpp::List ps = perfect_separators(pc);
   return Rcpp::List::create(Rcpp::_["C"] = pc , Rcpp::_["S"] = ps);
 }
+
+
+// -------------------------------------------------------------------------
+// Used in backward selection where we dont need to test for decomposability
+// -------------------------------------------------------------------------
+// [[Rcpp::export]]
+Rcpp::List mcs2(Rcpp::List & adj) {
+  VS  nodes = adj.names();
+  int N = nodes.size();
+  // Raise a WARNING if adj is the empty graph
+  // if( !( N - 1 )) return VS(nodes[0]);
+  std::unordered_map<std::string, int> labels; // = {};
+  for( int i = 0; i < N; i++ ) {
+    labels.emplace(nodes[i], 0);
+  }
+  VVS ps(N);
+  decltype(nodes) remaining_nodes = nodes;
+  decltype(nodes) used_nodes(N, "");
+  auto v = nodes[0];
+  used_nodes[0] = v;
+  ps[0] = {v};
+  remaining_nodes.erase(remaining_nodes.begin()+0);
+  for( int i = 1; i < N; i++ ) {
+    auto ne_i = Rcpp::as<VS>(adj[v]);
+    // Increment neighbor nodes with a one
+    for (auto it = ne_i.begin(); it != ne_i.end(); ++it) {
+      auto ne_ = labels.find(*it);
+      ne_->second++;
+    }
+    std::string max_v;
+    int max_val = -1;
+    VS::iterator max_it;
+    for (auto it = remaining_nodes.begin(); it != remaining_nodes.end(); ++it) {
+      auto rn = labels.find(*it);
+      int max_candidate = rn->second;
+      if( max_candidate > max_val ) {
+	max_v   = *it;
+	max_val = max_candidate;
+	max_it  = it;
+      }
+    }
+    v = max_v;
+    used_nodes[i] = v;
+    remaining_nodes.erase(max_it);
+    auto ne_v = Rcpp::as<VS>(adj[v]);
+    ne_v.push_back(v); // The closure of v
+    VS anc    = VS(used_nodes.begin(), used_nodes.begin() + i + 1);
+    VS B_i     = set_intersect(ne_v, anc);
+    ps[i] = B_i;
+  }
+  return Rcpp::List::create(Rcpp::_["po"] = used_nodes , Rcpp::_["ps"] = ps);
+}
+
+// [[Rcpp::export]]
+Rcpp::List rip2(Rcpp::List & adj) {
+  auto  z = mcs2(adj);
+  VVS pseq = z["ps"];
+  VVS pc   = perfect_cliques(pseq);
+  Rcpp::List ps = perfect_separators(pc);
+  return Rcpp::List::create(Rcpp::_["C"] = pc , Rcpp::_["S"] = ps);
+}

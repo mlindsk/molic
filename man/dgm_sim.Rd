@@ -22,7 +22,7 @@ This function returns a matrix of dimension \code{nsim x ncol(A)} where each row
 This function simulates observations from a DGM
 }
 \examples{
-d <- tgp_dat[1:1000, 5:8]
-G  <- adj_lst(fit_graph(d))
-dgm_sim(as.matrix(d), G, nsim = 100)
+d <- subset(digits, class == "1")[1:100, 20:30]
+G <- adj_lst(fit_graph(d))
+dgm_sim(as.matrix(d), G, nsim = 10)
 }

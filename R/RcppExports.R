@@ -99,6 +99,14 @@ rip <- function(adj) {
     .Call('_molic_rip', PACKAGE = 'molic', adj)
 }
 
+mcs2 <- function(adj) {
+    .Call('_molic_mcs2', PACKAGE = 'molic', adj)
+}
+
+rip2 <- function(adj) {
+    .Call('_molic_rip2', PACKAGE = 'molic', adj)
+}
+
 set_intersect <- function(v1, v2) {
     .Call('_molic_set_intersect', PACKAGE = 'molic', v1, v2)
 }

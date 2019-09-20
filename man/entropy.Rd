@@ -18,7 +18,6 @@ A numeric
 Calculates the joint entropy over discrete variables in \code{df}
 }
 \examples{
-# Joint entropy over five variables in tgp_dat
-entropy(tgp_dat[, 5:9])
+entropy(digits[1:100, 1:3])
 
 }

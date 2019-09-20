@@ -62,13 +62,11 @@ colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "clas
 ``` r
 vgood_cars <- car %>%
   filter(class == "vgood") %>%
-  select(-class) %>%
-  mutate_all(.funs = function(x) substr(x, 1, 1)) # All values _must_ be a single character!
+  select(-class)
 
 unacc_cars <- car %>%
   filter(class == "unacc") %>%
-  select(-class) %>%
-  mutate_all(.funs = function(x) substr(x, 1, 1))
+  select(-class)
 ```
 
 ### Fitting an Interaction Graph
@@ -76,7 +74,7 @@ unacc_cars <- car %>%
 The `efs` algorithm is a **forward** model selection algorithm. This means, that the algorithm starts from the **null-graph** with no edges and keep adding edges until a stopping criterion is met. We fit the interaction graph for the `vgood` cars and plot the result.
 
 ``` r
-G_vgood  <- efs(vgood_cars, p = 0, trace = FALSE) # AIC (p = 0) and BIC (p = 1)
+G_vgood  <- fit_graph(vgood_cars, q = 0.5, trace = FALSE) # AIC (q = 0) and BIC (q = 1)
 plot(G_vgood)
 ```
 
@@ -85,7 +83,7 @@ plot(G_vgood)
 For comparison we also fit the interaction graph for the `unacc_cars`
 
 ``` r
-G_unacc  <- efs(unacc_cars, p = 0, trace = FALSE)
+G_unacc  <- fit_graph(unacc_cars, q = 0.5, trace = FALSE)
 plot(G_unacc)
 ```
 
@@ -95,37 +93,48 @@ It is apparent that very good cars and unacceptable cars are determined by two d
 
 ### Outlier Test
 
-We randomly select five cars from the `unacc_cars` data and test if they are outliers in `vgood_cars`.
+We randomly select a car from the `unacc_cars` data and test if it is an outlier in `vgood_cars`.
 
 ``` r
 set.seed(7)
 # Five random observations from the unacc_cars data
-zs    <- sample_n(unacc_cars, 5)
-
-# A vector indicating whether not each of the 5 observations is an outlier in vgood_cars
-outs  <- vector(length = 5)
-
-# The result
-sapply(seq_along(outs), function(i) {
-  z   <- unlist(zs[i, ])
-  # Include z in vgood_cars (the hypothesis is, that z belongs here)
-  D_z <- as.matrix(vgood_cars %>% bind_rows(z))
-  M   <- outlier_model(D_z, adj_list(G_vgood), nsim = 5000)
-  p   <- p_val(M, deviance(M, z))
-  ifelse(p <= 0.05, TRUE, FALSE)  # significance level = 0.05 used
-})
-#> [1] TRUE TRUE TRUE TRUE TRUE
+z <- sample_n(unacc_cars, 1) %>% unlist()
+M <- fit_outlier(as.matrix(vgood_cars), z, adj_lst(G_vgood))
+#>   Note: A has values larger than a single character. to_single_chars() was used to correct this
+M
+#> 
+#>  -------------------------------- 
+#>   Simulations: 5000 
+#>   Variables: 6 
+#>   Observations: 66 
+#>   Estimated mean: -16.22 
+#>   Estimated variance: 0.78 
+#>     ---------------------------   
+#>   Critical value: -15.57848 
+#>   Deviance: -3.350997 
+#>   P-value: 0 
+#>   Alpha: 0.05 
+#>   <outlier, outlier_model, list> 
+#>  --------------------------------
 ```
 
-All five randomly selected cars are thus declared outliers on a 0.05 significance level.
+Thus the car is declared an outlier on a 0.05 significance level. We can visualize this by plotting the corresponding density of the deviance statistic as
+
+``` r
+pmf(M)
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+and verify that the estimated deviance of the selected car is -3.3509971 which is smaller than the critical value of -15.5784775.
 
 Example - Variable Selection
 ----------------------------
 
-The `efs` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
+The `fit_graph` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.
 
 ``` r
-G_car <- efs(car, p = 0, trace = FALSE)
+G_car <- fit_graph(car, trace = FALSE)
 plot(G_car)
 ```
 
@@ -134,14 +143,8 @@ plot(G_car)
 So the class of a car is actually determined by all variables except for `doors` (the number of doors in the car). The neighbors of `class` can be extracted as follows
 
 ``` r
-adj_list(G_car)$class
+adj_lst(G_car)$class
 #> [1] "safety"  "persons" "buying"  "maint"   "lug"
 ```
 
-<!-- We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as _conditional independence_.  -->
-<!-- We could also use the **backward** selection algorithm and start from the **complete graph** where all edges are included and remove edges until a stopping criterion is met. -->
-<!-- ```{r var-select2, fig.align = "center"} -->
-<!-- G_complete <- make_complete_graph(colnames(car)) -->
-<!-- G_car2 <- bws(car, G_complete, p = 0, trace = FALSE) -->
-<!-- plot(G_car2) -->
-<!-- ``` -->
+We can also state e.g. that the `safety` of a car is independent of the price (the `buying` varible) when the class of the car is known; this phenomena is also known as *conditional independence*.

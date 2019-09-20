@@ -14,8 +14,8 @@ new_gengraph <- function(df, adj, ...) {
 new_bwd <- function(df, adj = NULL, q = 0.5) {
   if(is.null(adj)) adj <- make_complete_graph(colnames(df))
   g    <- new_gengraph(df, adj)
-  g$CG <- rip(adj)$C  # Use a rip version without check for decomposability
-  g$e  <- NULL        # The newly deleted edge
+  g$CG <- rip2(adj)$C
+  g$e  <- NULL # The newly deleted edge
   structure(g, class = c("bwd", class(g)))
 }
 
@@ -44,7 +44,7 @@ new_tree <- function(df) {
   structure(g, class = c("tree", class(g)))
 }
 
-new_edge <- function(e = character(0), d_qic = numeric(0), idx = integer(0), ins = vector("integer", 2L)) {
+new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector("integer", 2L)) {
   # e     : edge to be deletede or added
   # d_aic : entropy difference in the two competing models
   # idx   : in fwd procedure this is the index in MSI where e lives
@@ -61,9 +61,9 @@ new_edge <- function(e = character(0), d_qic = numeric(0), idx = integer(0), ins
 #' @param ... Not used (for extendibility)
 #' @return A \code{gengraph} object
 #' @examples
-#' d <- tgp_dat[1:100, 5:8]
+#' d <- digits[1:100, 1:5]
 #' gengraph(d)
-#' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{step.fwd}}, \code{\link{step.bwd}}
+#' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}
 #' @export
 gengraph <- function(df, type = "fwd", adj = NULL, q = 0.5, ...) {
   switch(type,

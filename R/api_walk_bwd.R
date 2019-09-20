@@ -6,11 +6,19 @@
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
 #' @return A \code{bwd} object (a subclass of \code{gengraph})
 #' @details A \code{bwd} object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
-#' @seealso \code{\link{fit_graph}}, \code{\link{step.fwd}}, \code{\link{gengraph}}
+#' @examples
+#' d <- subset(digits, class == "1")[, 20:30]
+#' g <- gengraph(d, type = "bwd")
+#' s <- walk(g, d)
+#' # plot(s)
+#' # adj_mat(s)
+#' # adj_lst(s)
+#' @seealso \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{gengraph}}
 #' @export
-step.bwd <- function(x, df, q = 0.5, thres = 5) {
+walk.bwd <- function(x, df, q = 0.5, thres = 5) {
   nodes   <- names(x$G_adj)
   M       <- nrow(df)
+  penalty <- log(M)*q + (1 - q)*2 
   e_min   <- Inf
   for( i in 1:ncol(x$G_A) ) {
     for( j in 1:i ) {
@@ -31,8 +39,7 @@ step.bwd <- function(x, df, q = 0.5, thres = 5) {
           S     <- intersect(Ca, Cb)
           sp    <- sort_(pair)
           ed    <- entropy_difference(sp, S, df, x$MEM, thres)
-          x$MEM <- ed$mem
-          penalty     <- log(M)*q + (1 - q)*2
+          x$MEM       <- ed$mem
           HM_HM_prime <- ed$ent
           dev         <- 2*M*HM_HM_prime
           d_parms     <- -prod(x$LV[pair] - 1) * prod(x$LV[S])
@@ -51,6 +58,6 @@ step.bwd <- function(x, df, q = 0.5, thres = 5) {
   del_idx <- match(x$e, colnames(x$G_A))
   x$G_A[del_idx[1], del_idx[2]] <- 0L
   x$G_A[del_idx[2], del_idx[1]] <- 0L
-  x$CG <- rip(x$G_adj)$C
+  x$CG <- rip2(x$G_adj)$C
   return(x)
 }
