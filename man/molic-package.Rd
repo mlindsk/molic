@@ -7,20 +7,7 @@
 \title{molic: Multivariate Ouliterdetection In Contingency Tables}
 \description{
 The molic package has two main functionalities: outlier detection in contingency tables and model selection in decomposable grahs.
-}
-\section{Decomposable Graphical Models}{
-
-TBA
-}
-
-\section{The Outlier Model}{
-
-TBA
-}
-
-\examples{
-# TBA
-
+#'
 }
 \author{
 \strong{Maintainer}: Mads Lindskou \email{mads@math.aau.dk}

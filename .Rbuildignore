@@ -2,6 +2,7 @@ tests
 examples
 docs
 paper
+R/TAGS
 src/GPATH
 src/GRTAGS
 src/GTAGS
@@ -15,3 +16,4 @@ TODO\.org
 ^README\.Rmd$
 ^README.html$
 ^appveyor\.yml$
+^data-raw$
