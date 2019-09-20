@@ -9,10 +9,6 @@ About molic
 
 An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
 
-NOTE
----------------
-Please note, that the **molic** is, at the moment, undergoing a major change in API. You can use the package as is for now for explorative purposes, but you should wait a couple of weeks for the final version. As an example, the `efs` procedure will be replaced with the more general function `fit_graph` with argument `type = "fwd"` (where `fwd` stands for forward). Backward selection and fitting a tree to data is similarily replace with `fit_graph` with type `bwd` and `tree` respectively.
-
 Getting Started
 ---------------
 

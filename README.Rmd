@@ -112,7 +112,6 @@ z <- sample_n(unacc_cars, 1) %>% unlist()
 M <- fit_outlier(as.matrix(vgood_cars), z, adj_lst(G_vgood))
 M
 ```
-
 Thus the car is declared an outlier on a $0.05$ significance level. We can visualize this by plotting the corresponding density of the deviance statistic as
 
 ```{r}
