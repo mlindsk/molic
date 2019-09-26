@@ -2,10 +2,10 @@
 % Please edit documentation in R/api_fit_outlier.R
 \name{fit_outlier}
 \alias{fit_outlier}
-\title{Outlier Test}
+\title{Fit Outlier}
 \usage{
-fit_outlier(A, z, adj, type = "fwd", alpha = 0.05, nsim = 5000,
-  ncores = 1, validate = TRUE)
+fit_outlier(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1,
+  validate = TRUE)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -13,8 +13,6 @@ fit_outlier(A, z, adj, type = "fwd", alpha = 0.05, nsim = 5000,
 \item{z}{Named vector (same names as \code{colnames(A)})}
 
 \item{adj}{Adjacency list of a decomposable graph}
-
-\item{type}{Character ("fwd", "bwd", "tree")}
 
 \item{alpha}{The significance level}
 
@@ -25,23 +23,31 @@ fit_outlier(A, z, adj, type = "fwd", alpha = 0.05, nsim = 5000,
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
 }
 \description{
-A convinient wrapper around the \code{outlier_model} for outlier detection
+A convinient wrapper around the \code{outlier_model} for doing outlier test
 }
 \examples{
+\dontrun{
+library(dplyr)
+
 # All handwritten digits that have true class equal to a "1".
-d <- subset(digits, class == "1")
-d[, "class"] <- NULL
+d <- digits \%>\%
+  filter(class == "1") \%>\%
+  select(-class)
 
 # A handwritten digit with true class equal to "7"
-zd <- subset(digits, class == "7")
-z  <- unlist(zd[1, 1:(ncol(zd)-1)])
+z <- digits \%>\%
+  filter(class == "7") \%>\%
+  select(-class) \%>\%
+  slice(1) \%>\%
+  unlist()
 
 # Fit an interaction graph
-G <- fit_graph(d)
-plot(G, vertex.size = 1)
+G <- fit_graph(d, trace = FALSE)
+plot(G, vertex.size = 1.5)
 
 # Test if z is an outlier
-M <- fit_outlier(as.matrix(d), z, adj_lst(G))
-M
-pmf(M)
+m <- fit_outlier(as.matrix(d), z, adj_lst(G))
+print(m)
+pmf(m)
+}
 }

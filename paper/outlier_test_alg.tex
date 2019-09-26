@@ -10,10 +10,10 @@
 \centering
 \begin{algorithmic}[1]
   \Procedure{}{$D$: data, $z:$ new obs.}
-  \State $G:=$ \texttt{efs(D)} 
+  \State $G:=$ \texttt{fit\textunderscore graph(D)} 
   \State $D_z :=$ $D$ with $z$ included
-  \State $M:=$ \texttt{outlier\textunderscore model(D\textunderscore z, G)}
-  \State $p:=$ \texttt{p\textunderscore val(M, deviance(M, z))}
+  \State $M:=$ \texttt{fit\textunderscore outlier(D\_ z, G)}
+  \State $p:=$ \texttt{pval(M, deviance(M, z))}
   \State \textbf{return} $p$
   \EndProcedure
 \end{algorithmic}

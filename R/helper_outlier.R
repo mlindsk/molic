@@ -26,6 +26,32 @@ new_outlier <- function(m, dev, pv, cv, a) {
   return(m)
 }
 
+new_mixed_outlier <- function(m, dev, pv, cv, a) {
+  # m : outlier_model object
+  m <- new_outlier(m, dev, pv, cv, a)
+  class(m) <- c("mixed_outlier", class(m))
+  return(m)
+}
+
+convolute <- function(m1, m2) {
+  # m1 and m2 : outlier_model objects
+  .sims <- m1$sims + m2$sims
+  .cdf  <- stats::ecdf(.sims)
+  .mu   <- m1$mu + m2$mu
+  .sig  <- m1$sigma + m2$sigma
+  m     <- new_outlier_model(rbind(m1$A, m2$A), .sims, .mu, .sig, .cdf, NULL, NULL)
+  return(m)
+}
+
+only_single_chars <- function(A) {
+  for (i in seq_along(nrow(A))) {
+    for (j in seq_along(ncol(A)))
+      if ( nchar(A[i,j]) != 1L ) return(FALSE)
+  }
+  return(TRUE)
+}
+
+
 ## Shut up CRAN check - foreach and z are good friends!
 utils::globalVariables('z') 
 
@@ -82,14 +108,6 @@ utils::globalVariables('z')
   y
 }
 
-only_1chars <- function(A) {
-  for (i in seq_along(nrow(A))) {
-    for (j in seq_along(ncol(A)))
-      if ( nchar(A[i,j]) != 1L ) return(FALSE)
-  }
-  return(TRUE)
-}
-
 ## ---------------------------------------------------------
 ##                   EXPORTED HELPERS
 ## ---------------------------------------------------------
@@ -104,9 +122,18 @@ only_1chars <- function(A) {
 #' @param ncores Number of cores to use in parallelization
 #' @return This function returns a matrix of dimension \code{nsim x ncol(A)} where each row correspond to a simulated observation from a DGM represented by \code{adj}.
 #' @examples
-#' d <- subset(digits, class == "1")[1:100, 20:30]
+#'
+#' \dontrun{
+#' 
+#' library(dplyr)
+#' 
+#' d <- digits %>%
+#'   filter(class == "1") %>%
+#'   select(-class)
 #' G <- adj_lst(fit_graph(d))
 #' dgm_sim(as.matrix(d), G, nsim = 10)
+#'
+#' }
 #' @export
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
@@ -117,7 +144,6 @@ dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   row.names(out) <- NULL
   return(out)
 }
-
 
 #' Print outlier model
 #'
@@ -183,7 +209,6 @@ deviance <- function(x, y, ...) {
 deviance.outlier_model <- function(x, y,...) {
   TY(y, x$Cms, x$Sms)
 }
-
 
 #' Plot of pmf
 #'

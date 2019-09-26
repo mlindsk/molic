@@ -87,7 +87,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/outlier_model.html">The Outlier Model</a>
+      <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
+    </li>
+    <li>
+      <a href="../articles/outlier_intro.html">The Outlier Model</a>
     </li>
   </ul>
 </li>
@@ -127,13 +130,13 @@
       <tr>
         
         <td>
-          <p><code><a href="adj_list.html">adj_list()</a></code> </p>
+          <p><code><a href="adj_lst.html">adj_lst()</a></code> </p>
         </td>
         <td><p>Adjacency List</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="adj_matrix.html">adj_matrix()</a></code> </p>
+          <p><code><a href="adj_mat.html">adj_mat()</a></code> </p>
         </td>
         <td><p>Adjacency Matrix</p></td>
       </tr><tr>
@@ -151,33 +154,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="bws.html">bws()</a></code> </p>
-        </td>
-        <td><p>Backward selection in decomposable graphical models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="bws_init.html">bws_init()</a></code> </p>
-        </td>
-        <td><p>Construct a bws object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="bws_step.html">bws_step()</a></code> </p>
-        </td>
-        <td><p>Stepwise backward selection in decomposable graphical models</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="cdf.html">cdf()</a></code> </p>
         </td>
         <td><p>Emprical distribution function</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="cl_tree.html">cl_tree()</a></code> </p>
+          <p><code><a href="critval.html">critval()</a></code> </p>
         </td>
-        <td><p>Fitting a Chow-Liu tree interaction graph</p></td>
+        <td><p>Critical value</p></td>
       </tr><tr>
         
         <td>
@@ -205,27 +190,39 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="efs.html">efs()</a></code> </p>
+          <p><code><a href="digits.html">digits</a></code> </p>
         </td>
-        <td><p>Efficient forward selection in decomposable graphical models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="efs_init.html">efs_init()</a></code> </p>
-        </td>
-        <td><p>Initialize EFS</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="efs_step.html">efs_step()</a></code> </p>
-        </td>
-        <td><p>Stepwise efficient forward selection in decomposable graphical models</p></td>
+        <td><p>A data frame observations corresponding to handwritten digits</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="entropy.html">entropy()</a></code> </p>
         </td>
         <td><p>Joint Entropy</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fit_graph.html">fit_graph()</a></code> </p>
+        </td>
+        <td><p>Fit a decomposable graphical model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fit_mixed_outlier.html">fit_mixed_outlier()</a></code> </p>
+        </td>
+        <td><p>Mixed Outlier Test</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fit_outlier.html">fit_outlier()</a></code> </p>
+        </td>
+        <td><p>Fit Outlier</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="gengraph.html">gengraph()</a></code> </p>
+        </td>
+        <td><p>A generic and extendable structure for decomposable graphical models</p></td>
       </tr><tr>
         
         <td>
@@ -238,6 +235,12 @@
           <p><code><a href="make_complete_graph.html">make_complete_graph()</a></code> </p>
         </td>
         <td><p>Make a complete graph</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="make_null_graph.html">make_null_graph()</a></code> </p>
+        </td>
+        <td><p>Make a null graph</p></td>
       </tr><tr>
         
         <td>
@@ -265,21 +268,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="p_val.html">p_val()</a></code> </p>
+          <p><code><a href="plot.gengraph.html">plot(<i>&lt;gengraph&gt;</i>)</a></code> </p>
         </td>
-        <td><p>P-value</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.bws.html">plot(<i>&lt;bws&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot bws</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.efs.html">plot(<i>&lt;efs&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot efs</p></td>
+        <td><p>Plot</p></td>
       </tr><tr>
         
         <td>
@@ -289,21 +280,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="print.bws.html">print(<i>&lt;bws&gt;</i>)</a></code> </p>
+          <p><code><a href="print.gengraph.html">print(<i>&lt;gengraph&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Print bws</p></td>
+        <td><p>Print</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="print.csptable.html">print(<i>&lt;csptable&gt;</i>)</a></code> </p>
+          <p><code><a href="print.outlier.html">print(<i>&lt;outlier&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Print csptable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.efs.html">print(<i>&lt;efs&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print efs</p></td>
+        <td><p>Print outlier</p></td>
       </tr><tr>
         
         <td>
@@ -315,13 +300,19 @@
         <td>
           <p><code><a href="print.sptable.html">print(<i>&lt;sptable&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Print sptable</p></td>
+        <td><p>Print table</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="print.tree.html">print(<i>&lt;tree&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Print tree</p></td>
+        <td><p>Print</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pval.html">pval()</a></code> </p>
+        </td>
+        <td><p>P-value</p></td>
       </tr><tr>
         
         <td>
@@ -355,9 +346,33 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="to_single_chars.html">to_single_chars()</a></code> </p>
+        </td>
+        <td><p>To Single Chars</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="variance.html">variance()</a></code> </p>
         </td>
         <td><p>Variance</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="walk.html">walk()</a></code> </p>
+        </td>
+        <td><p>Stepwise model selection</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="walk.bwd.html">walk(<i>&lt;bwd&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Stepwise backward selection</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="walk.fwd.html">walk(<i>&lt;fwd&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Stepwise efficient forward selection in decomposable graphical models</p></td>
       </tr>
     </tbody>
     </table>

@@ -19,7 +19,8 @@ fwd_init <- function(x, df, q = 0.5) {
     }
     list(C1 = v[1], C2 = v[2], S = character(0L), e = structure(ed, names = edge_v))
   })
-  attr(x$e, "ins") <- match(es_to_vs(x$e)[[1]], x$CG)
+  # If the null graph is the best, d_qic = 0 and x$e = character(0)
+  if (neq_empt_chr(as.vector(x$e))) attr(x$e, "ins") <- match(es_to_vs(x$e)[[1]], x$CG)
   return(x)
 }
 

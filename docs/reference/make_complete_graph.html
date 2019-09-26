@@ -89,7 +89,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/outlier_model.html">The Outlier Model</a>
+      <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
+    </li>
+    <li>
+      <a href="../articles/outlier_intro.html">The Outlier Model</a>
     </li>
   </ul>
 </li>
@@ -128,27 +131,15 @@
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='bws.html'>bws</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>d</span>  <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]
-<span class='no'>cg</span> <span class='kw'>&lt;-</span> <span class='fu'>make_complete_graph</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>))
-<span class='no'>bi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='bws_init.html'>bws_init</a></span>(<span class='no'>d</span>, <span class='no'>cg</span>)
-<span class='fu'><a href='bws_step.html'>bws_step</a></span>(<span class='no'>d</span>, <span class='no'>bi</span>)</div><div class='output co'>#&gt;  A Decomposable Graph With 
-#&gt;  ------------------------- 
-#&gt;   Nodes: 4 
-#&gt;   Edges: 5 / 6 
-#&gt;   Cliques: 2 
-#&gt;   &lt;bws&gt; 
-#&gt;  -------------------------</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>d</span>  <span class='kw'>&lt;-</span> <span class='no'>digits</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]
+<span class='no'>cg</span> <span class='kw'>&lt;-</span> <span class='fu'>make_complete_graph</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

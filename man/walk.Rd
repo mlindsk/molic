@@ -19,17 +19,23 @@ walk(x, df, q, thres)
 Stepwise model selection in decomposable graphical models
 }
 \details{
-A \code{bwd} (or \code{fwd}) object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
+A \code{fwd} (or \code{bwd}) object can be created using the \code{gengraph} constructor with \code{type = "fwd"}.
 }
 \examples{
-d <- subset(digits, class == "1")[, 30:35]
-gb <- gengraph(d, type = "bwd")
-gf <- gengraph(d, type = "fwd")
-wb <- walk(gb, d)
-wf <- walk(gf, d)
-# plot(wf)
-# adj_mat(wf)
-# adj_lst(wf)
+\dontrun{
+
+library(dplyr)
+
+d <- digits \%>\%
+  filter(class == "1")
+
+g <- gengraph(d, type = "fwd")
+s <- walk(g, d)
+print(s)
+plot(s)
+adj_lst(s)
+adj_mat(s)
+}
 }
 \seealso{
 \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{gengraph}}

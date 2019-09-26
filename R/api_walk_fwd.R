@@ -8,12 +8,19 @@
 #' @details A \code{fwd} object can be created using the \code{gengraph} constructor with \code{type = "fwd"}
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 #' @examples
-#' d <- subset(digits, class == "1")[, 20:30]
+#' \dontrun{
+#' library(dplyr)
+#' 
+#' d <- digits %>%
+#'   filter(class == "1")
+#'
 #' g <- gengraph(d, type = "fwd")
 #' s <- walk(g, d)
-#' # plot(s)
-#' # adj_mat(s)
-#' # adj_lst(s)
+#' print(s)
+#' plot(s)
+#' adj_lst(s)
+#' adj_mat(s)
+#' }
 #' @seealso \code{\link{fit_graph}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
 #' @export
 walk.fwd <- function(x, df, q = 0.5, thres = 5) {

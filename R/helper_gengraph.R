@@ -8,13 +8,13 @@ msg <- function(k, complete, val, stop_crit) {
 
 trivial <- function(x, null, complete) {
   # x: gengraph
-  if( inherits(x, "bwd") ) return(null) 
-  if( inherits(x, "fwd") ) return(complete)
+  if (inherits(x, "bwd")) return(null) 
+  if (inherits(x, "fwd")) return(complete)
 }
 
 update_iteration <- function(x) {
   # x: gengraph
-  if( inherits(x, "bwd") ) {
+  if (inherits(x, "bwd")) {
     f <- function(k) return(k - 1L)
     return(f)
   }
@@ -26,12 +26,12 @@ update_iteration <- function(x) {
 
 stop_condition <- function(x) {
   # x: gengraph
-  if( inherits(x, "bwd") ) {
-    f <- function(stop_val) return( stop_val >= 0L)
+  if (inherits(x, "bwd")) {
+    f <- function(stop_val) return(stop_val >= 0L)
     return(f)
   }
-  if( inherits(x, "fwd") ) {
-    f <- function(stop_val) return( stop_val <= 0L)
+  if (inherits(x, "fwd")) {
+    f <- function(stop_val) return(stop_val <= 0L)
     return(f)
   }  
 }
@@ -45,16 +45,22 @@ stop_condition <- function(x) {
 #' @param df data.frame
 #' @param q Penalty term in the stopping criterion  (\code{0} = AIC and \code{1} = BIC)
 #' @param thres A threshold mechanism for choosing between two different ways of calculating the entropy. Can Speed up the procedure with the "correct" value.
-#' @details A \code{bwd} (or \code{fwd}) object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
+#' @details A \code{fwd} (or \code{bwd}) object can be created using the \code{gengraph} constructor with \code{type = "fwd"}. 
 #' @examples
-#' d <- subset(digits, class == "1")[, 30:35]
-#' gb <- gengraph(d, type = "bwd")
-#' gf <- gengraph(d, type = "fwd")
-#' wb <- walk(gb, d)
-#' wf <- walk(gf, d)
-#' # plot(wf)
-#' # adj_mat(wf)
-#' # adj_lst(wf)
+#' \dontrun{
+#'
+#' library(dplyr)
+#' 
+#' d <- digits %>%
+#'   filter(class == "1")
+#'
+#' g <- gengraph(d, type = "fwd")
+#' s <- walk(g, d)
+#' print(s)
+#' plot(s)
+#' adj_lst(s)
+#' adj_mat(s)
+#' }
 #' @seealso \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{gengraph}}
 #' @export
 walk <- function(x, df, q, thres) UseMethod("walk")

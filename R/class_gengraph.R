@@ -1,10 +1,10 @@
 # Give more arguments so we can call these constructors in the internal functions
-new_gengraph <- function(df, adj, ...) {
+new_gengraph <- function(df, adj, cg = NULL, ...) {
   if( !setequal(colnames(df), names(adj)) ) stop("column names of df does not correspond to adj")
   structure(list(
     G_adj = adj,                                            # Graph as adjacency list
     G_A   = as_adj_mat(adj),                                # Graph as adjacency matrix
-    CG    = NULL,                                           # Clique list
+    CG    = cg,                                             # Clique list
     LV    = vapply(df, function(x) length(unique(x)), 1L),  # Level vector (for stopping criteria)
     MEM   = new.env(hash = TRUE)),                          # Memoiser - saving entropies to reuse
     class = c("gengraph", "list")
@@ -22,7 +22,7 @@ new_bwd <- function(df, adj = NULL, q = 0.5) {
 new_fwd <- function(df, adj = NULL, q = 0.5) {
   is_graph_null <- is.null(adj)
   if( is_graph_null ) adj <- make_null_graph(colnames(df))
-  g      <- new_gengraph(df, adj)
+  g <- new_gengraph(df, adj)
   if( is_graph_null ) {
     g$CG_A <- as_adj_mat(make_complete_graph(colnames(df))) # Can be more efficient!
     g$CG   <- as.list(names(adj))
@@ -52,23 +52,26 @@ new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector
   structure(e, d_qic = d_qic, idx = idx, ins = ins)
 }
 
-#' Fit a decomposable graphical model
-#' @description A generic method for structure learning in decomposable graphical models
+#' A generic and extendable structure for decomposable graphical models
+#' @description A generic structure for decomposable graphical models
 #' @param df data.frame
-#' @param type character ("fwd", "bwd", "tree")
+#' @param type character ("fwd", "bwd", "tree", "gen")
 #' @param adj A userspecified adjacency list
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
 #' @param ... Not used (for extendibility)
-#' @return A \code{gengraph} object
+#' @return A child class of a \code{gengraph} object
 #' @examples
-#' d <- digits[1:100, 1:5]
-#' gengraph(d)
+#' \dontrun{
+#' gengraph(digits, type = "bwd")
+#' gengraph(digits, make_null_graph(colnames(digits)), type = "gen")
+#' }
 #' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}
 #' @export
 gengraph <- function(df, type = "fwd", adj = NULL, q = 0.5, ...) {
   switch(type,
     "fwd"  = new_fwd(df, adj, q),
     "bwd"  = new_bwd(df, adj, q),
-    "tree" = new_tree(df)
+    "tree" = new_tree(df),
+    "gen"  = new_gengraph(df, adj, cg = rip(adj)$C)
   ) 
 }

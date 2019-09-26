@@ -89,7 +89,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/outlier_model.html">The Outlier Model</a>
+      <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
+    </li>
+    <li>
+      <a href="../articles/outlier_intro.html">The Outlier Model</a>
     </li>
   </ul>
 </li>
@@ -117,7 +120,7 @@
     <p>A model based on decomposable graphical models for outlier detection</p>
     </div>
 
-    <pre class="usage"><span class='fu'>outlier_model</span>(<span class='no'>A</span>, <span class='no'>adj</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>ncores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>validateA</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>outlier_model</span>(<span class='no'>A</span>, <span class='no'>adj</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='kw'>ncores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>validate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,7 +142,7 @@
       <td><p>Number of cores to use in parallelization</p></td>
     </tr>
     <tr>
-      <th>validateA</th>
+      <th>validate</th>
       <td><p>Logical. See details.</p></td>
     </tr>
     </table>
@@ -147,34 +150,42 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>It is assumed that all cell values in <code>A</code>, for all variables,
-are represented as a single character. If <code>validate_A</code> is <code>TRUE</code> this is checked.
-If cell values are not single characters, one may exploit <code>letters</code> and <code>LETTERS</code> e.g.</p>
+are represented as a single character. If <code>validate</code> is <code>TRUE</code> this is checked.
+If cell values are not single characters, one may exploit the <code>to_single_chars</code> function</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
 
-<span class='co'># DNA data for Europeans</span>
-<span class='no'>df</span>   <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"EUR"</span>)
+<span class='co'># All handwritten digits that have true class equal to a "1".</span>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span> <span class='co'># subset(digits, class == "1")</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>)
 
-<span class='co'># DNA profile from Africa</span>
-<span class='no'>z</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>tgp_dat</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>5</span>:<span class='fl'>10</span>)], <span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"AFR"</span>)[<span class='fl'>1</span>, -<span class='fl'>1</span>])
+<span class='co'># A handwritten digit with true class equal to "7"</span>
+<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"7"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>()
 
-<span class='co'># Fit an interactiongraph</span>
-<span class='no'>G</span>    <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_list.html'>adj_list</a></span>(<span class='fu'><a href='efs.html'>efs</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  Edges: 2 of 15 - xic = -35.376121 
-#&gt;  Edges: 3 of 15 - xic = -99.781075 
-#&gt;  Edges: 4 of 15 - xic = -3.086017 </div><div class='input'>
-<span class='co'># Append z to df</span>
-<span class='no'>df_z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>df</span>[, -<span class='fl'>1</span>], <span class='no'>z</span>)
+<span class='co'># Fit an interaction graph</span>
+<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>G</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1.5</span>)
+
+<span class='co'># Append z to the class og "1" digits</span>
+<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>d</span>, <span class='no'>z</span>)
 
 <span class='co'># The outlier model</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)
-<span class='no'>M</span>    <span class='kw'>&lt;-</span> <span class='fu'>outlier_model</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df_z</span>), <span class='no'>G</span>)
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>outlier_model</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>dz</span>), <span class='fu'><a href='adj_lst.html'>adj_lst</a></span>(<span class='no'>G</span>))
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>m</span>)
+<span class='fu'><a href='pmf.html'>pmf</a></span>(<span class='no'>m</span>)
 
-<span class='co'># z is declared as an outlier in the Europe data on a 0.05 significance level </span>
-<span class='fu'><a href='p_val.html'>p_val</a></span>(<span class='no'>M</span>, <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>M</span>, <span class='no'>z</span>))</div><div class='output co'>#&gt; [1] 0.006</div><div class='input'>
-<span class='co'># Plot the distribution of the deviance</span>
-<span class='fu'><a href='pmf.html'>pmf</a></span>(<span class='no'>M</span>)</div><div class='img'><img src='outlier_model-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='co'># z is declared as an outlier in the "1" class on a 0.05 significance level</span>
+<span class='no'>dvz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m</span>, <span class='no'>z</span>)
+<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m</span>, <span class='no'>dvz</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

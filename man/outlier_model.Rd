@@ -26,29 +26,36 @@ are represented as a single character. If \code{validate} is \code{TRUE} this is
 If cell values are not single characters, one may exploit the \code{to_single_chars} function
 }
 \examples{
+\dontrun{
+library(dplyr)
 
 # All handwritten digits that have true class equal to a "1".
-d <- subset(digits, class == "1")
-d[, "class"] <- NULL
+d <- digits \%>\% # subset(digits, class == "1")
+  filter(class == "1") \%>\%
+  select(-class)
 
 # A handwritten digit with true class equal to "7"
-zd <- subset(digits, class == "7")
-z  <- unlist(zd[1, 1:(ncol(zd)-1)])
+z <- digits \%>\%
+  filter(class == "7") \%>\%
+  select(-class) \%>\%
+  slice(1) \%>\%
+  unlist()
 
 # Fit an interaction graph
-G <- fit_graph(d)
-plot(G, vertex.size = 1)
+G <- fit_graph(d, trace = FALSE)
+plot(G, vertex.size = 1.5)
 
 # Append z to the class og "1" digits
 dz <- rbind(d, z)
 
 # The outlier model
 set.seed(7)
-M <- outlier_model(as.matrix(dz), adj_lst(G))
-M
-pmf(M)
+m <- outlier_model(as.matrix(dz), adj_lst(G))
+print(m)
+pmf(m)
 
 # z is declared as an outlier in the "1" class on a 0.05 significance level
-dvz <- deviance(M, z)
-pval(M, dvz)
+dvz <- deviance(m, z)
+pval(m, dvz)
+}
 }

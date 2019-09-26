@@ -45,52 +45,39 @@ kruskal.tree <- function(x) {
 ## as_fwd <- function(adj, mat, lst, ...) UseMethod("as_fwd")
 
 tree_as_fwd <- function(x, df) {
-  x$CG      <- rip(x$G_adj)$C
-  nC        <- length(x$CG)
-  x$CG_A    <- Matrix::Matrix(0L, nC, nC)
-  msi_S     <- vector("list", 0L)
-  max_dst   <- 0
-  max_edge  <- ""
-  max_nodes <- 0L
-  max_idx   <- 0L
-  max_ins   <- c()
+  x$CG   <- rip2(x$G_adj)$C
+  x$e    <- new_edge()
+  nC     <- length(x$CG)
+  x$CG_A <- Matrix::Matrix(0L, nC, nC)
+  msi    <- vector("list", 0L)
   k         <- 1L
-  for ( i in 2:nC ) {
-    for (j in 1:(i-1) ) {
-      Ci   <- x$CG[[i]]
-      Cj   <- x$CG[[j]]
-      Sij  <- intersect(Ci, Cj)
-      if ( neq_empt_chr(Sij) ) { # Note: This ONLY work for trees
-        x$CG_A[i,j] = 1L
-        x$CG_A[j,i] = 1L
-        Ci_minus_Sij <- setdiff(Ci, Sij)
-        Cj_minus_Sij <- setdiff(Cj, Sij)
-        edge         <- sort_( c(Ci_minus_Sij, Cj_minus_Sij))
-        ed           <- entropy_difference(edge, Sij, df, x$MEM)
-        ent_ij       <- ed$ent
-        x$MEM        <- ed$mem
-        if( ent_ij >= max_dst ) {
-          max_dst  <- ent_ij
-          max_edge <- edge
-          max_idx  <- k
-          max_ins  <- c(i, j)
+  if( nC > 1 ) {
+    for ( i in 2:nC ) {
+      for (j in 1:(i-1) ) {
+        Ci   <- x$CG[[i]]
+        Cj   <- x$CG[[j]]
+        Sij  <- intersect(Ci, Cj)
+        if ( neq_empt_chr(Sij) ) { # Note: This ONLY work for trees
+          x$CG_A[i,j] = 1L
+          x$CG_A[j,i] = 1L
+          Ci_minus_Sij <- setdiff(Ci, Sij)
+          Cj_minus_Sij <- setdiff(Cj, Sij)
+          edge_ij      <- sort_(c(Ci_minus_Sij, Cj_minus_Sij))
+          ed           <- entropy_difference(edge_ij, Sij, df, x$MEM)
+          ent_ij       <- ed$ent
+          x$MEM        <- ed$mem
+          if( ent_ij >= attr(x$e, "d_qic") ) {
+            x$e <- new_edge(edge_ij, ent_ij, k, c(i, j))
+          }
+          msi[[k]] <- list(C1 = Ci, C2 = Cj, S = Sij, e = structure(ent_ij, names = edge_ij))
+          k <- k + 1L
         }
-        msi_S[[k]] <- list(S = Sij, e = structure(ent_ij, names = edge), C1 = Ci, C2 = Cj)
-        k <- k + 1L
       }
     }
   }
-  max_lst = list(e = max_edge, idx = max_idx, ins = max_ins)
-  msi     = list(S = msi_S, max = max_lst)
-  out <- list(G_adj = x$G_adj,
-    G_A      = x$G_A,
-    CG       = x$CG,
-    CG_A     = x$CG_A,
-    MSI      = msi,
-    MEM      = x$MEM
-  )
-  class(out) <- setdiff(c("fwd", class(x)), "tree")
-  return(out)  
+  x$MSI    <- msi
+  class(x) <- setdiff(c("fwd", class(x)), "tree")
+  return(x)
 }
 
 fit_tree <- function(x, df, wrap = TRUE) {

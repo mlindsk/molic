@@ -2,14 +2,14 @@
 % Please edit documentation in R/class_gengraph.R
 \name{gengraph}
 \alias{gengraph}
-\title{Fit a decomposable graphical model}
+\title{A generic and extendable structure for decomposable graphical models}
 \usage{
 gengraph(df, type = "fwd", adj = NULL, q = 0.5, ...)
 }
 \arguments{
 \item{df}{data.frame}
 
-\item{type}{character ("fwd", "bwd", "tree")}
+\item{type}{character ("fwd", "bwd", "tree", "gen")}
 
 \item{adj}{A userspecified adjacency list}
 
@@ -18,14 +18,16 @@ gengraph(df, type = "fwd", adj = NULL, q = 0.5, ...)
 \item{...}{Not used (for extendibility)}
 }
 \value{
-A \code{gengraph} object
+A child class of a \code{gengraph} object
 }
 \description{
-A generic method for structure learning in decomposable graphical models
+A generic structure for decomposable graphical models
 }
 \examples{
-d <- digits[1:100, 1:5]
-gengraph(d)
+\dontrun{
+gengraph(digits, type = "bwd")
+gengraph(digits, make_null_graph(colnames(digits)), type = "gen")
+}
 }
 \seealso{
 \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}

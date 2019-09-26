@@ -1,0 +1,148 @@
+---
+title: "Outlier Detection in Genetic Data"
+author: "Mads Lindskou"
+output: 
+  rmarkdown::html_vignette:
+    highligh: zenburn
+    toc: true
+    fig_height: 4
+    fig_width: 4
+    fig_align: "center"
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{Outlier Detection in Genetic Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, include = TRUE)
+```
+
+
+# The 1000 Genomes Project Data
+
+The outlier detection method [@lindskououtlier] arose from a problem in the forensic science community where it is of great interest to make statements about the geographical origin of a DNA sample. This is in general a very complicated matter. More over, when DNA markers are in linkage disequilibrium things get even more complicated. The 1000 Genomes Project set out to provide a comprehensive description of common human genetic variation by applying whole-genome sequencing to a diverse set of individuals from multiple populations [@10002015global]. In the **molic** package we include the final data from the project which includes $2504$ DNA profiles coming from five different continental regions; Europe (EUR), Africa (AFR), America (AMR), East Asia (EAS), South Asia (SAS). Each DNA profile is the compound of two rows in the data `tgp_dat`, one for each chromosome copy. This makes the outlier procedure slightly more complicated since we must fit a model to each copy and aggregate the information (but we shall see in a moment that it is not hard to do using the **molic** package).
+
+The data includes $276$ SNP markers grouped in $97$ microhaplotypes; in other words, the SNPs within a microhaplotype are so close that they cannot be assumed to be in linkage disequilibrium and we must take into account their mutal dependencies. We do this with the use of decomposable graphical models. See the `outlier_intro` for more details on the model. The microhaplotype grouping is provided is the list `tgp_haps`.
+
+# Analyzing The Data
+
+We show how to test that an unknown DNA profile `z` can be assumed to originate from the European database. We shall pick a random DNA profile from the American database and assume we do not know the origin. We first load the necessary libraries
+
+```{r}
+library(molic)
+library(dplyr)
+```
+
+Next, we extract the relevant data
+
+```{r a}
+# SNPs grouped into (micro) haplotypes
+haps <- tgp_haps
+
+# All the Europeans
+eur  <- tgp_dat %>%
+  as_tibble() %>%
+  filter(pop_meta == "EUR")
+
+# Extracting the two databases for each copy of the chromosomes
+eur_a <- eur %>%
+  filter(grepl("a$", sample_name))
+
+eur_b <- eur %>%
+  filter(grepl("b$", sample_name))
+```
+
+Then we need to model the relationship between SNPs within all chromosomes
+
+```{r}
+# Fitting graphs for the two chromosome copies
+Ga <- lapply(haps, function(h) {
+  fit_graph(eur_a %>% select(h), trace = FALSE)
+})
+
+Gb <- lapply(haps, function(h) {
+  fit_graph(eur_b %>% select(h), trace = FALSE)
+})
+```
+
+The variables `Ga` and `Gb` are now `list` objects where each object is a `c("fwd", "gengraph", "list")` object. Lets print and plot one of them,
+
+```{r b, fig.align = "center"}
+print(Ga[[2]])
+plot(Ga[[1]])
+```
+
+But all of these individual graphs should be represented as one big graph
+
+```{r c}
+# Merge the fitted graphs into a single graph
+Ga_union <- Ga %>%
+  unname() %>%
+  lapply(function(x) adj_lst(x)) %>%
+  unlist(recursive = FALSE)
+
+Gb_union <- Gb %>%
+  unname() %>%
+  lapply(function(x) adj_lst(x)) %>%
+  unlist(recursive = FALSE)
+```
+
+These objects are now plain `list` objects. But we can convert them to a `gengraph` in order to plot and print
+
+```{r d, fig.align = "center", fig.height = 5, fig.width = 5}
+# We can convert the adjacency lists to a gengraph object and plot/print the graph
+g <- gengraph(eur_a %>% select(unname(unlist(haps))), "gen", Ga_union)
+print(g)
+plot(g, vertex.size = 1, vertex.label.cex = 0.1)
+```
+
+Next, we extract a DNA profile from the American database
+
+```{r e}
+amr <- tgp_dat %>%
+  as_tibble() %>%
+  filter(pop_meta == "AMR")
+
+set.seed(20183007)
+z1  <- amr %>%
+  filter(grepl("a$", sample_name)) %>% 
+  select(unname(unlist(haps))) %>%
+  sample_n(size = 1) %>%
+  unlist()
+
+z2  <- amr %>%
+  filter(grepl("b$", sample_name)) %>% 
+  select(unname(unlist(haps))) %>%
+  sample_n(size = 1) %>%
+  unlist()
+```
+
+and since the hypothesis is that `z` belongs to `eur`, we append `z`
+
+```{r f}
+dz1 <- rbind(eur_a, z1)
+dz2 <- rbind(eur_b, z2)
+```
+
+We are now ready to fit the outlier model
+
+```{r g, cache = TRUE}
+ma <- outlier_model(as.matrix(dz1), Ga_union, nsim = 5000, ncores = 1, validate = FALSE)
+mb <- outlier_model(as.matrix(dz2), Gb_union, nsim = 5000, ncores = 1, validate = FALSE)
+```
+
+And finally, we combine the information into a single mixed outlier test
+
+```{r h, fig.align = "center"}
+m  <- fit_mixed_outlier(ma, mb, z1, z2)
+print(m)
+
+# Visualize the density of the deviance statistic
+pmf(m)
+```
+
+We can conclude, from the print and pmf, that `z` does not originate from Europe with a high degree of certainty. 
+
+# References

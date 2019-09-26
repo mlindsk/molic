@@ -25,12 +25,21 @@ Stepwise backward selection in decomposable graphical models
 A \code{bwd} object can be created using the \code{gengraph} constructor with \code{type = "bwd"}
 }
 \examples{
-d <- subset(digits, class == "1")[, 20:30]
+
+\dontrun{
+
+library(dplyr)
+
+d <- digits \%>\%
+  filter(class == "1")
+
 g <- gengraph(d, type = "bwd")
 s <- walk(g, d)
-# plot(s)
-# adj_mat(s)
-# adj_lst(s)
+print(s)
+plot(s)
+adj_lst(s)
+adj_mat(s)
+}
 }
 \seealso{
 \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{gengraph}}

@@ -29,13 +29,20 @@ A \code{gengraph} object with values:
 A generic method for structure learning in decomposable graphical models
 }
 \examples{
+\dontrun{
+library(dplyr)
+
 ## All handwritten digits that have true class equal to a "1".
-d <- subset(digits, class == "1")
-d[, "class"] <- NULL
+d <- digits \%>\%
+  filter(class == "1") \%>\%
+  select(-class) 
+
 g <- fit_graph(d)
-# plot(g, vertex.size = 1)
-# adj_mat(g)
-# adj_lst(g)
+print(g)
+plot(g, vertex.size = 1)
+adj_mat(g)
+adj_lst(g)
+}
 }
 \references{
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}

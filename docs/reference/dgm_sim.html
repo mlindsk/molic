@@ -89,7 +89,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/outlier_model.html">The Outlier Model</a>
+      <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
+    </li>
+    <li>
+      <a href="../articles/outlier_intro.html">The Outlier Model</a>
     </li>
   </ul>
 </li>
@@ -145,20 +148,17 @@
     <p>This function returns a matrix of dimension <code>nsim x ncol(A)</code> where each row correspond to a simulated observation from a DGM represented by <code>adj</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>G</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_list.html'>adj_list</a></span>(<span class='fu'><a href='efs.html'>efs</a></span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]))</div><div class='output co'>#&gt;  Edges: 2 of 6 - xic = -205.695545 
-#&gt;  Edges: 3 of 6 - xic = -111.017746 
-#&gt;  Edges: 4 of 6 - xic = -20.626792 
-#&gt;  Edges: 5 of 6 - xic = -0.970214 </div><div class='input'><span class='fu'>dgm_sim</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>tgp_dat</span>[, <span class='fl'>5</span>:<span class='fl'>8</span>]), <span class='no'>G</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt;       rs260694 rs11123719 rs11691107 rs12469721
-#&gt;  [1,] "T"      "T"        "C"        "T"       
-#&gt;  [2,] "T"      "T"        "C"        "T"       
-#&gt;  [3,] "T"      "T"        "C"        "A"       
-#&gt;  [4,] "T"      "T"        "C"        "A"       
-#&gt;  [5,] "T"      "T"        "C"        "A"       
-#&gt;  [6,] "T"      "T"        "C"        "A"       
-#&gt;  [7,] "T"      "T"        "C"        "A"       
-#&gt;  [8,] "T"      "T"        "C"        "A"       
-#&gt;  [9,] "T"      "T"        "C"        "A"       
-#&gt; [10,] "T"      "T"        "C"        "A"       </div></pre>
+    <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>)
+<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_lst.html'>adj_lst</a></span>(<span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>))
+<span class='fu'>dgm_sim</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>d</span>), <span class='no'>G</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

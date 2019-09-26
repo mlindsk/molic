@@ -4,10 +4,10 @@
     <loc>https://mlindsk.github.io/molic/index.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/adj_list.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/adj_lst.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/adj_matrix.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/adj_mat.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/as_adj_lst.html</loc>
@@ -16,19 +16,10 @@
     <loc>https://mlindsk.github.io/molic/reference/as_adj_mat.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/bws.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/bws_init.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/bws_step.html</loc>
-  </url>
-  <url>
     <loc>https://mlindsk.github.io/molic/reference/cdf.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/cl_tree.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/critval.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/csptable.html</loc>
@@ -43,22 +34,31 @@
     <loc>https://mlindsk.github.io/molic/reference/dgm_sim.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/efs.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/efs_init.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/efs_step.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/digits.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/entropy.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/fit_graph.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/fit_mixed_outlier.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/fit_outlier.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/gengraph.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/is_decomposable.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/make_complete_graph.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/make_null_graph.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/mcs.html</loc>
@@ -73,25 +73,16 @@
     <loc>https://mlindsk.github.io/molic/reference/outlier_model.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/p_val.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/plot.bws.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/plot.efs.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/plot.gengraph.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/print.bws.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/print.gengraph.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/reference/print.csptable.html</loc>
-  </url>
-  <url>
-    <loc>https://mlindsk.github.io/molic/reference/print.efs.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/print.outlier.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/print.outlier_model.html</loc>
@@ -101,6 +92,9 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/print.tree.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/pval.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/rip.html</loc>
@@ -118,9 +112,24 @@
     <loc>https://mlindsk.github.io/molic/reference/tgp_meta.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/to_single_chars.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/variance.html</loc>
   </url>
   <url>
-    <loc>https://mlindsk.github.io/molic/articles/outlier_model.html</loc>
+    <loc>https://mlindsk.github.io/molic/reference/walk.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/walk.bwd.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/walk.fwd.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/articles/genetic_example.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/articles/outlier_intro.html</loc>
   </url>
 </urlset>

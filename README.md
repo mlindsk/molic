@@ -12,7 +12,7 @@ An **R** package to perform outlier detection in contingency tables using decomp
 Getting Started
 ---------------
 
-If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. See also the examples below and the paper \[TBA\].
+If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. See also the examples below and the software paper.
 
 You can install the development version of the package by using the `devtools` package:
 
@@ -26,10 +26,11 @@ How To Cite
 -   If you want to cite the **outlier method** please use
 
 ``` latex
-@article{key,
-  title={Outlier Detection in Contingency Tables using Decomposable Graphical Models},
-  author={Lindskou, Mads and Eriksen, Poul Svante and Tvedebrink, Torben},
+@article{lindskououtlier,
+  title={Outlier Detection in Contingency Tables Using Decomposable Graphical Models},
+  author={Lindskou, Mads and Svante Eriksen, Poul and Tvedebrink, Torben},
   journal={Scandinavian Journal of Statistics},
+  publisher={Wiley Online Library},
   doi={10.1111/sjos.12407},
   year={2019}
 }
@@ -97,7 +98,6 @@ We randomly select a car from the `unacc_cars` data and test if it is an outlier
 
 ``` r
 set.seed(7)
-# Five random observations from the unacc_cars data
 z <- sample_n(unacc_cars, 1) %>% unlist()
 M <- fit_outlier(as.matrix(vgood_cars), z, adj_lst(G_vgood))
 #>   Note: A has values larger than a single character. to_single_chars() was used to correct this
