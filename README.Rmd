@@ -118,7 +118,7 @@ Thus the car is declared an outlier on a $0.05$ significance level. We can visua
 pmf(M)
 ```
 
-and verify that the estimated deviance of the selected car is `r M$dev` which is smaller than the critical value of `r M$cv`.
+and verify that the estimated deviance of the selected car is `r M$dev` which is larger than the critical value of `r M$cv`.
 
 ## Example - Variable Selection
 The `fit_graph` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.

@@ -126,7 +126,7 @@ pmf(M)
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
-and verify that the estimated deviance of the selected car is -3.3509971 which is smaller than the critical value of -15.5784775.
+and verify that the estimated deviance of the selected car is -3.3509971 which is larger than the critical value of -15.5784775.
 
 Example - Variable Selection
 ----------------------------
