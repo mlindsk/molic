@@ -72,7 +72,7 @@ unacc_cars <- car %>%
 
 ### Fitting an Interaction Graph
 
-The `efs` algorithm is a **forward** model selection algorithm. This means, that the algorithm starts from the **null-graph** with no edges and keep adding edges until a stopping criterion is met. We fit the interaction graph for the `vgood` cars and plot the result.
+We fit the interaction graph for the `vgood` cars and plot the result.
 
 ``` r
 G_vgood  <- fit_graph(vgood_cars, q = 0.5, trace = FALSE) # AIC (q = 0) and BIC (q = 1)
