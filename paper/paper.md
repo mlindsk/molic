@@ -57,11 +57,11 @@ Recently, advances in DNA sequencing has made it possible to sequence short segm
 
 In @lindskououtlier the **molic** package was used to detect outliers in microhap data from the 1000 Genomes Project [@10002015global]. This data contains DNA profiles from five different continental regions (CRs); Europe (EUR), America (AMR), East Asia (EAS), South Asia (SAS) and Africa (AFR). 
 
-Consider for example the region SAS as the hypothesized region and all profiles in AFR as profiles to be tested against the hypothesis that their origin is SAS. Two different interaction graphs are used; $G$ which is the result of using the `efs` algorithm and $G^{\emptyset}$ where all microhap SNPs are assumed to be independent (a graph with no edges). The proportion of profiles from AFR that are outliers in SAS according to the model, is $1$ for $G$ and only $0.834$ for $G^{\emptyset}$, see Table 1. The outlier test was conducted for all pairs of continental regions. It is seen, that $G$ outperforms $G^{\emptyset}$ in general and the dependency between microhap SNPs cannot be neglected. All tests were conducted with a significance level of $0.05$.
+Consider for example the region SAS as the hypothesized region and all profiles in AFR as profiles to be tested against the hypothesis that their origin is SAS. Two different interaction graphs are used; $G$ which is the result of using the `fit_graph` algorithm with type `fwd` and $G^{\emptyset}$ where all microhap SNPs are assumed to be independent (a graph with no edges). The proportion of profiles from AFR that are outliers in SAS according to the model, is $1$ for $G$ and only $0.834$ for $G^{\emptyset}$, see Table 1. The outlier test was conducted for all pairs of continental regions. It is seen, that $G$ outperforms $G^{\emptyset}$ in general and the dependency between microhap SNPs cannot be neglected. All tests were conducted with a significance level of $0.05$.
 
 ![](performance_matrix.pdf)\
 
-Consider the saturated model (a complete graph). This is the equivalent of estimating probabilities using the naive frequency counts in the data. For one, it does not (necessarily) capture the biological association between SNPs and second it would, in general, require an enormous amount of data to obtain valid estimates. 
+Another model that could have been considered is the saturated model (a complete graph). This is the equivalent of estimating probabilities using the naive frequency counts in the data. For one, it does not (necessarily) capture the biological association between SNPs and second it would, in general, require an enormous amount of data to obtain valid estimates. 
 
 
 # References
