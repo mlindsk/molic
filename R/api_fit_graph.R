@@ -35,12 +35,16 @@ fit_graph <- function(df,
                       wrap  = TRUE)
 {
   
+  n <- ncol(df)
   if (!(type %in% c("fwd", "bwd", "tree"))) stop("Type must be one of 'fwd', 'bwd or 'tree'")
   if (q < 0 || q > 1) stop("q must be between 0 and 1")
-  n <- ncol(df)
-  if (n == 1L) return(x)
+  if (n == 1L) {
+    adj <- structure(list(character(0)), names = colnames(df))
+    x   <- gengraph(df, type = "gen", adj)
+    return(x)
+  } 
 
-  x   <- gengraph(df, type, adj)
+  x <- gengraph(df, type, adj)
   
   if (inherits(x, "fwd")) {
     if (!neq_empt_chr(as.vector(x$e))) {

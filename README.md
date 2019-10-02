@@ -42,6 +42,39 @@ How To Cite
 TBA
 ```
 
+Main Functions
+--------------
+
+The main functions in **molic** are
+
+-   `fit_graph` which fits a decomposable graph. It has three types; forward selection (`fwd`), backward selection (`bwd`) and tree (`tree`). Using `adj_lst` on an object returned by `fit_graph` gives the **adjacency list** corresponding to the graph. Similarly one can use `adj_mat` to obtain an adjacency matrix.
+-   `fit_outlier` which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by `fit_graph`.
+
+Adjacency lists are important in **molic**. They are named `list` objects of the form
+
+``` r
+adj <- list(a = "b", b = c("a", "c"), c = "b", d = character(0))
+```
+
+We can plot the corresponding graph by creating a `gengraph` object as
+
+``` r
+d <- data.frame(a = "", b = "", c = "", d = "") # A dummy dataframe
+g <- gengraph(d, type = "gen", adj)
+plot(g)
+```
+
+<img src="man/figures/README-gengraph-1.png" width="100%" style="display: block; margin: auto;" /> The dummy `data.frame` `d` is needed as an argument. This is because, in almost all cases a `gengraph` object is obtained from `fit_graph` which uses a `data.frame` to fit the graph. Notice, that **isolated** nodes (here `d`) is formed using the empty character `character(0)`.
+
+Finally, since the `fit_outlier` function assumes that `adj` is **decomposable** (the graph cannot have cycles of length greater than 4 without a chord) we can test for this explicitly
+
+``` r
+is_decomposable(adj)
+#> [1] TRUE
+```
+
+This can be useful, if the user has obtained an adjacency list using some other software than `fit_graph`. The `fit_outlier` will also raise a warning if the graph (`adj`) is not decomposable.
+
 Example - Outlier Detection
 ---------------------------
 
@@ -124,7 +157,7 @@ Thus the car is declared an outlier on a 0.05 significance level. We can visuali
 pmf(M)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 and verify that the estimated deviance of the selected car is -3.3509971 which is larger than the critical value of -15.5784775.
 

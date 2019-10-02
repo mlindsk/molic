@@ -127,7 +127,7 @@ This setup allow us to estimate probabilities of having a specific combination o
 Tree graphs are per definition decomposable graphs. Notice that the graph $G$ is not a tree because of the presence of the cycle $\{b,c,d\}$. However, the graph is indeed decomposable.
 
 # The Test Statistic
-Assume that the \textit{likelihood} $L_0$ expresses how likely it is that $z_{new}$ belongs to the database $D$. We can also specify an alternative likelihood, $L_{1}$, specifying how likely it is that $z_{new}$ do not belong to $D$. We then define the \textit{likelihood ratio} as
+Assume that the _likelihood_ $L_0$ expresses how likely it is that $z_{new}$ belongs to the database $D$. We can also specify an alternative likelihood, $L_{1}$, specifying how likely it is that $z_{new}$ do not belong to $D$. We then define the _likelihood ratio_ as
 \begin{equation*}
   \label{eq:LR}
   LR = \frac{L_{0}}{L_{1}},

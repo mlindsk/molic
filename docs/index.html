@@ -109,6 +109,28 @@
 </ul>
 <div class="sourceCode"><pre class="sourceCode latex"><code class="sourceCode latex">TBA</code></pre></div>
 </div>
+<div id="main-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#main-functions" class="anchor"></a>Main Functions</h2>
+<p>The main functions in <strong>molic</strong> are</p>
+<ul>
+<li>
+<code>fit_graph</code> which fits a decomposable graph. It has three types; forward selection (<code>fwd</code>), backward selection (<code>bwd</code>) and tree (<code>tree</code>). Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the <strong>adjacency list</strong> corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix.</li>
+<li>
+<code>fit_outlier</code> which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by <code>fit_graph</code>.</li>
+</ul>
+<p>Adjacency lists are important in <strong>molic</strong>. They are named <code>list</code> objects of the form</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adj &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">a =</span> <span class="st">"b"</span>, <span class="dt">b =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"a"</span>, <span class="st">"c"</span>), <span class="dt">c =</span> <span class="st">"b"</span>, <span class="dt">d =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">character</a></span>(<span class="dv">0</span>))</code></pre></div>
+<p>We can plot the corresponding graph by creating a <code>gengraph</code> object as</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">a =</span> <span class="st">""</span>, <span class="dt">b =</span> <span class="st">""</span>, <span class="dt">c =</span> <span class="st">""</span>, <span class="dt">d =</span> <span class="st">""</span>) <span class="co"># A dummy dataframe</span>
+g &lt;-<span class="st"> </span><span class="kw"><a href="reference/gengraph.html">gengraph</a></span>(d, <span class="dt">type =</span> <span class="st">"gen"</span>, adj)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(g)</code></pre></div>
+<p><img src="reference/figures/README-gengraph-1.png" width="100%" style="display: block; margin: auto;"> The dummy <code>data.frame</code> <code>d</code> is needed as an argument. This is because, in almost all cases a <code>gengraph</code> object is obtained from <code>fit_graph</code> which uses a <code>data.frame</code> to fit the graph. Notice, that <strong>isolated</strong> nodes (here <code>d</code>) is formed using the empty character <code><a href="https://www.rdocumentation.org/packages/base/topics/character">character(0)</a></code>.</p>
+<p>Finally, since the <code>fit_outlier</code> function assumes that <code>adj</code> is <strong>decomposable</strong> (the graph cannot have cycles of length greater than <span class="math inline">\(4\)</span> without a chord) we can test for this explicitly</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/is_decomposable.html">is_decomposable</a></span>(adj)
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+<p>This can be useful, if the user has obtained an adjacency list using some other software than <code>fit_graph</code>. The <code>fit_outlier</code> will also raise a warning if the graph (<code>adj</code>) is not decomposable.</p>
+</div>
 <div id="example---outlier-detection" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example---outlier-detection" class="anchor"></a>Example - Outlier Detection</h2>
@@ -137,7 +159,7 @@ unacc_cars &lt;-<span class="st"> </span>car <span class="op">%&gt;%</span>
 <div id="fitting-an-interaction-graph" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fitting-an-interaction-graph" class="anchor"></a>Fitting an Interaction Graph</h3>
-<p>The <code>efs</code> algorithm is a <strong>forward</strong> model selection algorithm. This means, that the algorithm starts from the <strong>null-graph</strong> with no edges and keep adding edges until a stopping criterion is met. We fit the interaction graph for the <code>vgood</code> cars and plot the result.</p>
+<p>We fit the interaction graph for the <code>vgood</code> cars and plot the result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">G_vgood  &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_graph.html">fit_graph</a></span>(vgood_cars, <span class="dt">q =</span> <span class="fl">0.5</span>, <span class="dt">trace =</span> <span class="ot">FALSE</span>) <span class="co"># AIC (q = 0) and BIC (q = 1)</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(G_vgood)</code></pre></div>
 <p><img src="reference/figures/README-acc-1.png" width="100%" style="display: block; margin: auto;"></p>
@@ -172,8 +194,8 @@ M
 <span class="co">#&gt;  --------------------------------</span></code></pre></div>
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/pmf.html">pmf</a></span>(M)</code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
-<p>and verify that the estimated deviance of the selected car is -3.3509971 which is smaller than the critical value of -15.5784775.</p>
+<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
+<p>and verify that the estimated deviance of the selected car is -3.3509971 which is larger than the critical value of -15.5784775.</p>
 </div>
 </div>
 <div id="example---variable-selection" class="section level2">
