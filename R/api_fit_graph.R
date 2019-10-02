@@ -44,7 +44,14 @@ fit_graph <- function(df,
     return(x)
   } 
 
-  x <- gengraph(df, type, adj)
+  ####### ON TRIAL ######
+  if ( type == "tfwd" ) {
+    x <- gengraph(df, type = "tree", adj)
+    x <- fit_tree(x, df, wrap = TRUE)
+  } else {
+    x <- gengraph(df, type, adj)  
+  }
+  #######################
   
   if (inherits(x, "fwd")) {
     if (!neq_empt_chr(as.vector(x$e))) {
