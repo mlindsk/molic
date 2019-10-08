@@ -44,6 +44,11 @@ new_tree <- function(df) {
   structure(g, class = c("tree", class(g)))
 }
 
+new_tfwd <- function(df) {
+  g <- fit_tree(new_tree(df), df, wrap = TRUE)
+  structure(g, class = setdiff(c("tfwd", class(g)), "tree"))
+}
+
 new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector("integer", 2L)) {
   # e     : edge to be deletede or added
   # d_aic : entropy difference in the two competing models
@@ -55,7 +60,7 @@ new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector
 #' A generic and extendable structure for decomposable graphical models
 #' @description A generic structure for decomposable graphical models
 #' @param df data.frame
-#' @param type character ("fwd", "bwd", "tree", "gen")
+#' @param type character ("fwd", "bwd", "tree", "tfwd", "gen")
 #' @param adj A userspecified adjacency list
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
 #' @param ... Not used (for extendibility)
@@ -72,6 +77,14 @@ gengraph <- function(df, type = "fwd", adj = NULL, q = 0.5, ...) {
     "fwd"  = new_fwd(df, adj, q),
     "bwd"  = new_bwd(df, adj, q),
     "tree" = new_tree(df),
+    "tfwd" = new_tfwd(df),
     "gen"  = new_gengraph(df, adj, cg = rip(adj)$C)
   ) 
+}
+
+.types <- function() return(c("fwd", "bwd", "tree", "tfwd"))
+.types_msg <- function() {
+  paste0("Types must be in one of ",
+    paste0(paste0(.types()[-length(.types())], collapse = ", "), " or ", .types()[length(.types())])
+  )  
 }

@@ -9,7 +9,7 @@ gengraph(df, type = "fwd", adj = NULL, q = 0.5, ...)
 \arguments{
 \item{df}{data.frame}
 
-\item{type}{character ("fwd", "bwd", "tree", "gen")}
+\item{type}{character ("fwd", "bwd", "tree", "tfwd", "gen")}
 
 \item{adj}{A userspecified adjacency list}
 
