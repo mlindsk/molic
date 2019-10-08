@@ -81,14 +81,14 @@
 <div id="about-molic" class="section level2">
 <h2 class="hasAnchor">
 <a href="#about-molic" class="anchor"></a>About molic</h2>
-<p>An <strong>R</strong> package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. <strong>molic</strong> also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implementet using <a href="http://www.rcpp.org/">Rcpp</a>/C++ for better run-time performance.</p>
+<p>An <strong>R</strong> package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. <strong>molic</strong> also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using <a href="http://www.rcpp.org/">Rcpp</a>/C++ for better run-time performance.</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
 <p>If you want to learn the “behind the scenes” of the model it is recommended to go through <a href="https://mlindsk.github.io/molic/articles/">The Outlier Model</a> and look at the <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a> as you read along. See also the examples below and the software paper.</p>
 <p>You can install the development version of the package by using the <code>devtools</code> package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"mlindsk/molic"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2 class="hasAnchor">
@@ -115,7 +115,7 @@
 <p>The main functions in <strong>molic</strong> are</p>
 <ul>
 <li>
-<code>fit_graph</code> which fits a decomposable graph. It has three types; forward selection (<code>fwd</code>), backward selection (<code>bwd</code>) and tree (<code>tree</code>). Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the <strong>adjacency list</strong> corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix.</li>
+<code>fit_graph</code> which fits a decomposable graph. It has four types; forward selection (<code>fwd</code>), backward selection (<code>bwd</code>), tree (<code>tree</code>) and a combination of tree and forward (<code>tfwd</code>). Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the <strong>adjacency list</strong> corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix.</li>
 <li>
 <code>fit_outlier</code> which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by <code>fit_graph</code>.</li>
 </ul>

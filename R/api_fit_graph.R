@@ -34,9 +34,8 @@ fit_graph <- function(df,
                       thres = 5,
                       wrap  = TRUE)
 {
-  
   n <- ncol(df)
-  if (!(type %in% c("fwd", "bwd", "tree"))) stop("Type must be one of 'fwd', 'bwd or 'tree'")
+  if (!(type %in% .types())) stop(.types_msg())
   if (q < 0 || q > 1) stop("q must be between 0 and 1")
   if (n == 1L) {
     adj <- structure(list(character(0)), names = colnames(df))
@@ -81,7 +80,8 @@ fit_graph <- function(df,
       return(x)
     }
     stop_val <- attr(x$e, "d_qic")
-  } 
+  }
+  if (trace) msg(k, complete, stop_val, "delta-qic")
   return(x)
 }
 
