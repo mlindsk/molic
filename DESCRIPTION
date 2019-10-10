@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "mads@math.aau.dk")
 Description: Functionalities for outlier detection in contingency tables and model selection in decomposable graphical models.
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
