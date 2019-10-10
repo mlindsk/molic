@@ -39,7 +39,7 @@ How To Cite
 -   If you want to cite the **molic** package please use
 
 ``` latex
-@software{mads_lindskou_2019_3475854,
+@software{lindskoumolic,
   author       = {Mads Lindskou},
   title        = {{molic: An R package for multivariate outlier 
                    detection in contingency tables}},
