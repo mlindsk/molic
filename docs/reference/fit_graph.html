@@ -132,7 +132,7 @@
     </tr>
     <tr>
       <th>type</th>
-      <td><p>Character ("fwd", "bwd", "tree")</p></td>
+      <td><p>Character ("fwd", "bwd", "tree" or "tfwd")</p></td>
     </tr>
     <tr>
       <th>adj</th>
@@ -159,6 +159,14 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code>gengraph</code> object with values:</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The types are</p><ul>
+<li><p>"fwd": forward selection</p></li>
+<li><p>"bwd": backward selection</p></li>
+<li><p>"tree": Chow-Liu tree (first order interactions only)</p></li>
+<li><p>"tfwd": A combination of "tree" and "fwd". This can speed up runtime considerably in high dimensions.</p></li>
+</ul><p>Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the adjacency list corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix. Applying the <code>rip</code> function on an adjacency list returns the cliques and separators of the graph.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p><a href='https://arxiv.org/abs/1301.2267'>https://arxiv.org/abs/1301.2267</a>, <a href='https://doi.org/10.1109/ictai.2004.100'>https://doi.org/10.1109/ictai.2004.100</a></p>
@@ -178,8 +186,11 @@
 <span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_graph</span>(<span class='no'>d</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>g</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>g</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='fu'><a href='adj_mat.html'>adj_mat</a></span>(<span class='no'>g</span>)
-<span class='fu'><a href='adj_lst.html'>adj_lst</a></span>(<span class='no'>g</span>)
+<span class='no'>adjm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_mat.html'>adj_mat</a></span>(<span class='no'>g</span>)
+<span class='no'>adjl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='adj_lst.html'>adj_lst</a></span>(<span class='no'>g</span>)
+
+<span class='co'>## Cliques and separators in the graph</span>
+<span class='fu'><a href='rip.html'>rip</a></span>(<span class='no'>adjl</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -187,6 +198,7 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#references">References</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
