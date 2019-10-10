@@ -1,7 +1,7 @@
 #' Fit a decomposable graphical model
 #' @description A generic method for structure learning in decomposable graphical models
 #' @param df data.frame
-#' @param type Character ("fwd", "bwd", "tree")
+#' @param type Character ("fwd", "bwd", "tree" or "tfwd")
 #' @param adj Adjacency list of a decomposable graph
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
 #' @param trace Logical indicating whether or not to trace the procedure
@@ -20,9 +20,21 @@
 #' g <- fit_graph(d)
 #' print(g)
 #' plot(g, vertex.size = 1)
-#' adj_mat(g)
-#' adj_lst(g)
+#' adjm <- adj_mat(g)
+#' adjl <- adj_lst(g)
+#'
+#' ## Cliques and separators in the graph
+#' rip(adjl)
 #' }
+#' @details
+#' The types are
+#' \itemize{
+#' \item "fwd": forward selection
+#' \item "bwd": backward selection
+#' \item "tree": Chow-Liu tree (first order interactions only)
+#' \item "tfwd": A combination of "tree" and "fwd". This can speed up runtime considerably in high dimensions.
+#' }
+#' Using \code{adj_lst} on an object returned by \code{fit_graph} gives the adjacency list corresponding to the graph. Similarly one can use \code{adj_mat} to obtain an adjacency matrix. Applying the \code{rip} function on an adjacency list returns the cliques and separators of the graph.
 #' @references \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100} 
 #' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
 #' @export

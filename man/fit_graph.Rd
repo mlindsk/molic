@@ -10,7 +10,7 @@ fit_graph(df, type = "fwd", adj = NULL, q = 0.5, trace = TRUE,
 \arguments{
 \item{df}{data.frame}
 
-\item{type}{Character ("fwd", "bwd", "tree")}
+\item{type}{Character ("fwd", "bwd", "tree" or "tfwd")}
 
 \item{adj}{Adjacency list of a decomposable graph}
 
@@ -28,6 +28,16 @@ A \code{gengraph} object with values:
 \description{
 A generic method for structure learning in decomposable graphical models
 }
+\details{
+The types are
+\itemize{
+\item "fwd": forward selection
+\item "bwd": backward selection
+\item "tree": Chow-Liu tree (first order interactions only)
+\item "tfwd": A combination of "tree" and "fwd". This can speed up runtime considerably in high dimensions.
+}
+Using \code{adj_lst} on an object returned by \code{fit_graph} gives the adjacency list corresponding to the graph. Similarly one can use \code{adj_mat} to obtain an adjacency matrix. Applying the \code{rip} function on an adjacency list returns the cliques and separators of the graph.
+}
 \examples{
 \dontrun{
 library(dplyr)
@@ -40,8 +50,11 @@ d <- digits \%>\%
 g <- fit_graph(d)
 print(g)
 plot(g, vertex.size = 1)
-adj_mat(g)
-adj_lst(g)
+adjm <- adj_mat(g)
+adjl <- adj_lst(g)
+
+## Cliques and separators in the graph
+rip(adjl)
 }
 }
 \references{

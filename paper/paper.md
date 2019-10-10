@@ -53,7 +53,7 @@ If one has prior knowledge of the underlying nature of the association between v
 
 # A Use Case in Forensic Science
 
-Recently, advances in DNA sequencing have made it possible to sequence short segments of DNA ($< 200$ basepairs) including two or more SNPs. These are called \textsl{microhaplotypes} (or microhaps for short) [@kidd2014microhaplo]. They have been demonstrated to be well suited for ancestry assessment in the forensic science community. The short distance between SNPs within a microhap implies that recombination among them rarely occurs. Hence, the methodology of @tvedebrink2018aims can not be used as this assumes mutual independence of the SNPs within a population (corresponding to the null graph with no edges).
+Recently, advances in DNA sequencing have made it possible to sequence short segments of DNA ($< 200$ basepairs) including two or more single nucleotide polymorphisms (SNPs). These are called \textsl{microhaplotypes} (or microhaps for short) [@kidd2014microhaplo]. They have been demonstrated to be well suited for ancestry assessment in the forensic science community. The short distance between SNPs within a microhap implies that recombination among them rarely occurs. Hence, the methodology of @tvedebrink2018aims can not be used as this assumes mutual independence of the SNPs within a population (corresponding to the null graph with no edges).
 
 In @lindskououtlier the **molic** package was used to detect outliers in microhap data from the 1000 Genomes Project [@10002015global]. This data contains DNA profiles from five different continental regions (CRs); Europe (EUR), America (AMR), East Asia (EAS), South Asia (SAS) and Africa (AFR). 
 
