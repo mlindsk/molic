@@ -2,7 +2,7 @@ library(dplyr)
 library(readr)
 library(tidyr)
 
-df_meta_haplo <- read_csv("inst/extdata/tgp_meta_haps.csv")[, c(1,3:6)]
+df_meta_haplo <- read_csv("../inst/extdata/tgp_meta_haps.csv")[, c(1,3:6)]
 colnames(df_meta_haplo) <- c("haplotype",
   "snps",
   "number_of_snps",
@@ -18,7 +18,7 @@ df_meta_haplo <- df_meta_haplo %>%
 
 # save(df_meta_haplo, file = "../data/df_meta_haplo.Rdat")
 
-df_meta_pop <- read_tsv("inst/extdata/tgp_meta_pop.tsv")
+df_meta_pop <- read_tsv("../inst/extdata/tgp_meta_pop.tsv")
 colnames(df_meta_pop) <- c("sample_name",
   "sex",
   "bio_id",
@@ -31,7 +31,7 @@ colnames(df_meta_pop) <- c("sample_name",
 
 # save(df_meta_pop, file = "../data/df_meta_pop.Rdat")
 
-df <- read_delim("inst/extdata/tgp_dat", ",", col_names = T) %>%
+df <- read_delim("../inst/extdata/tgp_dat", ",", col_names = T) %>%
   gather(sample_name, snp, -X1) %>%
   spread(X1, snp)
 
@@ -91,6 +91,10 @@ df <- df[, c("sample_name", "pop_meta", unlist(haplotypes))]
 # Save
 tgp_dat  <- df
 tgp_haps <- haplotypes
+usethis::use_data(tgp_dat)
+usethis::use_data(tgp_haps)
 
-## save(tgp_dat,  file = "../data/tgp_dat.RData")
-## save(tgp_haps, file = "../data/tgp_haps.RData")
+# save(tgp_dat,  file = "../data/tgp_dat.RData", version = 2)
+# save(tgp_haps, file = "../data/tgp_haps.RData", version = 2)
+# saveRDS(tgp_dat, file = "../data/tgp_dat.rds", version = 2)
+# saveRDS(tgp_haps, file = "../data/tgp_haps.rds", version = 2)

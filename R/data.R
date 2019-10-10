@@ -39,14 +39,3 @@
 #' 
 #' @references \href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
 "tgp_haps"
-
-
-#' A data frame with meta information of the data in \code{tgp_haps}
-#'
-#' The data frame holds information about haplotypes and on which chromosome
-#' these are located.
-#' 
-#' @docType data
-#' 
-#' @references \href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
-"tgp_meta"

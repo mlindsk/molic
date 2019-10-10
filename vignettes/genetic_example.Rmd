@@ -128,7 +128,7 @@ dz2 <- rbind(eur_b, z2)
 
 We are now ready to fit the outlier model
 
-```{r g, cache = TRUE}
+```{r g}
 ma <- outlier_model(as.matrix(dz1), Ga_union, nsim = 5000, ncores = 1, validate = FALSE)
 mb <- outlier_model(as.matrix(dz2), Gb_union, nsim = 5000, ncores = 1, validate = FALSE)
 ```
