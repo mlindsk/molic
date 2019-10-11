@@ -125,13 +125,10 @@ fit_outlier <- function(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1, valida
 #' @param z1 Named vector (same names as \code{colnames(A)})
 #' @param z2 Named vector (same names as \code{colnames(A)})
 #' @param alpha The significance level
-#' @param nsim Number of simulations
-#' @param ncores Number of cores to use in parallelization
-#' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
 #' @examples
 #' # See the package vignette "Outlier Detection in Genetic Data"
 #' @export
-fit_mixed_outlier <- function(m1, m2, z1, z2, alpha = 0.05, nsim = 5000, ncores = 1, validate = TRUE) {
+fit_mixed_outlier <- function(m1, m2, z1, z2, alpha = 0.05) {
   m     <- convolute(m1, m2)
   dev_z <- deviance(m1, z1) + deviance(m2, z2)
   m     <- new_mixed_outlier(m, dev_z, pval(m, dev_z), critval(m, alpha), alpha)
