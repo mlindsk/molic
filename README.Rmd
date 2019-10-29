@@ -1,5 +1,5 @@
 ---
-title: "molic: Multivariate OutLIerdetection In Contingency Tables"
+title: "molic: Multivariate OutLIerdetection In Contingency tables"
 output:
   github_document
 ---

@@ -1,4 +1,4 @@
-molic: Multivariate OutLIerdetection In Contingency Tables
+molic: Multivariate OutLIerdetection In Contingency tables
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

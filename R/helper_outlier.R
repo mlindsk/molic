@@ -271,7 +271,10 @@ critval <- function(m, alpha = 0.05) UseMethod("critval")
 #' @rdname critval
 #' @export
 critval.outlier_model <- function(m, alpha = 0.05) {
-  stats::uniroot(function(x) pval(m, x) - alpha, interval = range(m$sims))$root
+  stats::uniroot(function(x) pval(m, x) - alpha,
+    interval = range(m$sims),
+    extendInt = "yes",
+    tol = 0.0001)$root
 }
 
 #' Mean
