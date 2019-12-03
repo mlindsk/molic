@@ -30,7 +30,7 @@ A \code{bwd} object can be created using the \code{gengraph} constructor with \c
 
 library(dplyr)
 
-d <- digits \%>\%
+d <- digits %>%
   filter(class == "1")
 
 g <- gengraph(d, type = "bwd")

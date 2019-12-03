@@ -4,8 +4,15 @@
 \alias{fit_graph}
 \title{Fit a decomposable graphical model}
 \usage{
-fit_graph(df, type = "fwd", adj = NULL, q = 0.5, trace = TRUE,
-  thres = 5, wrap = TRUE)
+fit_graph(
+  df,
+  type = "fwd",
+  adj = NULL,
+  q = 0.5,
+  trace = TRUE,
+  thres = 5,
+  wrap = TRUE
+)
 }
 \arguments{
 \item{df}{data.frame}
@@ -43,8 +50,8 @@ Using \code{adj_lst} on an object returned by \code{fit_graph} gives the adjacen
 library(dplyr)
 
 ## All handwritten digits that have true class equal to a "1".
-d <- digits \%>\%
-  filter(class == "1") \%>\%
+d <- digits %>%
+  filter(class == "1") %>%
   select(-class) 
 
 g <- fit_graph(d)

@@ -4,8 +4,7 @@
 \alias{fit_outlier}
 \title{Fit Outlier}
 \usage{
-fit_outlier(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1,
-  validate = TRUE)
+fit_outlier(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1, validate = TRUE)
 }
 \arguments{
 \item{A}{Character Matrix (data)}
@@ -30,15 +29,15 @@ A convinient wrapper around the \code{outlier_model} for doing outlier test
 library(dplyr)
 
 # All handwritten digits that have true class equal to a "1".
-d <- digits \%>\%
-  filter(class == "1") \%>\%
+d <- digits %>%
+  filter(class == "1") %>%
   select(-class)
 
 # A handwritten digit with true class equal to "7"
-z <- digits \%>\%
-  filter(class == "7") \%>\%
-  select(-class) \%>\%
-  slice(1) \%>\%
+z <- digits %>%
+  filter(class == "7") %>%
+  select(-class) %>%
+  slice(1) %>%
   unlist()
 
 # Fit an interaction graph

@@ -117,6 +117,24 @@ as_adj_mat <- function(adj) {
   A
 }
 
+#' Finds the components of a graph
+#'
+#' @param adj Adjacency list
+#' @return A list with the elements being the components of the graph
+#' @export
+components <- function(adj) {
+  nodes <- names(adj)
+  comps <- list()
+  comps[[1]] <- dfs(adj, nodes[1])
+  while (TRUE) {
+    new_comp  <- setdiff(nodes, unlist(comps))
+    if (identical(new_comp, character(0))) return(comps)
+    comps <- c(comps, list(dfs(adj[new_comp], new_comp[1])))
+  }
+  return(comps)
+}
+
+
 #' Print
 #'
 #' A print method for \code{gengraph} objects

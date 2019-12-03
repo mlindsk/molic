@@ -30,15 +30,15 @@ If cell values are not single characters, one may exploit the \code{to_single_ch
 library(dplyr)
 
 # All handwritten digits that have true class equal to a "1".
-d <- digits \%>\% # subset(digits, class == "1")
-  filter(class == "1") \%>\%
+d <- digits %>% # subset(digits, class == "1")
+  filter(class == "1") %>%
   select(-class)
 
 # A handwritten digit with true class equal to "7"
-z <- digits \%>\%
-  filter(class == "7") \%>\%
-  select(-class) \%>\%
-  slice(1) \%>\%
+z <- digits %>%
+  filter(class == "7") %>%
+  select(-class) %>%
+  slice(1) %>%
   unlist()
 
 # Fit an interaction graph

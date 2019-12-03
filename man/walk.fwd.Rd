@@ -28,7 +28,7 @@ A \code{fwd} object can be created using the \code{gengraph} constructor with \c
 \dontrun{
 library(dplyr)
 
-d <- digits \%>\%
+d <- digits %>%
   filter(class == "1")
 
 g <- gengraph(d, type = "fwd")
