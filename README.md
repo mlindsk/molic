@@ -14,10 +14,16 @@ Getting Started
 
 If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. See also the examples below and the software paper.
 
-You can install the development version of the package by using the `devtools` package:
+You can install the current stable release of the package by using the `devtools` package:
 
 ``` r
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
+```
+
+The development version can be installed using (see e.g. the `NEWS.md` file at the develop branch to get a feeling of the upcoming features):
+
+``` r
+devtools::install_github("mlindsk/molic@develop", build_vignettes = FALSE)
 ```
 
 How To Cite
@@ -166,7 +172,7 @@ plot(m)
 #> Picking joint bandwidth of 0.0167
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -5.4017104. The red area represents the significance level (here *α* = 0.05).
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -5.4017104. The red area represents the significance level (here *α* = 0.05).
 
 Multiple Tests
 --------------

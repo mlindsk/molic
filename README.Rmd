@@ -27,10 +27,16 @@ An **R** package to perform outlier detection in contingency tables using decomp
 ## Getting Started
 If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. See also the examples below and the software paper.
 
-You can install the development version of the package by using the `devtools` package:
+You can install the current stable release of the package by using the `devtools` package:
 
 ```{r, eval = FALSE}
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
+```
+
+The development version can be installed using (see e.g. the `NEWS.md` file at the develop branch to get a feeling of the upcoming features):
+
+```{r, eval = FALSE}
+devtools::install_github("mlindsk/molic@develop", build_vignettes = FALSE)
 ```
 
 ## How To Cite
