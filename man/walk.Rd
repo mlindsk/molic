@@ -26,7 +26,7 @@ A \code{fwd} (or \code{bwd}) object can be created using the \code{gengraph} con
 
 library(dplyr)
 
-d <- digits %>%
+d <- digits \%>\%
   filter(class == "1")
 
 g <- gengraph(d, type = "fwd")

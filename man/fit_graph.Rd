@@ -50,8 +50,8 @@ Using \code{adj_lst} on an object returned by \code{fit_graph} gives the adjacen
 library(dplyr)
 
 ## All handwritten digits that have true class equal to a "1".
-d <- digits %>%
-  filter(class == "1") %>%
+d <- digits \%>\%
+  filter(class == "1") \%>\%
   select(-class) 
 
 g <- fit_graph(d)

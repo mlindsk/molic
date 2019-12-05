@@ -16,7 +16,7 @@ vignette: >
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, include = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, include = TRUE, eval = TRUE)
 ```
 
 # Background Theory on The Outlier Detection Model

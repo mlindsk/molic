@@ -4,22 +4,63 @@
 \alias{fit_mixed_outlier}
 \title{Mixed Outlier Test}
 \usage{
-fit_mixed_outlier(m1, m2, z1, z2, alpha = 0.05)
+fit_mixed_outlier(m1, m2)
 }
 \arguments{
-\item{m1}{A \code{outlier_model} object}
+\item{m1}{An object returned from \code{fit_outlier}}
 
-\item{m2}{A \code{outlier_model} object}
-
-\item{z1}{Named vector (same names as \code{colnames(A)})}
-
-\item{z2}{Named vector (same names as \code{colnames(A)})}
-
-\item{alpha}{The significance level}
+\item{m2}{An object returned from \code{fit_outlier}}
 }
 \description{
 A convinient function for outlier detection with mixed information
 }
 \examples{
+\dontrun{
+
 # See the package vignette "Outlier Detection in Genetic Data"
+for an introduction to the genetic data used here
+
+library(dplyr)
+
+# The components - here microhaplotypes
+haps <- tgp_haps
+
+# All the Europeans
+eur  <- tgp_dat \%>\%
+  as_tibble() \%>\%
+  filter(pop_meta == "EUR")
+
+# Extracting the two databases for each copy of the chromosomes
+eur_a <- eur \%>\%
+  filter(grepl("a$", sample_name))
+
+eur_b <- eur \%>\%
+  filter(grepl("b$", sample_name))
+
+# Testing if an American is an outlier in Europe
+
+amr <- tgp_dat \%>\%
+  as_tibble() \%>\%
+  filter(pop_meta == "AMR")
+
+
+z1  <- amr \%>\%
+  filter(grepl("a$", sample_name)) \%>\% 
+  select(unname(unlist(haps))) \%>\%
+  slice(1) \%>\%
+  unlist()
+
+z2  <- amr \%>\%
+  filter(grepl("b$", sample_name)) \%>\% 
+  select(unname(unlist(haps))) \%>\%
+  slice(1) \%>\%
+  unlist()
+
+mat_eur_a <- eur_a \%>\% select(-c(1:2)) \%>\% as.matrix()
+mat_eur_b <- eur_b \%>\% select(-c(1:2)) \%>\% as.matrix()
+
+m1 <- fit_outlier(mat_eur_a, z1, comp = haps) # consider using more cores (ncores argument)
+m2 <- fit_outlier(mat_eur_a, z2, comp = haps) # consider using more cores (ncores argument)
+fit_mixed_outlier(m1,m2)
+}
 }

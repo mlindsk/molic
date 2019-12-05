@@ -4,49 +4,72 @@
 \alias{fit_outlier}
 \title{Fit Outlier}
 \usage{
-fit_outlier(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1, validate = TRUE)
+fit_outlier(
+  A,
+  z,
+  alpha = 0.05,
+  type = "fwd",
+  q = 0.5,
+  comp = NULL,
+  nsim = 10000,
+  ncores = 1,
+  trace = FALSE,
+  validate = TRUE
+)
 }
 \arguments{
-\item{A}{Character Matrix (data)}
+\item{A}{Character Matrix (data) - without the new observation \code{z} appended}
 
 \item{z}{Named vector (same names as \code{colnames(A)})}
 
-\item{adj}{Adjacency list of a decomposable graph}
-
 \item{alpha}{The significance level}
+
+\item{type}{Character ("fwd", "bwd", "tree" or "tfwd") - see \code{fit_graph}}
+
+\item{q}{Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC) - see \code{fit_graph}}
+
+\item{comp}{A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)}
 
 \item{nsim}{Number of simulations}
 
 \item{ncores}{Number of cores to use in parallelization}
 
+\item{trace}{Logical indicating whether or not to trace the procedure}
+
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
 }
 \description{
-A convinient wrapper around the \code{outlier_model} for doing outlier test
+The outlier model relies on a graph object returned from \code{fit_graph}. This function needs data; however
+when an outlier test is performed, the function \code{fit_graph} needs data with \code{z} appended. That is because,
+the model is under the hypothesis that \code{z} is not an outlier in \code{A}. \code{fit_outlier} automatically do this.
+Moreover, \code{fit_outlier} relies on \code{outlier_model} which is not an exported function, but can be used carefully
+by the user for more flexibillity (use \code{molic:::outlier_model}). The user should be aware, that it is \strong{assumed} that the data argument in \code{outlier_model} has the new observation included! Thus \code{fit_outlier} is a safe wrapper for most applications.
+}
+\details{
+A convinient wrapper for doing outlier test
 }
 \examples{
 \dontrun{
 library(dplyr)
 
 # All handwritten digits that have true class equal to a "1".
-d <- digits %>%
-  filter(class == "1") %>%
+d <- digits \%>\%
+  filter(class == "1") \%>\%
   select(-class)
 
 # A handwritten digit with true class equal to "7"
-z <- digits %>%
-  filter(class == "7") %>%
-  select(-class) %>%
-  slice(1) %>%
+z <- digits \%>\%
+  filter(class == "7") \%>\%
+  select(-class) \%>\%
+  slice(1) \%>\%
   unlist()
 
-# Fit an interaction graph
-G <- fit_graph(d, trace = FALSE)
-plot(G, vertex.size = 1.5)
-
-# Test if z is an outlier
-m <- fit_outlier(as.matrix(d), z, adj_lst(G))
+# Test if z is an outlier in class "1"
+m <- fit_outlier(as.matrix(d), z)
 print(m)
 pmf(m)
 }
+}
+\seealso{
+\code{\link{outlier_model}}, \code{\link{fit_graph}}
 }

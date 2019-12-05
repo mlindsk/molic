@@ -46,7 +46,11 @@ fit_graph <- function(df,
                       thres = 5,
                       wrap  = TRUE)
 {
-  n <- ncol(df)
+
+  n        <- ncol(df)
+  complete <- n * (n-1L) / 2L
+  null     <- 0L
+
   if (!(type %in% .types())) stop(.types_msg())
   if (q < 0 || q > 1) stop("q must be between 0 and 1")
   if (n == 1L) {
@@ -56,24 +60,21 @@ fit_graph <- function(df,
   } 
 
   x <- gengraph(df, type, adj)
-  
+
   if (inherits(x, "fwd")) {
     if (!neq_empt_chr(as.vector(x$e))) {
       # If no edges are added in fwd_init, x$e = character(0)
-      if (trace) msg(k, complete, stop_val, "delta-qic")
+      if (trace) msg(0L, complete, 0L, "delta-qic")
       return(x)
     }
   }  
   
   if (inherits(x, "tree")) return(fit_tree(x, df, wrap))
-
-  complete <- n * (n-1L) / 2L
-  null     <- 0L
+    
   triv     <- trivial(x, null, complete)
   update_k <- update_iteration(x)
   k        <- sum(x$G_A)/2
 
-  if (k == triv) return(x)
   x <- walk(x = x, df = df, q = q, thres = thres)
   k <- update_k(k)
 

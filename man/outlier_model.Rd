@@ -7,7 +7,7 @@
 outlier_model(A, adj, nsim = 5000, ncores = 1, validate = TRUE)
 }
 \arguments{
-\item{A}{Character Matrix (data)}
+\item{A}{Character Matrix (data) with the new observation of interest appended}
 
 \item{adj}{Adjacency list of a decomposable graph}
 
@@ -30,23 +30,24 @@ If cell values are not single characters, one may exploit the \code{to_single_ch
 library(dplyr)
 
 # All handwritten digits that have true class equal to a "1".
-d <- digits %>% # subset(digits, class == "1")
-  filter(class == "1") %>%
+d <- digits \%>\% # subset(digits, class == "1")
+  filter(class == "1") \%>\%
   select(-class)
 
 # A handwritten digit with true class equal to "7"
-z <- digits %>%
-  filter(class == "7") %>%
-  select(-class) %>%
-  slice(1) %>%
+z <- digits \%>\%
+  filter(class == "7") \%>\%
+  select(-class) \%>\%
+  slice(1) \%>\%
   unlist()
 
+# Append z to the class of "1" digits
+dz <- rbind(d, z)
+
 # Fit an interaction graph
-G <- fit_graph(d, trace = FALSE)
+G <- fit_graph(dz, trace = FALSE)
 plot(G, vertex.size = 1.5)
 
-# Append z to the class og "1" digits
-dz <- rbind(d, z)
 
 # The outlier model
 set.seed(7)
@@ -59,3 +60,7 @@ dvz <- deviance(m, z)
 pval(m, dvz)
 }
 }
+\seealso{
+\code{\link{fit_outlier}}, \code{\link{fit_graph}}
+}
+\keyword{internal}

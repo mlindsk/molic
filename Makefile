@@ -11,6 +11,9 @@ doc:
 check: 
 	Rscript -e "devtools::check()"
 
+check_fast: 
+	Rscript -e "devtools::check(build_args = c('--no-build-vignettes'), args = c('--no-build-vignettes'))"
+
 install:
 	Rscript -e "devtools::install()"
 

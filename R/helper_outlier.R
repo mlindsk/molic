@@ -51,6 +51,24 @@ only_single_chars <- function(A) {
   return(TRUE)
 }
 
+extract_model_simulations <- function(models) {
+  if (!inherits(models, "multiple_models")) stop("`models` needs to be an object returned from `fit_multiple_models`")
+  sims <- lapply(seq_along(models), function(m) {
+    data.frame(Deviance = models[[m]]$sims,
+      response = names(models)[m],
+      stringsAsFactors = FALSE)
+  }) 
+  do.call(rbind, sims)
+}
+
+make_observation_info <- function(models) {
+  zdevs <- sapply(models, function(m) m$dev)
+  zpvs  <- sapply(models, function(m) m$pv)
+  data.frame(devs = zdevs, pvals = zpvs, response = names(models))
+}
+## ---------------------------------------------------------
+
+
 
 ## Shut up CRAN check - foreach and z are good friends!
 utils::globalVariables('z') 
@@ -209,6 +227,85 @@ deviance <- function(x, y, ...) {
 deviance.outlier_model <- function(x, y,...) {
   TY(y, x$Cms, x$Sms)
 }
+
+
+#' Plot Deviance
+#'
+#' A plot method to show the the approximated deviance distribution
+#' @param x A \code{outlier_model} object
+#' @param type either "base" og "ggplot"
+#' @param ... Extra arguments; see details.
+#' @details
+#' \itemize{
+#'   \item TBA 
+#' } 
+#' @examples
+#' # TBA
+#' 1L
+#' @export
+plot.outlier_model <- function(x, type = "base", ...) {
+  # args <- list(...)
+  if ( type %ni% c("base", "ggplot"))
+  if (type == "base") {
+    graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
+  } else {
+    ## ggplot veriosn:
+  }
+  
+}
+
+
+## R CMD check fails if not we make these globals (due to NSE)
+## https://www.r-bloggers.com/no-visible-binding-for-global-variable/
+utils::globalVariables(c("Deviance", "response", "..quantile..", "x1", "x2", "y1", "y2"))
+
+#' Plot Deviance of Multiple Models
+#'
+#' A plot method to show the the approximated deviance distribution of multiple models
+#' @param x A \code{multiple_models} object returned from a called to \code{fit_multiple_models}
+#' @param sig_col Color of the significance level area (default is red)
+#' @param ... Extra arguments. See details.
+#' @details No extra functionalities are implemented for \code{...} yet.
+#' @examples
+#' # TBA
+#' 1L
+#' @export
+plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
+  z_dev_pval <- make_observation_info(x)
+  dat        <- extract_model_simulations(x)
+
+  p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = response)) + 
+    ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
+      geom      = "density_ridges_gradient",
+      calc_ecdf = TRUE,
+      quantiles = c(1 - x[[1]]$alpha, 1)
+    ) +
+    ggplot2::scale_fill_manual(
+      name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
+      labels = c("", "(ms[[1]]$alpha, 1]", "")
+    )
+
+  for (i in 1:nrow(z_dev_pval)) {
+    dev    <- z_dev_pval[i, "devs"]
+    linet  <- "dotted"
+    df_seg <- data.frame(x1 = dev, x2 = dev, y1 = i , y2 = i + 1)
+    p <- p + ggplot2::geom_segment(ggplot2::aes(x = x1,
+      y        = y1,
+      xend     = x2,
+      yend     = y2
+    ),
+    linetype = linet,
+    size     = 1,
+    color    = "black",
+    data     = df_seg
+    )
+  }
+
+  p <- p + ggplot2::theme_bw() + ggplot2::theme(legend.position = "none") + ggplot2::ylab("")
+  return(p)
+}
+
+
 
 #' Plot of pmf
 #'

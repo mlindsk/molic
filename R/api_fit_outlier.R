@@ -2,15 +2,16 @@
 #'
 #' A model based on decomposable graphical models for outlier detection
 #'
-#' @param A Character Matrix (data)
+#' @param A Character Matrix (data) with the new observation of interest appended
 #' @param adj Adjacency list of a decomposable graph
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param validate Logical. See details.
-#'
 #' @details It is assumed that all cell values in \code{A}, for all variables,
 #' are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 #' If cell values are not single characters, one may exploit the \code{to_single_chars} function
+#' @seealso \code{\link{fit_outlier}}, \code{\link{fit_graph}}
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' library(dplyr)
@@ -27,12 +28,13 @@
 #'   slice(1) %>%
 #'   unlist()
 #'
+#' # Append z to the class of "1" digits
+#' dz <- rbind(d, z)
+#' 
 #' # Fit an interaction graph
-#' G <- fit_graph(d, trace = FALSE)
+#' G <- fit_graph(dz, trace = FALSE)
 #' plot(G, vertex.size = 1.5)
 #' 
-#' # Append z to the class og "1" digits
-#' dz <- rbind(d, z)
 #' 
 #' # The outlier model
 #' set.seed(7)
@@ -44,7 +46,6 @@
 #' dvz <- deviance(m, z)
 #' pval(m, dvz)
 #' }
-#' @export
 outlier_model <- function(A,
                           adj,
                           nsim       = 5000,
@@ -57,7 +58,7 @@ outlier_model <- function(A,
   Cms   <- a_marginals(A, RIP$C)
   Sms   <- a_marginals(A, RIP$S)
   sims  <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "deviance", ncores = ncores)
- mu    <- mean(sims)
+  mu    <- mean(sims)
   sigma <- stats::var(sims)
   cdf   <- stats::ecdf(sims)
   return(new_outlier_model(A, sims, mu, sigma, cdf, Cms, Sms))
@@ -65,15 +66,24 @@ outlier_model <- function(A,
 
 #' Fit Outlier
 #'
-#' A convinient wrapper around the \code{outlier_model} for doing outlier test
+#' A convinient wrapper for doing outlier test
 #'
-#' @param A Character Matrix (data)
+#' @param A Character Matrix (data) - without the new observation \code{z} appended
 #' @param z Named vector (same names as \code{colnames(A)})
-#' @param adj Adjacency list of a decomposable graph
 #' @param alpha The significance level
+#' @param type Character ("fwd", "bwd", "tree" or "tfwd") - see \code{fit_graph}
+#' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC) - see \code{fit_graph}
+#' @param comp A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
+#' @param trace Logical indicating whether or not to trace the procedure
 #' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
+#' @description The outlier model relies on a graph object returned from \code{fit_graph}. This function needs data; however
+#' when an outlier test is performed, the function \code{fit_graph} needs data with \code{z} appended. That is because,
+#' the model is under the hypothesis that \code{z} is not an outlier in \code{A}. \code{fit_outlier} automatically do this.
+#' Moreover, \code{fit_outlier} relies on \code{outlier_model} which is not an exported function, but can be used carefully
+#' by the user for more flexibillity (use \code{molic:::outlier_model}). The user should be aware, that it is \strong{assumed} that the data argument in \code{outlier_model} has the new observation included! Thus \code{fit_outlier} is a safe wrapper for most applications.
+#' @seealso \code{\link{outlier_model}}, \code{\link{fit_graph}}
 #' @examples
 #' \dontrun{
 #' library(dplyr)
@@ -90,47 +100,162 @@ outlier_model <- function(A,
 #'   slice(1) %>%
 #'   unlist()
 #'
-#' # Fit an interaction graph
-#' G <- fit_graph(d, trace = FALSE)
-#' plot(G, vertex.size = 1.5)
-#' 
-#' # Test if z is an outlier
-#' m <- fit_outlier(as.matrix(d), z, adj_lst(G))
+#' # Test if z is an outlier in class "1"
+#' m <- fit_outlier(as.matrix(d), z)
 #' print(m)
 #' pmf(m)
 #' }
 #' @export
-fit_outlier <- function(A, z, adj, alpha = 0.05, nsim = 5000, ncores = 1, validate = TRUE) {
+fit_outlier <- function(A,
+                        z,
+                        alpha    = 0.05,
+                        type     = "fwd",
+                        q        = 0.5,
+                        comp     = NULL,
+                        nsim     = 10000,
+                        ncores   = 1,
+                        trace    = FALSE,
+                        validate = TRUE) {
+
   if (all(colnames(A) != names(z))) stop("Variables in A and the names of z is not in agreement!")
-  d_z   <- rbind(A, z)
+  dz   <- rbind(A, z)
+
   if (validate) {
-    if( !only_single_chars(d_z) ) {
+    if( !only_single_chars(dz) ) {
       message("  Note: A has values larger than a single character. to_single_chars() was used to correct this")
-      d_z <- to_single_chars(d_z)
-      z   <- d_z[nrow(d_z), ]
+      dz <- to_single_chars(dz)
+      z   <- dz[nrow(dz), ]
     }    
   }
-  m     <- outlier_model(d_z, adj, nsim = nsim, ncores = ncores, validate = FALSE)
+
+  if (trace) cat(" Fitting the graph ... \n  ---------------------------------------- \n")
+  ddz <- as.data.frame(dz)
+  if (!is.null(comp)) {
+    adj <- unlist(
+      lapply(unname(comp), function(x) {
+        adj_lst(fit_graph(ddz[, x, drop = FALSE], type = type,  q = q, trace = trace))
+      }),
+      recursive = FALSE
+    )
+  } else {
+    adj  <- adj_lst(fit_graph(ddz, type = type,  q = q, trace = trace))  
+  }
+
+  if (trace) cat(" ---------------------------------------- \n Outlier model in progress ... \n")
+  m     <- outlier_model(dz, adj, nsim = nsim, ncores = ncores, validate = FALSE)
   dev_z <- deviance(m, z)
   m     <- new_outlier(m, dev_z, pval(m, dev_z), critval(m, alpha), alpha)
   return(m)
 }
 
+
 #' Mixed Outlier Test
 #'
 #' A convinient function for outlier detection with mixed information
 #'
-#' @param m1 A \code{outlier_model} object
-#' @param m2 A \code{outlier_model} object
-#' @param z1 Named vector (same names as \code{colnames(A)})
-#' @param z2 Named vector (same names as \code{colnames(A)})
-#' @param alpha The significance level
+#' @param m1 An object returned from \code{fit_outlier}
+#' @param m2 An object returned from \code{fit_outlier}
 #' @examples
+#' @examples
+#' \dontrun{
+#'
 #' # See the package vignette "Outlier Detection in Genetic Data"
+#' for an introduction to the genetic data used here
+#' 
+#' library(dplyr)
+#'
+#' # The components - here microhaplotypes
+#' haps <- tgp_haps
+#' 
+#' # All the Europeans
+#' eur  <- tgp_dat %>%
+#'   as_tibble() %>%
+#'   filter(pop_meta == "EUR")
+#' 
+#' # Extracting the two databases for each copy of the chromosomes
+#' eur_a <- eur %>%
+#'   filter(grepl("a$", sample_name))
+#' 
+#' eur_b <- eur %>%
+#'   filter(grepl("b$", sample_name))
+#'
+#' # Testing if an American is an outlier in Europe
+#' 
+#' amr <- tgp_dat %>%
+#'   as_tibble() %>%
+#'   filter(pop_meta == "AMR")
+#'
+#' 
+#' z1  <- amr %>%
+#'   filter(grepl("a$", sample_name)) %>% 
+#'   select(unname(unlist(haps))) %>%
+#'   slice(1) %>%
+#'   unlist()
+#' 
+#' z2  <- amr %>%
+#'   filter(grepl("b$", sample_name)) %>% 
+#'   select(unname(unlist(haps))) %>%
+#'   slice(1) %>%
+#'   unlist()
+#' 
+#' mat_eur_a <- eur_a %>% select(-c(1:2)) %>% as.matrix()
+#' mat_eur_b <- eur_b %>% select(-c(1:2)) %>% as.matrix()
+#' 
+#' m1 <- fit_outlier(mat_eur_a, z1, comp = haps) # consider using more cores (ncores argument)
+#' m2 <- fit_outlier(mat_eur_a, z2, comp = haps) # consider using more cores (ncores argument)
+#' fit_mixed_outlier(m1,m2)
+#' }
 #' @export
-fit_mixed_outlier <- function(m1, m2, z1, z2, alpha = 0.05) {
+fit_mixed_outlier <- function(m1, m2) {
+  if (m1$alpha != m2$alpha) warning("Significance levels are different for model m1 and m2!")
   m     <- convolute(m1, m2)
-  dev_z <- deviance(m1, z1) + deviance(m2, z2)
-  m     <- new_mixed_outlier(m, dev_z, pval(m, dev_z), critval(m, alpha), alpha)
+  dev   <- m1$dev + m2$dev
+  m     <- new_mixed_outlier(m, dev, pval(m, dev), critval(m, m1$alpha), m1$alpha)
   return(m)
+}
+
+#' Fit Multiple Models
+#'
+#' A convinient wrapper function to conduct multiple tests for a single observation
+#'
+#' @param A A data frame (data) without the new observation \code{z} appended
+#' @param z Named vector (same names as \code{colnames(A)} but without the class variable)
+#' @param response A character with the name of the class variable of interest
+#' @param alpha The significance level
+#' @param type Character ("fwd", "bwd", "tree" or "tfwd") - the type of interaction graph to be used
+#' @param q Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)
+#' @param nsim Number of simulations
+#' @param ncores Number of cores to use in parallelization
+#' @param trace Logical indicating whether or not to trace the procedure
+#' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
+#' @examples
+#' # TBA
+#' 1L
+#' @export
+fit_multiple_models <- function(A,
+                                z,
+                                response,
+                                alpha      = 0.05,
+                                type       = "fwd",
+                                q          = 0.5,
+                                nsim       = 10000,
+                                ncores     = 1,
+                                trace      = TRUE,
+                                validate   = TRUE) {
+  res_vec  <- A[, response, drop = TRUE]
+  res_lvls <- sort(unique(res_vec))
+  models <- lapply(seq_along(res_lvls), function(i) {
+    if (trace) cat(i, "/", length(res_lvls), " ... \n")
+    Ai <- A[res_vec == res_lvls[i], -which(colnames(A) == response)]
+    fit_outlier(A = as.matrix(Ai),
+      z           = z,
+      alpha       = alpha,
+      type        = type,
+      q           = q,
+      nsim        = nsim,
+      ncores      = ncores,
+      validate    = validate)
+  })
+  names(models) <- res_lvls
+  structure(models, class = c("multiple_models", class(models)))
 }

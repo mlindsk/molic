@@ -27,8 +27,8 @@ This function simulates observations from a DGM
 
 library(dplyr)
 
-d <- digits %>%
-  filter(class == "1") %>%
+d <- digits \%>\%
+  filter(class == "1") \%>\%
   select(-class)
 G <- adj_lst(fit_graph(d))
 dgm_sim(as.matrix(d), G, nsim = 10)

@@ -11,7 +11,7 @@ vs_to_es     <- function(e) lapply(e, paste0, collapse = "|")
 rev_es       <- function(e) sapply(es_to_vs(e), function(x) paste0(rev(x), collapse = "|"))
 sort_        <- function(x) paste0(sort(x), collapse = "|")
 .split_chars <- function(x) unlist(strsplit(x, ""))
-
+'%ni%'       <- Negate('%in%')
 
 ## ---------------------------------------------------------
 ##                EXPORTED HELPERS

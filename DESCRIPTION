@@ -1,6 +1,6 @@
 Package: molic
 Title: Multivariate Oulier Detection In Contingency Tables
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: 
     person(given = "Mads",
            family = "Lindskou",
@@ -18,7 +18,9 @@ Imports:
     Matrix,
     doParallel,
     foreach,
-    igraph
+    igraph,
+    ggplot2,
+    ggridges
 Suggests:
     knitr,
     rmarkdown,
@@ -26,5 +28,5 @@ Suggests:
     dplyr,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.1
 SystemRequirements: C++11
