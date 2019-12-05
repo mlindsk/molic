@@ -95,64 +95,63 @@ To demonstrate the outlier method we use the `car` data set from the [UCI Machin
 library(dplyr)
 car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data",
   header = FALSE, sep = ",", dec = ".") %>%
-  as_tibble() %>%
+  as_tibble() %>% 
   mutate_all(as.character)
+
 colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "class")
+car_class <- car %>%
+  select(class) %>%
+  mutate(class = case_when(
+    class == "unacc" ~ "u",
+    class == "acc"   ~ "a",
+    class == "vgood" ~ "v",
+    class == "good"  ~ "g"
+  ))
+
+car <- car %>%
+  select(-class) %>%
+  to_single_chars() %>% # The outlier model assumes that all values are single characters!
+  as_tibble() %>%
+  bind_cols(car_class)
 ```
 
 ### Defining Sub-Classes
 
 ``` r
 vgood_cars <- car %>%
-  filter(class == "vgood") %>%
+  filter(class == "v") %>%
   select(-class)
 
 unacc_cars <- car %>%
-  filter(class == "unacc") %>%
+  filter(class == "u") %>%
   select(-class)
 ```
 
-### Fitting an Interaction Graph
+### A New Observation
 
-We fit the interaction graph for the `vgood` cars and plot the result.
-
-``` r
-G_vgood  <- fit_graph(vgood_cars, q = 0.5, trace = FALSE) # AIC (q = 0) and BIC (q = 1)
-plot(G_vgood)
-```
-
-<img src="man/figures/README-acc-1.png" width="100%" style="display: block; margin: auto;" />
-
-For comparison we also fit the interaction graph for the `unacc_cars`
-
-``` r
-G_unacc  <- fit_graph(unacc_cars, q = 0.5, trace = FALSE)
-plot(G_unacc)
-```
-
-<img src="man/figures/README-unacc-1.png" width="100%" style="display: block; margin: auto;" />
-
-It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
-
-### Outlier Test
-
-We randomly select a car from the `unacc_cars` data and test if it is an outlier in `vgood_cars`.
+We imagine that a new observation is given; here we take a random observation from the `unacc` class.
 
 ``` r
 set.seed(7)
 z <- sample_n(unacc_cars, 1) %>% unlist()
-M <- fit_outlier(as.matrix(vgood_cars), z, adj_lst(G_vgood))
-#>   Note: A has values larger than a single character. to_single_chars() was used to correct this
-M
+```
+
+### Outlier Test
+
+Now we test if `z` is an outlier in `vgood_cars`.
+
+``` r
+m <- fit_outlier(as.matrix(vgood_cars), z, trace = FALSE)
+print(m)
 #> 
 #>  -------------------------------- 
-#>   Simulations: 5000 
+#>   Simulations: 10000 
 #>   Variables: 6 
 #>   Observations: 66 
-#>   Estimated mean: -16.22 
-#>   Estimated variance: 0.78 
+#>   Estimated mean: -6.04 
+#>   Estimated variance: 0.05 
 #>     ---------------------------   
-#>   Critical value: -15.57848 
+#>   Critical value: -5.40171 
 #>   Deviance: -3.350997 
 #>   P-value: 0 
 #>   Alpha: 0.05 
@@ -163,12 +162,28 @@ M
 Thus the car is declared an outlier on a 0.05 significance level. We can visualize this by plotting the corresponding density of the deviance statistic as
 
 ``` r
-pmf(M)
+plot(m)
+#> Picking joint bandwidth of 0.0167
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -5.4017104. The red area represents the significance level (here *α* = 0.05).
 
-and verify that the estimated deviance of the selected car is -3.3509971 which is larger than the critical value of -15.5784775.
+Multiple Tests
+--------------
+
+Here we make a test for `z` being an outlier i all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here *α* = 0.05) and the dotted lines represents the observed deviance of `z` within the respective outlier test. We see that `z` is rejected in all but the true class of `z`. The odd looking densities is due to the fact that `car` does not contain that many variables. See other examples in the documentation of the vignettes.
+
+``` r
+mm <- fit_multiple_models(as.matrix(car), z, response = "class", alpha = 0.05)
+#> 1 / 4  ... 
+#> 2 / 4  ... 
+#> 3 / 4  ... 
+#> 4 / 4  ...
+plot(mm)
+#> Picking joint bandwidth of 0.0341
+```
+
+<img src="man/figures/README-multiple_outlier_test-1.png" width="100%" />
 
 Example - Variable Selection
 ----------------------------

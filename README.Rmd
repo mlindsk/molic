@@ -106,58 +106,71 @@ To demonstrate the outlier method we use the `car` data set from the [UCI Machin
 library(dplyr)
 car <- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data",
   header = FALSE, sep = ",", dec = ".") %>%
-  as_tibble() %>%
+  as_tibble() %>% 
   mutate_all(as.character)
+
 colnames(car) <- c("buying", "maint", "doors", "persons", "lug", "safety", "class")
+car_class <- car %>%
+  select(class) %>%
+  mutate(class = case_when(
+    class == "unacc" ~ "u",
+    class == "acc"   ~ "a",
+    class == "vgood" ~ "v",
+    class == "good"  ~ "g"
+  ))
+
+car <- car %>%
+  select(-class) %>%
+  to_single_chars() %>% # The outlier model assumes that all values are single characters!
+  as_tibble() %>%
+  bind_cols(car_class)
 ```
+
 
 ### Defining Sub-Classes
 
 ```{r vgood_uacc}
 vgood_cars <- car %>%
-  filter(class == "vgood") %>%
+  filter(class == "v") %>%
   select(-class)
 
 unacc_cars <- car %>%
-  filter(class == "unacc") %>%
+  filter(class == "u") %>%
   select(-class)
 ```
 
-### Fitting an Interaction Graph
+### A New Observation
 
-We fit the interaction graph for the `vgood` cars and plot the result.
+We imagine that a new observation is given; here we take a random observation from the `unacc` class.
 
-```{r acc, fig.align = "center"}
-G_vgood  <- fit_graph(vgood_cars, q = 0.5, trace = FALSE) # AIC (q = 0) and BIC (q = 1)
-plot(G_vgood)
+```{r}
+set.seed(7)
+z <- sample_n(unacc_cars, 1) %>% unlist()
 ```
-
-For comparison we also fit the interaction graph for the `unacc_cars`
-
-```{r unacc, fig.align = "center"}
-G_unacc  <- fit_graph(unacc_cars, q = 0.5, trace = FALSE)
-plot(G_unacc)
-```
-
-It is apparent that very good cars and unacceptable cars are determined by two different mechanisms.
 
 ### Outlier Test
 
-We randomly select a car from the `unacc_cars` data and test if it is an outlier in `vgood_cars`.
+Now we test if `z` is an outlier in `vgood_cars`.
 
 ```{r outlier_test}
-set.seed(7)
-z <- sample_n(unacc_cars, 1) %>% unlist()
-M <- fit_outlier(as.matrix(vgood_cars), z, adj_lst(G_vgood))
-M
+m <- fit_outlier(as.matrix(vgood_cars), z, trace = FALSE)
+print(m)
 ```
 Thus the car is declared an outlier on a $0.05$ significance level. We can visualize this by plotting the corresponding density of the deviance statistic as
 
 ```{r}
-pmf(M)
+plot(m)
 ```
+and verify that the estimated deviance of the selected car is `r m$dev` (the dotted line) which is larger than the critical value of `r m$cv`. The red area represents the significance level (here $\alpha = 0.05$).
 
-and verify that the estimated deviance of the selected car is `r M$dev` which is larger than the critical value of `r M$cv`.
+## Multiple Tests
+
+Here we make a test for `z` being an outlier i all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here $\alpha = 0.05$) and the dotted lines represents the observed deviance of `z` within the respective outlier test. We see that `z` is rejected in all but the true class of `z`. The odd looking densities is due to the fact that `car` does not contain that many variables. See other examples in the documentation of the vignettes.
+
+```{r multiple_outlier_test}
+mm <- fit_multiple_models(as.matrix(car), z, response = "class", alpha = 0.05)
+plot(mm)
+```
 
 ## Example - Variable Selection
 The `fit_graph` procedure can be used as a variable selection tool. The idea is, to fit an interaction graph with the class variable of interest included. The most influential variables on the class variable is then given by the neighboring variables. Lets investigate which variables influences how the cars are labelled.

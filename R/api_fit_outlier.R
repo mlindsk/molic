@@ -156,7 +156,6 @@ fit_outlier <- function(A,
 #' @param m1 An object returned from \code{fit_outlier}
 #' @param m2 An object returned from \code{fit_outlier}
 #' @examples
-#' @examples
 #' \dontrun{
 #'
 #' # See the package vignette "Outlier Detection in Genetic Data"

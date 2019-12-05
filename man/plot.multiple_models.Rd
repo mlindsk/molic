@@ -17,8 +17,14 @@
 A plot method to show the the approximated deviance distribution of multiple models
 }
 \details{
-No extra functionalities are implemented for \code{...} yet.
+The dotted line represents the observed deviance of the observation under the hypothesis
+and the colored (red is default) area under the graph represents the significance level.
+Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
+is an outlier cannot be rejected.
+
+No extra arguments \code{...} are implement at the moment.
 }
 \examples{
 # TBA
+1L
 }

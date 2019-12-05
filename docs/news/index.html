@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A data frame observations corresponding to handwritten digits — digits • molic</title>
+<title>Changelog • molic</title>
 
 
 <!-- jquery -->
@@ -33,12 +33,7 @@
 
 
 
-<meta property="og:title" content="A data frame observations corresponding to handwritten digits — digits" />
-<meta property="og:description" content="The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
-towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
-in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16)." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -56,7 +51,7 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,44 +112,77 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A data frame observations corresponding to handwritten digits</h1>
-    
-    <div class="hidden name"><code>digits.Rd</code></div>
+      <h1>Changelog <small></small></h1>
+      
     </div>
 
-    <div class="ref-description">
-    <p>The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
-towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
-in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16).</p>
-    </div>
-
-    <pre class="usage"><span class='no'>digits</span></pre>
-
-
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>data.frame</code> with 5620 rows and 65 columns.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>In the final version of the data in molic, we have a data frame (of characters) with 5620 rows and 65 columns,
-where the last column is the true class of the handwritten digit. All the remaining cells in the 64 columns was
-converted to values in a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p corresponding the the 16 possibilities. This is needed
-in the outlier model. The to_single_chars() function can be exploited to achieve this for other data sets.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://archive.ics.uci.edu/ml/datasets/optical+recognition+of+handwritten+digits'>Optical Recognition of Handwritten Digits</a></p>
-
+    <div id="molic-1-0-0-9000" class="section level1">
+<h1 class="page-header">
+<a href="#molic-1-0-0-9000" class="anchor"></a>molic 1.0.0.9000</h1>
+<p><strong>Development Model</strong></p>
+<p>From this release we adopt the branching model introduced by Vincent Driessen</p>
+<ul>
+<li><a href="https://nvie.com/posts/a-successful-git-branching-model/">Git branching model</a></li>
+</ul>
+<p>This means, that there are now two branches: the <strong>master branch</strong> is always the current stable version, and the <strong>develop branch</strong> is the develop version (indicated with the suffix number 9000 in the version number).</p>
+<p><strong>New API</strong></p>
+<ul>
+<li>API for <code>fit_outlier</code> has changed slightly (see hidden functions below for an explanation)</li>
+<li>API for <code>fit_outlier</code> has changed slightly and is improved considerably - much less work for the user now!</li>
+</ul>
+<p><strong>New functions</strong></p>
+<ul>
+<li>
+<code>generate_multiple_models</code>
+<ul>
+<li>Given a class variable with $1,2\ldots, l$ levels and a new observation $y$, this function is a convenient wrapper around <code>fit_graph</code> and <code>fit_outlier</code> that conducts all the hypothesis $H_k:$ $y$ has level $k$ for $k = 1,2,\ldots, l$.</li>
+</ul>
+</li>
+<li>
+<code>plot_models</code>
+<ul>
+<li>Given an object returned from <code>generate_multiple_models</code> this function is used to visualize all the hypothesis tests for a single observation simultaneously</li>
+</ul>
+</li>
+<li>
+<code>components</code>
+<ul>
+<li>Return a list with all components of a graph</li>
+</ul>
+</li>
+</ul>
+<p><strong>Hidden functions</strong></p>
+<ul>
+<li>
+<code>outlier_model</code>
+<ul>
+<li>the function can still be accessed by <code>:::</code>. But the user should prefer <code>fit_outlier</code>
+</li>
+<li>the problem was, that in <code>outlier_model</code> the user had to append the new observation to be tested in data on their own.</li>
+<li>the function <code>fit_outlier</code> uses both <code>fit_graph</code> and <code>outlier_model</code> but in both situations the observation needs to be appended to data; this is taken care of automatically in <code>fit_outlier</code>.</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="molic-1-0-0" class="section level1">
+<h1 class="page-header">
+<a href="#molic-1-0-0" class="anchor"></a>molic 1.0.0</h1>
+<ul>
+<li>First release.</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#references">References</a></li>
-    </ul>
-
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#molic-1-0-0-9000">1.0.0.9000</a></li>
+        <li><a href="#molic-1-0-0">1.0.0</a></li>
+      </ul>
+    </div>
   </div>
+
 </div>
 
       <footer>

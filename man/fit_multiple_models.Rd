@@ -43,4 +43,5 @@ A convinient wrapper function to conduct multiple tests for a single observation
 }
 \examples{
 # TBA
+1L
 }

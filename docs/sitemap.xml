@@ -19,6 +19,9 @@
     <loc>https://mlindsk.github.io/molic/reference/cdf.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/components.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/critval.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/fit_mixed_outlier.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/fit_multiple_models.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/fit_outlier.html</loc>
@@ -74,6 +80,12 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/plot.gengraph.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.multiple_models.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.outlier_model.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>

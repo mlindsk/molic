@@ -66,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -96,6 +96,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -120,8 +123,15 @@
     <p>A generic method for structure learning in decomposable graphical models</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_graph</span>(<span class='no'>df</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fwd"</span>, <span class='kw'>adj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>q</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>wrap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>fit_graph</span>(
+  <span class='no'>df</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fwd"</span>,
+  <span class='kw'>adj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>q</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>wrap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

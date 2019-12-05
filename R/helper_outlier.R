@@ -233,25 +233,39 @@ deviance.outlier_model <- function(x, y,...) {
 #'
 #' A plot method to show the the approximated deviance distribution
 #' @param x A \code{outlier_model} object
+#' @param sig_col Color of the significance level area (default is red)
 #' @param type either "base" og "ggplot"
 #' @param ... Extra arguments; see details.
-#' @details
-#' \itemize{
-#'   \item TBA 
-#' } 
+#' @details The dotted line represents the observed deviance of the observation under the hypothesis
+#' and the colored (red is default) area under the graph represents the significance level.
+#' Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
+#' is an outlier cannot be rejected.
+#'
+#' No extra arguments \code{...} are implement at the moment.
 #' @examples
 #' # TBA
 #' 1L
 #' @export
-plot.outlier_model <- function(x, type = "base", ...) {
+plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
   # args <- list(...)
-  if ( type %ni% c("base", "ggplot"))
-  if (type == "base") {
-    graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
-  } else {
-    ## ggplot veriosn:
-  }
-  
+  # Old base approach:
+  # graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
+  dat <- data.frame(Deviance = x$sims, y = "")
+  p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = y))
+  p <- p + ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
+    geom      = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = c(1 - x$alpha, 1)
+  )
+  p <- p + ggplot2::scale_fill_manual(
+    name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
+    labels = c("", "(x[[1]]$alpha, 1]", "")
+  )
+  p <- p + ggplot2::theme_bw()
+  p <- p + ggplot2::theme(legend.position = "none")
+  p <- p + ggplot2::ylab("")
+  p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = x$dev), linetype = "dotted")
+  return(p)
 }
 
 
@@ -265,7 +279,12 @@ utils::globalVariables(c("Deviance", "response", "..quantile..", "x1", "x2", "y1
 #' @param x A \code{multiple_models} object returned from a called to \code{fit_multiple_models}
 #' @param sig_col Color of the significance level area (default is red)
 #' @param ... Extra arguments. See details.
-#' @details No extra functionalities are implemented for \code{...} yet.
+#' @details The dotted line represents the observed deviance of the observation under the hypothesis
+#' and the colored (red is default) area under the graph represents the significance level.
+#' Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
+#' is an outlier cannot be rejected.
+#'
+#' No extra arguments \code{...} are implement at the moment.
 #' @examples
 #' # TBA
 #' 1L
@@ -274,17 +293,17 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
   z_dev_pval <- make_observation_info(x)
   dat        <- extract_model_simulations(x)
 
-  p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = response)) + 
-    ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
-      geom      = "density_ridges_gradient",
-      calc_ecdf = TRUE,
-      quantiles = c(1 - x[[1]]$alpha, 1)
-    ) +
-    ggplot2::scale_fill_manual(
-      name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
-      labels = c("", "(ms[[1]]$alpha, 1]", "")
-    )
-
+  p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = response))
+  p <- p + ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
+    geom      = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = c(1 - x[[1]]$alpha, 1)
+  )
+  p <- p + ggplot2::scale_fill_manual(
+    name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
+    labels = c("", "(ms[[1]]$alpha, 1]", "")
+  )
+  
   for (i in 1:nrow(z_dev_pval)) {
     dev    <- z_dev_pval[i, "devs"]
     linet  <- "dotted"
@@ -300,7 +319,7 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
     data     = df_seg
     )
   }
-
+  
   p <- p + ggplot2::theme_bw() + ggplot2::theme(legend.position = "none") + ggplot2::ylab("")
   return(p)
 }

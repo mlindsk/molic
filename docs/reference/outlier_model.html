@@ -66,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -95,6 +95,9 @@
       <a href="../articles/outlier_intro.html">The Outlier Model</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -127,7 +130,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>A</th>
-      <td><p>Character Matrix (data)</p></td>
+      <td><p>Character Matrix (data) with the new observation of interest appended</p></td>
     </tr>
     <tr>
       <th>adj</th>
@@ -152,6 +155,9 @@
     <p>It is assumed that all cell values in <code>A</code>, for all variables,
 are represented as a single character. If <code>validate</code> is <code>TRUE</code> this is checked.
 If cell values are not single characters, one may exploit the <code>to_single_chars</code> function</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='fit_outlier.html'>fit_outlier</a></code>, <code><a href='fit_graph.html'>fit_graph</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
@@ -169,12 +175,13 @@ If cell values are not single characters, one may exploit the <code>to_single_ch
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>()
 
+<span class='co'># Append z to the class of "1" digits</span>
+<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>d</span>, <span class='no'>z</span>)
+
 <span class='co'># Fit an interaction graph</span>
-<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>dz</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>G</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1.5</span>)
 
-<span class='co'># Append z to the class og "1" digits</span>
-<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>d</span>, <span class='no'>z</span>)
 
 <span class='co'># The outlier model</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)
@@ -192,6 +199,7 @@ If cell values are not single characters, one may exploit the <code>to_single_ch
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

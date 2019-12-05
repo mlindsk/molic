@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A data frame observations corresponding to handwritten digits — digits • molic</title>
+<title>Finds the components of a graph — components • molic</title>
 
 
 <!-- jquery -->
@@ -33,11 +33,8 @@
 
 
 
-<meta property="og:title" content="A data frame observations corresponding to handwritten digits — digits" />
-<meta property="og:description" content="The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
-towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
-in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16)." />
+<meta property="og:title" content="Finds the components of a graph — components" />
+<meta property="og:description" content="Finds the components of a graph" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -117,41 +114,36 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A data frame observations corresponding to handwritten digits</h1>
+    <h1>Finds the components of a graph</h1>
     
-    <div class="hidden name"><code>digits.Rd</code></div>
+    <div class="hidden name"><code>components.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
-towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
-in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16).</p>
+    <p>Finds the components of a graph</p>
     </div>
 
-    <pre class="usage"><span class='no'>digits</span></pre>
+    <pre class="usage"><span class='fu'>components</span>(<span class='no'>adj</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>adj</th>
+      <td><p>Adjacency list</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>data.frame</code> with 5620 rows and 65 columns.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>In the final version of the data in molic, we have a data frame (of characters) with 5620 rows and 65 columns,
-where the last column is the true class of the handwritten digit. All the remaining cells in the 64 columns was
-converted to values in a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p corresponding the the 16 possibilities. This is needed
-in the outlier model. The to_single_chars() function can be exploited to achieve this for other data sets.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://archive.ics.uci.edu/ml/datasets/optical+recognition+of+handwritten+digits'>Optical Recognition of Handwritten Digits</a></p>
+    <p>A list with the elements being the components of the graph</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#references">References</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

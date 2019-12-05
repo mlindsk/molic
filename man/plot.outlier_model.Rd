@@ -4,23 +4,29 @@
 \alias{plot.outlier_model}
 \title{Plot Deviance}
 \usage{
-\method{plot}{outlier_model}(x, type = "base", ...)
+\method{plot}{outlier_model}(x, sig_col = "#FF0000A0", ...)
 }
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{type}{either "base" og "ggplot"}
+\item{sig_col}{Color of the significance level area (default is red)}
 
 \item{...}{Extra arguments; see details.}
+
+\item{type}{either "base" og "ggplot"}
 }
 \description{
 A plot method to show the the approximated deviance distribution
 }
 \details{
-\itemize{
-  \item TBA 
-}
+The dotted line represents the observed deviance of the observation under the hypothesis
+and the colored (red is default) area under the graph represents the significance level.
+Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
+is an outlier cannot be rejected.
+
+No extra arguments \code{...} are implement at the moment.
 }
 \examples{
 # TBA
+1L
 }
