@@ -64,6 +64,7 @@ The main functions in **molic** are
 
 -   `fit_graph` which fits a decomposable graph. It has four types; forward selection (`fwd`), backward selection (`bwd`), tree (`tree`) and a combination of tree and forward (`tfwd`). Using `adj_lst` on an object returned by `fit_graph` gives the **adjacency list** corresponding to the graph. Similarly one can use `adj_mat` to obtain an adjacency matrix.
 -   `fit_outlier` which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by `fit_graph`.
+-   `fit_multiple_models` which are useful when it is of interest to test for a new observation being an outlier in all classes in the given data.
 
 Adjacency lists are important in **molic**. They are named `list` objects of the form
 
@@ -154,10 +155,10 @@ print(m)
 #>   Simulations: 10000 
 #>   Variables: 6 
 #>   Observations: 66 
-#>   Estimated mean: -6.04 
-#>   Estimated variance: 0.05 
+#>   Estimated mean: -16.23 
+#>   Estimated variance: 0.73 
 #>     ---------------------------   
-#>   Critical value: -5.40171 
+#>   Critical value: -15.57852 
 #>   Deviance: -3.350997 
 #>   P-value: 0 
 #>   Alpha: 0.05 
@@ -172,7 +173,9 @@ plot(m)
 #> Picking joint bandwidth of 0.0167
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -5.4017104. The red area represents the significance level (here *α* = 0.05).
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -15.5785197. The red area represents the significance level (here *α* = 0.05).
+
+It should be noted here, that `fit_outlier` is a convenient wrapper around the two functions `fit_graph` and `outlier_model` which by theme-selves are more flexible.
 
 Multiple Tests
 --------------
@@ -186,7 +189,7 @@ mm <- fit_multiple_models(as.matrix(car), z, response = "class", alpha = 0.05)
 #> 3 / 4  ... 
 #> 4 / 4  ...
 plot(mm)
-#> Picking joint bandwidth of 0.0341
+#> Picking joint bandwidth of 0.0248
 ```
 
 <img src="man/figures/README-multiple_outlier_test-1.png" width="100%" />

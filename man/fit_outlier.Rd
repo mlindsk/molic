@@ -37,16 +37,11 @@ fit_outlier(
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
+
+\item{adj}{Adjacency list of a decomposable graph without the observation of interest}
 }
 \description{
-The outlier model relies on a graph object returned from \code{fit_graph}. This function needs data; however
-when an outlier test is performed, the function \code{fit_graph} needs data with \code{z} appended. That is because,
-the model is under the hypothesis that \code{z} is not an outlier in \code{A}. \code{fit_outlier} automatically do this.
-Moreover, \code{fit_outlier} relies on \code{outlier_model} which is not an exported function, but can be used carefully
-by the user for more flexibillity (use \code{molic:::outlier_model}). The user should be aware, that it is \strong{assumed} that the data argument in \code{outlier_model} has the new observation included! Thus \code{fit_outlier} is a safe wrapper for most applications.
-}
-\details{
-A convinient wrapper for doing outlier test
+A convenient wrapper for doing outlier test
 }
 \examples{
 \dontrun{

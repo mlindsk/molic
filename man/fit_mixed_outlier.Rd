@@ -12,7 +12,7 @@ fit_mixed_outlier(m1, m2)
 \item{m2}{An object returned from \code{fit_outlier}}
 }
 \description{
-A convinient function for outlier detection with mixed information
+A convenient function for outlier detection with mixed information
 }
 \examples{
 \dontrun{

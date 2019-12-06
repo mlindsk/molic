@@ -90,8 +90,10 @@
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
 <p>If you want to learn the “behind the scenes” of the model it is recommended to go through <a href="https://mlindsk.github.io/molic/articles/">The Outlier Model</a> and look at the <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a> as you read along. See also the examples below and the software paper.</p>
-<p>You can install the development version of the package by using the <code>devtools</code> package:</p>
+<p>You can install the current stable release of the package by using the <code>devtools</code> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>The development version can be installed using (see e.g. the <code>NEWS.md</code> file at the develop branch to get a feeling of the upcoming features):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic@develop"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2 class="hasAnchor">
@@ -130,6 +132,8 @@
 <code>fit_graph</code> which fits a decomposable graph. It has four types; forward selection (<code>fwd</code>), backward selection (<code>bwd</code>), tree (<code>tree</code>) and a combination of tree and forward (<code>tfwd</code>). Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the <strong>adjacency list</strong> corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix.</li>
 <li>
 <code>fit_outlier</code> which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by <code>fit_graph</code>.</li>
+<li>
+<code>fit_multiple_models</code> which are useful when it is of interest to test for a new observation being an outlier in all classes in the given data.</li>
 </ul>
 <p>Adjacency lists are important in <strong>molic</strong>. They are named <code>list</code> objects of the form</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adj &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">a =</span> <span class="st">"b"</span>, <span class="dt">b =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"a"</span>, <span class="st">"c"</span>), <span class="dt">c =</span> <span class="st">"b"</span>, <span class="dt">d =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">character</a></span>(<span class="dv">0</span>))</code></pre></div>
@@ -201,10 +205,10 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt;   Simulations: 10000 </span>
 <span class="co">#&gt;   Variables: 6 </span>
 <span class="co">#&gt;   Observations: 66 </span>
-<span class="co">#&gt;   Estimated mean: -6.04 </span>
-<span class="co">#&gt;   Estimated variance: 0.05 </span>
+<span class="co">#&gt;   Estimated mean: -16.23 </span>
+<span class="co">#&gt;   Estimated variance: 0.73 </span>
 <span class="co">#&gt;     ---------------------------   </span>
-<span class="co">#&gt;   Critical value: -5.40171 </span>
+<span class="co">#&gt;   Critical value: -15.57852 </span>
 <span class="co">#&gt;   Deviance: -3.350997 </span>
 <span class="co">#&gt;   P-value: 0 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
@@ -213,7 +217,8 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)
 <span class="co">#&gt; Picking joint bandwidth of 0.0167</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -5.4017104. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -15.5785197. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<p>It should be noted here, that <code>fit_outlier</code> is a convenient wrapper around the two functions <code>fit_graph</code> and <code>outlier_model</code> which by theme-selves are more flexible.</p>
 </div>
 </div>
 <div id="multiple-tests" class="section level2">
@@ -226,7 +231,7 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt; 3 / 4  ... </span>
 <span class="co">#&gt; 4 / 4  ...</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mm)
-<span class="co">#&gt; Picking joint bandwidth of 0.0341</span></code></pre></div>
+<span class="co">#&gt; Picking joint bandwidth of 0.0248</span></code></pre></div>
 <p><img src="reference/figures/README-multiple_outlier_test-1.png" width="100%"></p>
 </div>
 <div id="example---variable-selection" class="section level2">

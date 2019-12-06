@@ -34,11 +34,7 @@
 
 
 <meta property="og:title" content="Fit Outlier — fit_outlier" />
-<meta property="og:description" content="The outlier model relies on a graph object returned from fit_graph. This function needs data; however
-when an outlier test is performed, the function fit_graph needs data with z appended. That is because,
-the model is under the hypothesis that z is not an outlier in A. fit_outlier automatically do this.
-Moreover, fit_outlier relies on outlier_model which is not an exported function, but can be used carefully
-by the user for more flexibillity (use molic:::outlier_model). The user should be aware, that it is assumed that the data argument in outlier_model has the new observation included! Thus fit_outlier is a safe wrapper for most applications." />
+<meta property="og:description" content="A convenient wrapper for doing outlier test" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -124,11 +120,7 @@ by the user for more flexibillity (use molic:::outlier_model). The user should b
     </div>
 
     <div class="ref-description">
-    <p>The outlier model relies on a graph object returned from <code>fit_graph</code>. This function needs data; however
-when an outlier test is performed, the function <code>fit_graph</code> needs data with <code>z</code> appended. That is because,
-the model is under the hypothesis that <code>z</code> is not an outlier in <code>A</code>. <code>fit_outlier</code> automatically do this.
-Moreover, <code>fit_outlier</code> relies on <code>outlier_model</code> which is not an exported function, but can be used carefully
-by the user for more flexibillity (use <code>molic:::outlier_model</code>). The user should be aware, that it is <strong>assumed</strong> that the data argument in <code>outlier_model</code> has the new observation included! Thus <code>fit_outlier</code> is a safe wrapper for most applications.</p>
+    <p>A convenient wrapper for doing outlier test</p>
     </div>
 
     <pre class="usage"><span class='fu'>fit_outlier</span>(
@@ -187,11 +179,12 @@ by the user for more flexibillity (use <code>molic:::outlier_model</code>). The 
       <th>validate</th>
       <td><p>Logical. If true, it checks if <code>A</code> has only single character values and converts it if not.</p></td>
     </tr>
+    <tr>
+      <th>adj</th>
+      <td><p>Adjacency list of a decomposable graph without the observation of interest</p></td>
+    </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>A convinient wrapper for doing outlier test</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='outlier_model.html'>outlier_model</a></code>, <code><a href='fit_graph.html'>fit_graph</a></code></p></div>
@@ -222,7 +215,6 @@ by the user for more flexibillity (use <code>molic:::outlier_model</code>). The 
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#details">Details</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

@@ -3,7 +3,7 @@
 #' A model based on decomposable graphical models for outlier detection
 #'
 #' @param A Character Matrix (data) with the new observation of interest appended
-#' @param adj Adjacency list of a decomposable graph
+#' @param adj Adjacency list of a decomposable graph without the observation of interest
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param validate Logical. See details.
@@ -11,7 +11,6 @@
 #' are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 #' If cell values are not single characters, one may exploit the \code{to_single_chars} function
 #' @seealso \code{\link{fit_outlier}}, \code{\link{fit_graph}}
-#' @keywords internal
 #' @examples
 #' \dontrun{
 #' library(dplyr)
@@ -27,14 +26,13 @@
 #'   select(-class) %>%
 #'   slice(1) %>%
 #'   unlist()
-#'
-#' # Append z to the class of "1" digits
-#' dz <- rbind(d, z)
 #' 
 #' # Fit an interaction graph
 #' G <- fit_graph(dz, trace = FALSE)
 #' plot(G, vertex.size = 1.5)
-#' 
+#'
+#' # Append z to the class of "1" digits
+#' dz <- rbind(d, z)
 #' 
 #' # The outlier model
 #' set.seed(7)
@@ -46,6 +44,7 @@
 #' dvz <- deviance(m, z)
 #' pval(m, dvz)
 #' }
+#' @export
 outlier_model <- function(A,
                           adj,
                           nsim       = 5000,
@@ -66,7 +65,7 @@ outlier_model <- function(A,
 
 #' Fit Outlier
 #'
-#' A convinient wrapper for doing outlier test
+#' A convenient wrapper for doing outlier test
 #'
 #' @param A Character Matrix (data) - without the new observation \code{z} appended
 #' @param z Named vector (same names as \code{colnames(A)})
@@ -74,15 +73,11 @@ outlier_model <- function(A,
 #' @param type Character ("fwd", "bwd", "tree" or "tfwd") - see \code{fit_graph}
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC) - see \code{fit_graph}
 #' @param comp A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)
+#' @param adj Adjacency list of a decomposable graph without the observation of interest
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
 #' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
-#' @description The outlier model relies on a graph object returned from \code{fit_graph}. This function needs data; however
-#' when an outlier test is performed, the function \code{fit_graph} needs data with \code{z} appended. That is because,
-#' the model is under the hypothesis that \code{z} is not an outlier in \code{A}. \code{fit_outlier} automatically do this.
-#' Moreover, \code{fit_outlier} relies on \code{outlier_model} which is not an exported function, but can be used carefully
-#' by the user for more flexibillity (use \code{molic:::outlier_model}). The user should be aware, that it is \strong{assumed} that the data argument in \code{outlier_model} has the new observation included! Thus \code{fit_outlier} is a safe wrapper for most applications.
 #' @seealso \code{\link{outlier_model}}, \code{\link{fit_graph}}
 #' @examples
 #' \dontrun{
@@ -118,31 +113,32 @@ fit_outlier <- function(A,
                         validate = TRUE) {
 
   if (all(colnames(A) != names(z))) stop("Variables in A and the names of z is not in agreement!")
-  dz   <- rbind(A, z)
+
+  Az   <- rbind(A, z)
 
   if (validate) {
-    if( !only_single_chars(dz) ) {
+    if( !only_single_chars(Az) ) {
       message("  Note: A has values larger than a single character. to_single_chars() was used to correct this")
-      dz <- to_single_chars(dz)
-      z   <- dz[nrow(dz), ]
+      Az <- to_single_chars(Az)
+      z   <- Az[nrow(Az), ]
     }    
   }
 
   if (trace) cat(" Fitting the graph ... \n  ---------------------------------------- \n")
-  ddz <- as.data.frame(dz)
+  Adf <- as.data.frame(A)
   if (!is.null(comp)) {
     adj <- unlist(
       lapply(unname(comp), function(x) {
-        adj_lst(fit_graph(ddz[, x, drop = FALSE], type = type,  q = q, trace = trace))
+        adj_lst(fit_graph(Adf[, x, drop = FALSE], type = type,  q = q, trace = trace))
       }),
       recursive = FALSE
     )
   } else {
-    adj  <- adj_lst(fit_graph(ddz, type = type,  q = q, trace = trace))  
+    adj  <- adj_lst(fit_graph(Adf, type = type,  q = q, trace = trace))  
   }
-
+  
   if (trace) cat(" ---------------------------------------- \n Outlier model in progress ... \n")
-  m     <- outlier_model(dz, adj, nsim = nsim, ncores = ncores, validate = FALSE)
+  m     <- outlier_model(Az, adj, nsim = nsim, ncores = ncores, validate = FALSE)
   dev_z <- deviance(m, z)
   m     <- new_outlier(m, dev_z, pval(m, dev_z), critval(m, alpha), alpha)
   return(m)
@@ -151,7 +147,7 @@ fit_outlier <- function(A,
 
 #' Mixed Outlier Test
 #'
-#' A convinient function for outlier detection with mixed information
+#' A convenient function for outlier detection with mixed information
 #'
 #' @param m1 An object returned from \code{fit_outlier}
 #' @param m2 An object returned from \code{fit_outlier}
@@ -215,7 +211,7 @@ fit_mixed_outlier <- function(m1, m2) {
 
 #' Fit Multiple Models
 #'
-#' A convinient wrapper function to conduct multiple tests for a single observation
+#' A convenient wrapper function to conduct multiple tests for a single observation
 #'
 #' @param A A data frame (data) without the new observation \code{z} appended
 #' @param z Named vector (same names as \code{colnames(A)} but without the class variable)
@@ -223,6 +219,8 @@ fit_mixed_outlier <- function(m1, m2) {
 #' @param alpha The significance level
 #' @param type Character ("fwd", "bwd", "tree" or "tfwd") - the type of interaction graph to be used
 #' @param q Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)
+#' @param adj Adjacency list of a decomposable graph without the observation of interest with length equal to the number of unique levels of the response
+#' @param comp A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
@@ -237,12 +235,14 @@ fit_multiple_models <- function(A,
                                 alpha      = 0.05,
                                 type       = "fwd",
                                 q          = 0.5,
+                                comp       = NULL,
                                 nsim       = 10000,
                                 ncores     = 1,
                                 trace      = TRUE,
                                 validate   = TRUE) {
   res_vec  <- A[, response, drop = TRUE]
-  res_lvls <- sort(unique(res_vec))
+  res_lvls <- unique(res_vec)
+  if (!is.null(adj) && length(adj) != length(res_lvls)) stop("Number of graphs in adj is not equal to the number of levels in the response variable!")
   models <- lapply(seq_along(res_lvls), function(i) {
     if (trace) cat(i, "/", length(res_lvls), " ... \n")
     Ai <- A[res_vec == res_lvls[i], -which(colnames(A) == response)]
@@ -251,6 +251,7 @@ fit_multiple_models <- function(A,
       alpha       = alpha,
       type        = type,
       q           = q,
+      comp        = comp,
       nsim        = nsim,
       ncores      = ncores,
       validate    = validate)

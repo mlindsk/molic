@@ -229,12 +229,15 @@ deviance.outlier_model <- function(x, y,...) {
 }
 
 
+## R CMD check fails if not we make these globals (due to NSE)
+## https://www.r-bloggers.com/no-visible-binding-for-global-variable/
+utils::globalVariables(c("Deviance", "response", "..quantile..", "x1", "x2", "y1", "y2" ,"y"))
+
 #' Plot Deviance
 #'
 #' A plot method to show the the approximated deviance distribution
 #' @param x A \code{outlier_model} object
 #' @param sig_col Color of the significance level area (default is red)
-#' @param type either "base" og "ggplot"
 #' @param ... Extra arguments; see details.
 #' @details The dotted line represents the observed deviance of the observation under the hypothesis
 #' and the colored (red is default) area under the graph represents the significance level.
@@ -267,11 +270,6 @@ plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
   p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = x$dev), linetype = "dotted")
   return(p)
 }
-
-
-## R CMD check fails if not we make these globals (due to NSE)
-## https://www.r-bloggers.com/no-visible-binding-for-global-variable/
-utils::globalVariables(c("Deviance", "response", "..quantile..", "x1", "x2", "y1", "y2"))
 
 #' Plot Deviance of Multiple Models
 #'

@@ -9,7 +9,7 @@ outlier_model(A, adj, nsim = 5000, ncores = 1, validate = TRUE)
 \arguments{
 \item{A}{Character Matrix (data) with the new observation of interest appended}
 
-\item{adj}{Adjacency list of a decomposable graph}
+\item{adj}{Adjacency list of a decomposable graph without the observation of interest}
 
 \item{nsim}{Number of simulations}
 
@@ -41,13 +41,12 @@ z <- digits \%>\%
   slice(1) \%>\%
   unlist()
 
-# Append z to the class of "1" digits
-dz <- rbind(d, z)
-
 # Fit an interaction graph
 G <- fit_graph(dz, trace = FALSE)
 plot(G, vertex.size = 1.5)
 
+# Append z to the class of "1" digits
+dz <- rbind(d, z)
 
 # The outlier model
 set.seed(7)
@@ -63,4 +62,3 @@ pval(m, dvz)
 \seealso{
 \code{\link{fit_outlier}}, \code{\link{fit_graph}}
 }
-\keyword{internal}

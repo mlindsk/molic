@@ -12,8 +12,6 @@
 \item{sig_col}{Color of the significance level area (default is red)}
 
 \item{...}{Extra arguments; see details.}
-
-\item{type}{either "base" og "ggplot"}
 }
 \description{
 A plot method to show the the approximated deviance distribution

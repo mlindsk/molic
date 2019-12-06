@@ -134,7 +134,7 @@
     </tr>
     <tr>
       <th>adj</th>
-      <td><p>Adjacency list of a decomposable graph</p></td>
+      <td><p>Adjacency list of a decomposable graph without the observation of interest</p></td>
     </tr>
     <tr>
       <th>nsim</th>
@@ -175,13 +175,12 @@ If cell values are not single characters, one may exploit the <code>to_single_ch
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>()
 
-<span class='co'># Append z to the class of "1" digits</span>
-<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>d</span>, <span class='no'>z</span>)
-
 <span class='co'># Fit an interaction graph</span>
 <span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>dz</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>G</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1.5</span>)
 
+<span class='co'># Append z to the class of "1" digits</span>
+<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>d</span>, <span class='no'>z</span>)
 
 <span class='co'># The outlier model</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>7</span>)

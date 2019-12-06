@@ -128,7 +128,7 @@
 <p><strong>New API</strong></p>
 <ul>
 <li>API for <code>fit_outlier</code> has changed slightly (see hidden functions below for an explanation)</li>
-<li>API for <code>fit_outlier</code> has changed slightly and is improved considerably - much less work for the user now!</li>
+<li>API for <code>fit_mixed_outlier</code> has changed slightly and is improved considerably - much less work for the user now!</li>
 </ul>
 <p><strong>New functions</strong></p>
 <ul>
@@ -139,27 +139,21 @@
 </ul>
 </li>
 <li>
-<code>plot_models</code>
+<code>plot.multiple_models</code>
 <ul>
-<li>Given an object returned from <code>generate_multiple_models</code> this function is used to visualize all the hypothesis tests for a single observation simultaneously</li>
+<li>Given an object returned from <code>fit_multiple_models</code> this function is used to visualize all the hypothesis tests for a single observation simultaneously. It is a <code>ggplot2</code> object</li>
+</ul>
+</li>
+<li>
+<code>plot.outlier_model</code>
+<ul>
+<li>Given an object returned from <code>fit_outlier</code> this function is used to visualize the approximated density of the deviance under the null hypothesis. It is a <code>ggplot2</code> object.</li>
 </ul>
 </li>
 <li>
 <code>components</code>
 <ul>
 <li>Return a list with all components of a graph</li>
-</ul>
-</li>
-</ul>
-<p><strong>Hidden functions</strong></p>
-<ul>
-<li>
-<code>outlier_model</code>
-<ul>
-<li>the function can still be accessed by <code>:::</code>. But the user should prefer <code>fit_outlier</code>
-</li>
-<li>the problem was, that in <code>outlier_model</code> the user had to append the new observation to be tested in data on their own.</li>
-<li>the function <code>fit_outlier</code> uses both <code>fit_graph</code> and <code>outlier_model</code> but in both situations the observation needs to be appended to data; this is taken care of automatically in <code>fit_outlier</code>.</li>
 </ul>
 </li>
 </ul>

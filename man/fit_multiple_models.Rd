@@ -11,6 +11,7 @@ fit_multiple_models(
   alpha = 0.05,
   type = "fwd",
   q = 0.5,
+  comp = NULL,
   nsim = 10000,
   ncores = 1,
   trace = TRUE,
@@ -30,6 +31,8 @@ fit_multiple_models(
 
 \item{q}{Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)}
 
+\item{comp}{A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)}
+
 \item{nsim}{Number of simulations}
 
 \item{ncores}{Number of cores to use in parallelization}
@@ -37,9 +40,11 @@ fit_multiple_models(
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
+
+\item{adj}{Adjacency list of a decomposable graph without the observation of interest with length equal to the number of unique levels of the response}
 }
 \description{
-A convinient wrapper function to conduct multiple tests for a single observation
+A convenient wrapper function to conduct multiple tests for a single observation
 }
 \examples{
 # TBA

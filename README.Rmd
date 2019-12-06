@@ -74,6 +74,7 @@ The main functions in **molic** are
 
  - `fit_graph` which fits a decomposable graph. It has four types; forward selection (`fwd`), backward selection (`bwd`), tree (`tree`) and a combination of tree and forward (`tfwd`). Using `adj_lst` on an object returned by `fit_graph` gives the **adjacency list** corresponding to the graph. Similarly one can use `adj_mat` to obtain an adjacency matrix.
  - `fit_outlier` which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by `fit_graph`.
+ - `fit_multiple_models` which are useful when it is of interest to test for a new observation being an outlier in all classes in the given data.
  
 Adjacency lists are important in **molic**. They are named `list` objects of the form
 
@@ -168,6 +169,8 @@ Thus the car is declared an outlier on a $0.05$ significance level. We can visua
 plot(m)
 ```
 and verify that the estimated deviance of the selected car is `r m$dev` (the dotted line) which is larger than the critical value of `r m$cv`. The red area represents the significance level (here $\alpha = 0.05$).
+
+It should be noted here, that `fit_outlier` is a convenient wrapper around the two functions `fit_graph` and `outlier_model` which by theme-selves are more flexible.
 
 ## Multiple Tests
 
