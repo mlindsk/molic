@@ -242,7 +242,6 @@ fit_multiple_models <- function(A,
                                 validate   = TRUE) {
   res_vec  <- A[, response, drop = TRUE]
   res_lvls <- unique(res_vec)
-  if (!is.null(adj) && length(adj) != length(res_lvls)) stop("Number of graphs in adj is not equal to the number of levels in the response variable!")
   models <- lapply(seq_along(res_lvls), function(i) {
     if (trace) cat(i, "/", length(res_lvls), " ... \n")
     Ai <- A[res_vec == res_lvls[i], -which(colnames(A) == response)]
