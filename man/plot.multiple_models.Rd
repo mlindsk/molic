@@ -20,7 +20,8 @@ A plot method to show the the approximated deviance distribution of multiple mod
 The dotted line represents the observed deviance of the observation under the hypothesis
 and the colored (red is default) area under the graph represents the significance level.
 Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
-is an outlier cannot be rejected.
+is an outlier cannot be rejected. Notice however, if there is no dotted line, this simply means,
+that the observed deviance is larger than all values and it would disturb the plot if included.
 
 No extra arguments \code{...} are implement at the moment.
 }

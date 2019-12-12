@@ -7,10 +7,8 @@
 fit_outlier(
   A,
   z,
+  adj,
   alpha = 0.05,
-  type = "fwd",
-  q = 0.5,
-  comp = NULL,
   nsim = 10000,
   ncores = 1,
   trace = FALSE,
@@ -22,13 +20,9 @@ fit_outlier(
 
 \item{z}{Named vector (same names as \code{colnames(A)})}
 
+\item{adj}{Adjacency list or gengraph object a decomposable graph without the observation of interest. See details}
+
 \item{alpha}{The significance level}
-
-\item{type}{Character ("fwd", "bwd", "tree" or "tfwd") - see \code{fit_graph}}
-
-\item{q}{Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC) - see \code{fit_graph}}
-
-\item{comp}{A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)}
 
 \item{nsim}{Number of simulations}
 
@@ -37,11 +31,13 @@ fit_outlier(
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
-
-\item{adj}{Adjacency list of a decomposable graph without the observation of interest}
 }
 \description{
 A convenient wrapper for doing outlier test
+}
+\details{
+The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
+an adjacency list, just a named \code{list}, of their own choice if needed.
 }
 \examples{
 \dontrun{
@@ -59,10 +55,13 @@ z <- digits \%>\%
   slice(1) \%>\%
   unlist()
 
+# Fitting the interaction graph
+g <- fit_graph(d, trace = FALSE)
+
 # Test if z is an outlier in class "1"
-m <- fit_outlier(as.matrix(d), z)
+m <- fit_outlier(as.matrix(d), z, g)
 print(m)
-pmf(m)
+plot(m)
 }
 }
 \seealso{

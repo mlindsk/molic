@@ -4,12 +4,12 @@
 \alias{outlier_model}
 \title{Outlier model}
 \usage{
-outlier_model(A, adj, nsim = 5000, ncores = 1, validate = TRUE)
+outlier_model(A, adj, nsim = 10000, ncores = 1, validate = TRUE)
 }
 \arguments{
 \item{A}{Character Matrix (data) with the new observation of interest appended}
 
-\item{adj}{Adjacency list of a decomposable graph without the observation of interest}
+\item{adj}{Adjacency list or gengraph object a decomposable graph without the observation of interest. See details}
 
 \item{nsim}{Number of simulations}
 
@@ -24,6 +24,9 @@ A model based on decomposable graphical models for outlier detection
 It is assumed that all cell values in \code{A}, for all variables,
 are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 If cell values are not single characters, one may exploit the \code{to_single_chars} function
+
+The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
+an ajacency list, just a named \code{list}, of their own choice if needed.
 }
 \examples{
 \dontrun{
@@ -42,15 +45,15 @@ z <- digits \%>\%
   unlist()
 
 # Fit an interaction graph
-G <- fit_graph(dz, trace = FALSE)
-plot(G, vertex.size = 1.5)
+g <- fit_graph(d, trace = FALSE)
+plot(g, vertex.size = 1.5)
 
 # Append z to the class of "1" digits
 dz <- rbind(d, z)
 
 # The outlier model
 set.seed(7)
-m <- outlier_model(as.matrix(dz), adj_lst(G))
+m <- outlier_model(as.matrix(dz), g, nsim = 1000)
 print(m)
 pmf(m)
 
@@ -62,3 +65,4 @@ pval(m, dvz)
 \seealso{
 \code{\link{fit_outlier}}, \code{\link{fit_graph}}
 }
+\keyword{internal}

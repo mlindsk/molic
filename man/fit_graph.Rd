@@ -30,7 +30,7 @@ fit_graph(
 \item{wrap}{logical specifying if the result of a run with type = "tree" should be converted to a "fwd" object}
 }
 \value{
-A \code{gengraph} object with values:
+A \code{gengraph} object
 }
 \description{
 A generic method for structure learning in decomposable graphical models
@@ -68,5 +68,6 @@ rip(adjl)
 \url{https://arxiv.org/abs/1301.2267}, \url{https://doi.org/10.1109/ictai.2004.100}
 }
 \seealso{
-\code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
+\code{\link{fit_components}}, \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}},
+\code{\link{walk.fwd}}, \code{\link{walk.bwd}}, \code{\link{gengraph}}
 }

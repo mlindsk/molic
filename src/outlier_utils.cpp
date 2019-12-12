@@ -195,41 +195,42 @@ double TY(RCV y, RL & C_marginals, RL & S_marginals) {
   VD  CS(nC), SS(nC); // SS[0] initialize as zero according to NULL
 
   // The first clique
-  RIV nC0 = C_marginals[0];
+  RIV nC0       = C_marginals[0];
   RCV nC0_Delta = nC0.attr("vars");
-  RIV yC_idx = Rcpp::match(nC0_Delta, y_names);
-  RCV yC0 = y[yC_idx - 1];  // -1 to account for the R side
+  RIV yC_idx    = Rcpp::match(nC0_Delta, y_names);
+  RCV yC0       = y[yC_idx - 1];  // -1 to account for the R side
   std::string yC0_;
   yC0_ = std::accumulate(yC0.begin(), yC0.end(), yC0_);
   CS[0] = na_ya(nC0, yC0_); //nC0[yC0_];
 
   for (int i = 1; i < nC; i++) {
     // Cliques
-    RIV nCi = C_marginals[i];
+    RIV nCi       = C_marginals[i];
     RCV nCi_Delta = nCi.attr("vars");
-    RIV yC_idx = Rcpp::match(nCi_Delta, y_names);
-    RCV yCi = y[yC_idx - 1];
+    RIV yC_idx    = Rcpp::match(nCi_Delta, y_names);
+    RCV yCi       = y[yC_idx - 1];
     std::string yCi_;
-    yCi_ = std::accumulate(yCi.begin(), yCi.end(), yCi_);
+    yCi_  = std::accumulate(yCi.begin(), yCi.end(), yCi_);
     CS[i] = na_ya(nCi, yCi_); // nCi[yCi_];
 
     // Separators
     RIV nSi = S_marginals[i];
     // Handling the empty separator = M = |n| with no vars attribute
     if ( Rf_isNull(nSi.attr("vars")) ) {
-      SS[i] = 0.0;
-    } else {
+      SS[i] = nSi[0]; // 0.0;
+    }
+    else {
       RCV nSi_Delta = nSi.attr("vars");
-      RIV yS_idx = Rcpp::match(nSi_Delta, y_names);
-      RCV ySi = y[yS_idx - 1];
+      RIV yS_idx    = Rcpp::match(nSi_Delta, y_names);
+      RCV ySi       = y[yS_idx - 1];
       std::string ySi_;
-      ySi_ = std::accumulate(ySi.begin(), ySi.end(), ySi_);
+      ySi_  = std::accumulate(ySi.begin(), ySi.end(), ySi_);
       SS[i] = na_ya(nSi, ySi_); // nSi[ySi_];
     }
   }
-  
   VD H_CS = Hx_(CS), H_SS = Hx_(SS);
   double sum_HCS = std::accumulate(H_CS.begin(), H_CS.end(), 0.0);
   double sum_HSS = std::accumulate(H_SS.begin(), H_SS.end(), 0.0);
+  // Rcpp::Rcout << "HC - HS = " << sum_HCS << " - " << sum_HSS << "\n";
   return sum_HCS - sum_HSS;
 }

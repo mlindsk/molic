@@ -76,8 +76,8 @@ utils::globalVariables('z')
 .sim_internal <- function(A,
                   C_marginals,
                   S_marginals,
-                  nsim         = 1000,
-                  type         = "lr",
+                  nsim         = 10000,
+                  type         = "deviance",
                   ncores       = 1) {
   y <- replicate(nsim, vector("character", ncol(A)), simplify = FALSE)
   M <- nrow(A)
@@ -86,7 +86,7 @@ utils::globalVariables('z')
   C1_idx  <- match(C1_vars, Delta)
   p_nC1   <- C_marginals[[1]] / M
   yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1)
-  if(!( length(C_marginals) - 1L)) {
+  if (!(length(C_marginals) - 1L)) {
     # The complete graph
     yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
     return( sapply(yC1_sim, TY, C_marginals, S_marginals) )
@@ -96,13 +96,13 @@ utils::globalVariables('z')
   y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = combine_, .inorder = FALSE), {
     y_sim_z <- y[[z]]
     y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
-    for( k in 2:length(C_marginals) ) {
+    for (k in 2:length(C_marginals)) {
       nCk     <- C_marginals[[k]]
       Ck_vars <- attr(nCk, "vars")     # Clique names
       Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
       nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
       Sk_vars <- attr(nSk, "vars")     # Separator names
-      if( is.null(Sk_vars) ) {         # For empty separators
+      if (is.null(Sk_vars)) {          # For empty separators
         p_nCk_minus_nSk <- nCk / nSk   # nSk = M !
         y_sim_z[Ck_idx] <- .split_chars(sample(names(p_nCk_minus_nSk), 1L, prob = p_nCk_minus_nSk))
       } else {
@@ -117,13 +117,14 @@ utils::globalVariables('z')
       }
     }
     out <- structure(y_sim_z, names = Delta)
-    if ( type == "deviance") {
-      out <- TY(out, C_marginals, S_marginals)
+    if (type == "deviance") {
+      out <- TY(out, C_marginals, S_marginals)   # D(y) = 2*(T(y) - H(M))
     }
     out
   })
   doParallel::stopImplicitCluster()
-  y
+  if (type == "deviance") y <- 2 * (y - Hx_(nsim)) # D(y)
+  return(y)
 }
 
 ## ---------------------------------------------------------
@@ -225,49 +226,68 @@ deviance <- function(x, y, ...) {
 #' @rdname deviance
 #' @export
 deviance.outlier_model <- function(x, y,...) {
-  TY(y, x$Cms, x$Sms)
+  2 * (TY(y, x$Cms, x$Sms) - Hx_(length(x$sims))) # D(y)
 }
 
 
 ## R CMD check fails if not we make these globals (due to NSE)
 ## https://www.r-bloggers.com/no-visible-binding-for-global-variable/
-utils::globalVariables(c("Deviance", "response", "..quantile..", "x1", "x2", "y1", "y2" ,"y"))
+utils::globalVariables(c(
+  ".region",      # plot.outlier
+  ".dev",         # plot.outlier
+  "Deviance",     # plot.multiple_models
+  "response",     # plot.multiple_models
+  "..quantile..", # plot.multiple_models
+  "x1",           # plot.multiple_models
+  "x2",           # plot.multiple_models
+  "y1",           # plot.multiple_models
+  "y2",           # plot.multiple_models
+  "y")            # plot.multiple_models
+)
 
 #' Plot Deviance
 #'
 #' A plot method to show the the approximated deviance distribution
-#' @param x A \code{outlier_model} object
+#' @param x An object returned from \code{fit_outlier}
 #' @param sig_col Color of the significance level area (default is red)
 #' @param ... Extra arguments; see details.
 #' @details The dotted line represents the observed deviance of the observation under the hypothesis
 #' and the colored (red is default) area under the graph represents the significance level.
 #' Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
-#' is an outlier cannot be rejected.
+#' is an outlier cannot be rejected. Notice however, if there is no dotted line, this simply means,
+#' that the observed deviance is larger than all values and it would disturb the plot if included.
 #'
 #' No extra arguments \code{...} are implement at the moment.
 #' @examples
 #' # TBA
 #' 1L
 #' @export
-plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
+plot.outlier <- function(x, sig_col = "#FF0000A0", ...) {
   # args <- list(...)
   # Old base approach:
   # graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
-  dat <- data.frame(Deviance = x$sims, y = "")
-  p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = y))
-  p <- p + ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
-    geom      = "density_ridges_gradient",
-    calc_ecdf = TRUE,
-    quantiles = c(1 - x$alpha, 1)
-  )
-  p <- p + ggplot2::scale_fill_manual(
-    name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
-    labels = c("", "(x[[1]]$alpha, 1]", "")
-  )
-  p <- p + ggplot2::theme_bw()
-  p <- p + ggplot2::theme(legend.position = "none")
-  p <- p + ggplot2::ylab("")
-  p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = x$dev), linetype = "dotted")
+  # dat <- data.frame(Deviance = x$sims, y = "")
+  dat <- with(stats::density(x$sims), data.frame(x, y))
+  dat$.region <- x$cv
+  dat$.dev    <- x$dev
+  p <- ggplot2::ggplot(data = dat, mapping = ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_ribbon(data = subset(dat, x >= .region),
+      ggplot2::aes(ymax = y),
+      ymin   = 0,
+      fill   = sig_col,
+      colour = sig_col,
+      alpha  = 0.7) + 
+    ggplot2::geom_ribbon(data = subset(dat, x <= .region),
+      ggplot2::aes(ymax = y),
+      ymin   = 0,
+      fill   = "#A0A0A0A0",
+      colour = "#A0A0A0A0",
+      alpha  = 0.7)
+  p <- p + ggplot2::theme_bw() + ggplot2::ylab("") + ggplot2::xlab("Deviance")
+  if (dat$.dev[1] < max(x$sims)) {
+    p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = .dev), linetype = "dotted")
+  }
   return(p)
 }
 
@@ -280,7 +300,8 @@ plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
 #' @details The dotted line represents the observed deviance of the observation under the hypothesis
 #' and the colored (red is default) area under the graph represents the significance level.
 #' Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
-#' is an outlier cannot be rejected.
+#' is an outlier cannot be rejected. Notice however, if there is no dotted line, this simply means,
+#' that the observed deviance is larger than all values and it would disturb the plot if included.
 #'
 #' No extra arguments \code{...} are implement at the moment.
 #' @examples
@@ -290,35 +311,41 @@ plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
 plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
   z_dev_pval <- make_observation_info(x)
   dat        <- extract_model_simulations(x)
-
   p <- ggplot2::ggplot(dat, ggplot2::aes(x = Deviance, y = response))
   p <- p + ggridges::stat_density_ridges(ggplot2::aes(fill=factor(..quantile..)),
     geom      = "density_ridges_gradient",
     calc_ecdf = TRUE,
     quantiles = c(1 - x[[1]]$alpha, 1)
   )
+  p <- p + ggplot2::scale_y_discrete(limits = names(x))
   p <- p + ggplot2::scale_fill_manual(
-    name = "Significance level", values = c("#A0A0A0A0", sig_col, sig_col),
+    name  = "Significance level",
+    values = c("#A0A0A0A0", sig_col, sig_col),
     labels = c("", "(ms[[1]]$alpha, 1]", "")
   )
   
   for (i in 1:nrow(z_dev_pval)) {
-    dev    <- z_dev_pval[i, "devs"]
-    linet  <- "dotted"
-    df_seg <- data.frame(x1 = dev, x2 = dev, y1 = i , y2 = i + 1)
-    p <- p + ggplot2::geom_segment(ggplot2::aes(x = x1,
-      y        = y1,
-      xend     = x2,
-      yend     = y2
-    ),
-    linetype = linet,
-    size     = 1,
-    color    = "black",
-    data     = df_seg
-    )
+    max_dev_i <- max(dat$Deviance)
+    dev       <- z_dev_pval[i, "devs"]
+    if (dev < max_dev_i) { # Dont plot the dotted line if it is larger than all deviances
+      linet  <- "dotted"
+      df_seg <- data.frame(x1 = dev, x2 = dev, y1 = i , y2 = i + 1)
+      p <- p + ggplot2::geom_segment(ggplot2::aes(x = x1,
+        y    = y1,
+        xend = x2,
+        yend = y2
+      ),
+      linetype = linet,
+      size     = 1,
+      color    = "black",
+      data     = df_seg
+      )
+    }
   }
-  
-  p <- p + ggplot2::theme_bw() + ggplot2::theme(legend.position = "none") + ggplot2::ylab("")
+  p <- p + ggplot2::theme_bw() +
+    ggplot2::ylab("") +
+    ggplot2::xlab("Deviance") +
+    ggplot2::theme(legend.position = "none")
   return(p)
 }
 
@@ -331,7 +358,7 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
 #' @export
-pmf <- function(x, ...) {
+ pmf <- function(x, ...) {
   UseMethod("pmf")
 }
 

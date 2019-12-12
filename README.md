@@ -63,7 +63,7 @@ Main Functions
 The main functions in **molic** are
 
 -   `fit_graph` which fits a decomposable graph. It has four types; forward selection (`fwd`), backward selection (`bwd`), tree (`tree`) and a combination of tree and forward (`tfwd`). Using `adj_lst` on an object returned by `fit_graph` gives the **adjacency list** corresponding to the graph. Similarly one can use `adj_mat` to obtain an adjacency matrix.
--   `fit_outlier` which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by `fit_graph`.
+-   `fit_outlier` which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list or an object returned from `fit_graph` (a `gengraph` object).
 -   `fit_multiple_models` which are useful when it is of interest to test for a new observation being an outlier in all classes in the given data.
 
 Adjacency lists are important in **molic**. They are named `list` objects of the form
@@ -134,6 +134,17 @@ unacc_cars <- car %>%
   select(-class)
 ```
 
+### Fitting The Interaction Graph
+
+The associations between variables in the `vgood_cars` class is estimated with an interaction graph
+
+``` r
+g_vgood <- fit_graph(vgood_cars, trace = FALSE)
+plot(g_vgood)
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
 ### A New Observation
 
 We imagine that a new observation is given; here we take a random observation from the `unacc` class.
@@ -145,21 +156,21 @@ z <- sample_n(unacc_cars, 1) %>% unlist()
 
 ### Outlier Test
 
-Now we test if `z` is an outlier in `vgood_cars`.
+Now we test if `z` is an outlier in `vgood_cars`. The interaction graph `g_vgood` is an input since it models the relationship in the `vgood` class
 
 ``` r
-m <- fit_outlier(as.matrix(vgood_cars), z, trace = FALSE)
+m <- fit_outlier(as.matrix(vgood_cars), z, g_vgood, trace = FALSE)
 print(m)
 #> 
 #>  -------------------------------- 
 #>   Simulations: 10000 
 #>   Variables: 6 
 #>   Observations: 66 
-#>   Estimated mean: -16.23 
-#>   Estimated variance: 0.73 
+#>   Estimated mean: 19.06 
+#>   Estimated variance: 2.94 
 #>     ---------------------------   
-#>   Critical value: -15.57852 
-#>   Deviance: -3.350997 
+#>   Critical value: 20.35585 
+#>   Deviance: 44.81083 
 #>   P-value: 0 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
@@ -170,26 +181,23 @@ Thus the car is declared an outlier on a 0.05 significance level. We can visuali
 
 ``` r
 plot(m)
-#> Picking joint bandwidth of 0.0167
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" /> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -15.5785197. The red area represents the significance level (here *α* = 0.05).
-
-It should be noted here, that `fit_outlier` is a convenient wrapper around the two functions `fit_graph` and `outlier_model` which by theme-selves are more flexible.
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" /> Since the observed deviance of the selected car, 44.8108292, much larger than the critical value of 20.3558481 the car is declared an outlier. The red area represents the significance level (here *α* = 0.05).
 
 Multiple Tests
 --------------
 
-Here we make a test for `z` being an outlier i all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here *α* = 0.05) and the dotted lines represents the observed deviance of `z` within the respective outlier test. We see that `z` is rejected in all but the true class of `z`. The odd looking densities is due to the fact that `car` does not contain that many variables. See other examples in the documentation of the vignettes.
+Here we make a test for `z` being an outlier in all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here *α* = 0.05) and the dotted lines represents the observed deviance of `z` within the respective outlier test. We see that `z` is rejected in all but the true class of `z`. The odd looking densities is due to the fact that `car` does not contain that many variables. See other examples in the documentation of the vignettes. Notice also, for some tests, there are no dotted line. This simply means, that the observed deviance is larger than all values and it would disturb the plot if included.
 
 ``` r
-mm <- fit_multiple_models(as.matrix(car), z, response = "class", alpha = 0.05)
+mm <- fit_multiple_models(car, z, response = "class", alpha = 0.05)
 #> 1 / 4  ... 
 #> 2 / 4  ... 
 #> 3 / 4  ... 
 #> 4 / 4  ...
 plot(mm)
-#> Picking joint bandwidth of 0.0248
+#> Picking joint bandwidth of 0.0496
 ```
 
 <img src="man/figures/README-multiple_outlier_test-1.png" width="100%" />

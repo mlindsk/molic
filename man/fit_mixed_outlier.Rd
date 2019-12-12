@@ -32,10 +32,25 @@ eur  <- tgp_dat \%>\%
 
 # Extracting the two databases for each copy of the chromosomes
 eur_a <- eur \%>\%
-  filter(grepl("a$", sample_name))
+  filter(grepl("a$", sample_name)) \%>\%
+  select(-c(1:2))
 
 eur_b <- eur \%>\%
-  filter(grepl("b$", sample_name))
+  filter(grepl("b$", sample_name)) \%>\%
+  select(-c(1:2))
+
+mat_eur_a <- eur_a \%>\% select(-c(1:2)) \%>\% as.matrix()
+mat_eur_b <- eur_b \%>\% select(-c(1:2)) \%>\% as.matrix()
+
+# Fitting the interaction graphs on the EUR data 
+ga <- fit_components(eur_a, comp = haps, trace = FALSE, as_gen = TRUE)
+gb <- fit_components(eur_b, comp = haps, trace = FALSE, as_gen = TRUE)
+
+# as_gen = TRUE converts the graph to a gengraph,
+# the main object for graphs in the molic package
+# This enables plotting and print info of the graph:
+# print(ga)
+# plot(ga, vertex.size = 1)
 
 # Testing if an American is an outlier in Europe
 
@@ -56,11 +71,10 @@ z2  <- amr \%>\%
   slice(1) \%>\%
   unlist()
 
-mat_eur_a <- eur_a \%>\% select(-c(1:2)) \%>\% as.matrix()
-mat_eur_b <- eur_b \%>\% select(-c(1:2)) \%>\% as.matrix()
 
-m1 <- fit_outlier(mat_eur_a, z1, comp = haps) # consider using more cores (ncores argument)
-m2 <- fit_outlier(mat_eur_a, z2, comp = haps) # consider using more cores (ncores argument)
-fit_mixed_outlier(m1,m2)
+m1 <- fit_outlier(mat_eur_a, z1, ga) # consider using more cores (ncores argument)
+m2 <- fit_outlier(mat_eur_a, z2, gb) # consider using more cores (ncores argument)
+m  <- fit_mixed_outlier(m1,m2)
+plot(m)
 }
 }

@@ -40,8 +40,6 @@ fit_multiple_models(
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
-
-\item{adj}{Adjacency list of a decomposable graph without the observation of interest with length equal to the number of unique levels of the response}
 }
 \description{
 A convenient wrapper function to conduct multiple tests for a single observation
