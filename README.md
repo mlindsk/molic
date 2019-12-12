@@ -166,11 +166,11 @@ print(m)
 #>   Simulations: 10000 
 #>   Variables: 6 
 #>   Observations: 66 
-#>   Estimated mean: 19.06 
+#>   Estimated mean: 9 
 #>   Estimated variance: 2.94 
 #>     ---------------------------   
-#>   Critical value: 20.35585 
-#>   Deviance: 44.81083 
+#>   Critical value: 10.29935 
+#>   Deviance: 34.75433 
 #>   P-value: 0 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
@@ -183,7 +183,7 @@ Thus the car is declared an outlier on a 0.05 significance level. We can visuali
 plot(m)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" /> Since the observed deviance of the selected car, 44.8108292, much larger than the critical value of 20.3558481 the car is declared an outlier. The red area represents the significance level (here *α* = 0.05).
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" /> Since the observed deviance of the selected car, 34.7543293, is much larger than the critical value of 10.2993482 the car is declared an outlier. The red area represents the significance level (here *α* = 0.05).
 
 Multiple Tests
 --------------

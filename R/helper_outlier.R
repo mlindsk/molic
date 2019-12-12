@@ -123,7 +123,7 @@ utils::globalVariables('z')
     out
   })
   doParallel::stopImplicitCluster()
-  if (type == "deviance") y <- 2 * (y - Hx_(nsim)) # D(y)
+  if (type == "deviance") y <- 2 * (y - Hx_(M)) # D(y)
   return(y)
 }
 
@@ -226,7 +226,7 @@ deviance <- function(x, y, ...) {
 #' @rdname deviance
 #' @export
 deviance.outlier_model <- function(x, y,...) {
-  2 * (TY(y, x$Cms, x$Sms) - Hx_(length(x$sims))) # D(y)
+  2 * (TY(y, x$Cms, x$Sms) - Hx_(nrow(x$A))) # D(y)
 }
 
 

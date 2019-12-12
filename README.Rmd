@@ -177,7 +177,7 @@ Thus the car is declared an outlier on a $0.05$ significance level. We can visua
 ```{r}
 plot(m)
 ```
-Since the observed deviance of the selected car, `r m$dev`, much larger than the critical value of `r m$cv` the car is declared an outlier. The red area represents the significance level (here $\alpha = 0.05$).
+Since the observed deviance of the selected car, `r m$dev`, is much larger than the critical value of `r m$cv` the car is declared an outlier. The red area represents the significance level (here $\alpha = 0.05$).
 
 ## Multiple Tests
 
