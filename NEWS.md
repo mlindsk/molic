@@ -6,13 +6,11 @@ From this release we adopt the branching model introduced by Vincent Driessen
 
  * [Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)
 
-This means, that there are now two branches: the **master branch** is always the current stable version, and the **develop branch** is the develop version (indicated with the suffix number 9000 in the version number).
+This means, that there are now two branches: the **master branch** is always the current stable version, and the **develop branch** is the develop version.
 
 **New API**
 
- * API for `fit_outlier` has changed slightly 
- * API for `outlier_model` has changed slightly
- * API for `fit_mixed_outlier` has changed slightly
+ * Functions like `fit_outlier` that depends on an adjacency list no accept `gengraph` objects returned from `fit_graph` - i.e. no need to use `adj_lst()` first.
 
 **New functions**
 
