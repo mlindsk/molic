@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print table — print.sptable • molic</title>
+<title>Fit a decomposable graphical model on each component — fit_components • molic</title>
 
 
 <!-- jquery -->
@@ -33,8 +33,8 @@
 
 
 
-<meta property="og:title" content="Print table — print.sptable" />
-<meta property="og:description" content="A print method for sptable and csptable objects" />
+<meta property="og:title" content="Fit a decomposable graphical model on each component — fit_components" />
+<meta property="og:description" content="Structure learning in decomposable graphical models on several components" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,37 +114,78 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print table</h1>
+    <h1>Fit a decomposable graphical model on each component</h1>
     
-    <div class="hidden name"><code>print.sptable.Rd</code></div>
+    <div class="hidden name"><code>fit_components.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A print method for <code>sptable</code> and <code>csptable</code> objects</p>
+    <p>Structure learning in decomposable graphical models on several components</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for sptable</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>fit_components</span>(
+  <span class='no'>df</span>,
+  <span class='no'>comp</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fwd"</span>,
+  <span class='kw'>q</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>as_gen</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>thres</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>wrap</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code>sptable</code> object</p></td>
+      <th>df</th>
+      <td><p>data.frame</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Not used (for S3 compatability)</p></td>
+      <th>comp</th>
+      <td><p>A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Character ("fwd", "bwd", "tree" or "tfwd")</p></td>
+    </tr>
+    <tr>
+      <th>q</th>
+      <td><p>Penalty term in the stopping criterion (<code>0</code> = AIC and <code>1</code> = BIC)</p></td>
+    </tr>
+    <tr>
+      <th>as_gen</th>
+      <td><p>Logical. Convert to gengraph or not. If true, the graph can be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>trace</th>
+      <td><p>Logical indicating whether or not to trace the procedure</p></td>
+    </tr>
+    <tr>
+      <th>thres</th>
+      <td><p>A threshold mechanism for choosing between two different ways of calculating the entropy.</p></td>
+    </tr>
+    <tr>
+      <th>wrap</th>
+      <td><p>logical specifying if the result of a run with type = "tree" should be converted to a "fwd" object</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A <code>gengraph</code> object</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='fit_graph.html'>fit_graph</a></code>, <code><a href='adj_lst.html'>adj_lst.gengraph</a></code>, <code><a href='adj_mat.html'>adj_mat.gengraph</a></code>, <code><a href='walk.fwd.html'>walk.fwd</a></code>,
+<code><a href='walk.bwd.html'>walk.bwd</a></code>, <code><a href='gengraph.html'>gengraph</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
   </div>

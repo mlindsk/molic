@@ -150,7 +150,7 @@ plot(g_vgood)
 We imagine that a new observation is given; here we take a random observation from the `unacc` class.
 
 ``` r
-set.seed(7)
+set.seed(300718)
 z <- sample_n(unacc_cars, 1) %>% unlist()
 ```
 
@@ -166,12 +166,12 @@ print(m)
 #>   Simulations: 10000 
 #>   Variables: 6 
 #>   Observations: 66 
-#>   Estimated mean: 9 
-#>   Estimated variance: 2.94 
+#>   Estimated mean: 8.98 
+#>   Estimated variance: 2.5 
 #>     ---------------------------   
-#>   Critical value: 10.29935 
-#>   Deviance: 34.75433 
-#>   P-value: 0 
+#>   Critical value: 10.29936 
+#>   Deviance: 25.1124 
+#>   P-value: 3e-04 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
 #>  --------------------------------
@@ -183,7 +183,7 @@ Thus the car is declared an outlier on a 0.05 significance level. We can visuali
 plot(m)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" /> Since the observed deviance of the selected car, 34.7543293, is much larger than the critical value of 10.2993482 the car is declared an outlier. The red area represents the significance level (here *α* = 0.05).
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" /> Since the observed deviance of the selected car, 25.1124022, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here *α* = 0.05).
 
 Multiple Tests
 --------------
@@ -197,7 +197,7 @@ mm <- fit_multiple_models(car, z, response = "class", alpha = 0.05)
 #> 3 / 4  ... 
 #> 4 / 4  ...
 plot(mm)
-#> Picking joint bandwidth of 0.0496
+#> Picking joint bandwidth of 0.0489
 ```
 
 <img src="man/figures/README-multiple_outlier_test-1.png" width="100%" />

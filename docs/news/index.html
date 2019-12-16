@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -124,11 +124,10 @@
 <ul>
 <li><a href="https://nvie.com/posts/a-successful-git-branching-model/">Git branching model</a></li>
 </ul>
-<p>This means, that there are now two branches: the <strong>master branch</strong> is always the current stable version, and the <strong>develop branch</strong> is the develop version (indicated with the suffix number 9000 in the version number).</p>
+<p>This means, that there are now two branches: the <strong>master branch</strong> is always the current stable version, and the <strong>develop branch</strong> is the develop version.</p>
 <p><strong>New API</strong></p>
 <ul>
-<li>API for <code>fit_outlier</code> has changed slightly (see hidden functions below for an explanation)</li>
-<li>API for <code>fit_mixed_outlier</code> has changed slightly and is improved considerably - much less work for the user now!</li>
+<li>Functions like <code>fit_outlier</code> that depends on an adjacency list no accept <code>gengraph</code> objects returned from <code>fit_graph</code> - i.e. no need to use <code><a href="../reference/adj_lst.html">adj_lst()</a></code> first.</li>
 </ul>
 <p><strong>New functions</strong></p>
 <ul>
@@ -145,7 +144,7 @@
 </ul>
 </li>
 <li>
-<code>plot.outlier_model</code>
+<code>plot.outlier</code>
 <ul>
 <li>Given an object returned from <code>fit_outlier</code> this function is used to visualize the approximated density of the deviance under the null hypothesis. It is a <code>ggplot2</code> object.</li>
 </ul>
@@ -156,6 +155,11 @@
 <li>Return a list with all components of a graph</li>
 </ul>
 </li>
+<li><code>fit_components</code></li>
+</ul>
+<p><strong>Misc</strong></p>
+<ul>
+<li>All deviances are now non-negative as they should be! Before, a constant was neglected which could potentially confuse the users since a deviance is per definition non-negative.</li>
 </ul>
 </div>
     <div id="molic-1-0-0" class="section level1">
