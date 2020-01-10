@@ -9,7 +9,8 @@ outlier_model(A, adj, nsim = 10000, ncores = 1, validate = TRUE)
 \arguments{
 \item{A}{Character Matrix (data) with the new observation of interest appended}
 
-\item{adj}{Adjacency list or gengraph object a decomposable graph without the observation of interest. See details}
+\item{adj}{Adjacency list or gengraph object of a decomposable graph without the
+observation of interest. See details}
 
 \item{nsim}{Number of simulations}
 
@@ -55,7 +56,7 @@ dz <- rbind(d, z)
 set.seed(7)
 m <- outlier_model(as.matrix(dz), g, nsim = 1000)
 print(m)
-pmf(m)
+plot(m)
 
 # z is declared as an outlier in the "1" class on a 0.05 significance level
 dvz <- deviance(m, z)

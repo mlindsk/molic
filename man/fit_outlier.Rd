@@ -20,7 +20,8 @@ fit_outlier(
 
 \item{z}{Named vector (same names as \code{colnames(A)})}
 
-\item{adj}{Adjacency list or gengraph object a decomposable graph without the observation of interest. See details}
+\item{adj}{Adjacency list or gengraph object of a decomposable graph
+without the observation of interest. See details}
 
 \item{alpha}{The significance level}
 

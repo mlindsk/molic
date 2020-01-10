@@ -3,7 +3,8 @@
 #' A model based on decomposable graphical models for outlier detection
 #'
 #' @param A Character Matrix (data) with the new observation of interest appended
-#' @param adj Adjacency list or gengraph object a decomposable graph without the observation of interest. See details
+#' @param adj Adjacency list or gengraph object of a decomposable graph without the
+#' observation of interest. See details
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param validate Logical. See details.
@@ -41,7 +42,7 @@
 #' set.seed(7)
 #' m <- outlier_model(as.matrix(dz), g, nsim = 1000)
 #' print(m)
-#' pmf(m)
+#' plot(m)
 #' 
 #' # z is declared as an outlier in the "1" class on a 0.05 significance level
 #' dvz <- deviance(m, z)
@@ -74,7 +75,8 @@ outlier_model <- function(A,
 #'
 #' @param A Character Matrix (data) - without the new observation \code{z} appended
 #' @param z Named vector (same names as \code{colnames(A)})
-#' @param adj Adjacency list or gengraph object a decomposable graph without the observation of interest. See details
+#' @param adj Adjacency list or gengraph object of a decomposable graph
+#' without the observation of interest. See details
 #' @param alpha The significance level
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
