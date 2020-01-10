@@ -160,7 +160,7 @@ plot(g_vgood)
 We imagine that a new observation is given; here we take a random observation from the `unacc` class.
 
 ```{r}
-set.seed(7)
+set.seed(300718)
 z <- sample_n(unacc_cars, 1) %>% unlist()
 ```
 
@@ -182,6 +182,10 @@ Since the observed deviance of the selected car, `r m$dev`, is much larger than 
 ## Multiple Tests
 
 Here we make a test for `z` being an outlier in all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here $\alpha = 0.05$) and the dotted lines represents the observed deviance of `z` within the respective outlier test. We see that `z` is rejected in all but the true class of `z`. The odd looking densities is due to the fact that `car` does not contain that many variables. See other examples in the documentation of the vignettes. Notice also, for some tests, there are no dotted line. This simply means, that the observed deviance is larger than all values and it would disturb the plot if included.
+
+```{r echo = FALSE}
+set.seed(300718)
+```
 
 ```{r multiple_outlier_test}
 mm <- fit_multiple_models(car, z, response = "class", alpha = 0.05)
