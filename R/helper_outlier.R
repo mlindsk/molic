@@ -350,7 +350,6 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 }
 
 
-
 #' Plot of pmf
 #'
 #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
@@ -358,15 +357,26 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
 #' @export
- pmf <- function(x, ...) {
-  UseMethod("pmf")
-}
-
-#' @rdname pmf
-#' @export
-pmf.outlier_model <- function(x, ...) {
+plot.outlier_model <- function(x, ...) {
   graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
 }
+
+## #' Plot of pmf
+## #'
+## #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
+## #'
+## #' @param x A \code{outlier_model} object
+## #' @param ... Not used (for S3 compatability)
+## #' @export
+##  pmf <- function(x, ...) {
+##   UseMethod("pmf")
+## }
+
+## #' @rdname pmf
+## #' @export
+## pmf.outlier_model <- function(x, ...) {
+##   graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
+## }
 
 #' Emprical distribution function
 #'

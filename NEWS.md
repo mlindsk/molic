@@ -1,5 +1,6 @@
-# molic 1.1.0.9000
+# molic 1.2.0
 
+ * `pmf` no longer plots the density of the deviances of a `outlier_model` object. Use `plot` for this instead; this is now consistent with the other related functions like `fit_outlier`. Instead `pmf` is used to construct the probability mass function of a decomposable graphical model which can be used to obtain probabilities of observing specific cells/observations/configurations.
 
 # molic 1.1.0
 

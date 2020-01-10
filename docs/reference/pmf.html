@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot of pmf — pmf • molic</title>
+<title>Probability mass function for a decomposable graphical model — pmf • molic</title>
 
 
 <!-- jquery -->
@@ -33,8 +33,8 @@
 
 
 
-<meta property="og:title" content="Plot of pmf — pmf" />
-<meta property="og:description" content="A plot method to show the pmf of the approximated pmf of T(Y)" />
+<meta property="og:title" content="Probability mass function for a decomposable graphical model — pmf" />
+<meta property="og:description" content="Probability mass function for a decomposable graphical model" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -66,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -114,39 +114,98 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot of pmf</h1>
+    <h1>Probability mass function for a decomposable graphical model</h1>
     
     <div class="hidden name"><code>pmf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A plot method to show the pmf of the approximated pmf of <code><a href='https://www.rdocumentation.org/packages/base/topics/logical'>T(Y)</a></code></p>
+    <p>Probability mass function for a decomposable graphical model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pmf</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for outlier_model</span>
-<span class='fu'>pmf</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>pmf</span>(<span class='no'>A</span>, <span class='no'>adj</span>, <span class='kw'>logp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code>outlier_model</code> object</p></td>
+      <th>A</th>
+      <td><p>A character matrix of data</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Not used (for S3 compatability)</p></td>
+      <th>adj</th>
+      <td><p>Adjacency list or gengraph object of a decomposable graph. See <code>fit_graph</code>.</p></td>
+    </tr>
+    <tr>
+      <th>logp</th>
+      <td><p>Logical; if TRUE, probabilities p are given as log(p).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A function - the probability mass function corresponding
+to the decomposable graph <code>adj</code> using <code>A</code> to estimate
+the probabilities.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>It should be noted, that <code>pmf</code> is a closure function; i.e. its return
+value is a function. Once <code>pmf</code> is called, one can query probabilities from the
+returned function. If the probability of an observation is zero, the function will return
+<code>NA</code> if <code>logp</code> is set to <code>TRUE</code> and zero otherwise.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+
+<span class='co'># All handwritten digits that have true class equal to a "1".</span>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span> <span class='co'># subset(digits, class == "1")</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>)
+
+<span class='co'># A handwritten digit with true class equal to "1"</span>
+<span class='no'>z1</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>()
+
+<span class='co'># A handwritten digit with true class equal to "7"</span>
+<span class='no'>z7</span> <span class='kw'>&lt;-</span> <span class='no'>digits</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"7"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>class</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>()
+
+<span class='co'># Fit an interaction graph</span>
+<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>g</span>)
+
+<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='no'>g</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='adj_lst.html'>adj_lst</a></span>()
+
+<span class='co'># Probability in class "1"</span>
+<span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'>pmf</span>(<span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(), <span class='no'>g</span>)
+<span class='fu'>p1</span>(<span class='no'>z7</span>)
+<span class='fu'>p1</span>(<span class='no'>z1</span>)
+
+<span class='co'># Probability on component 23 in class "1"</span>
+<span class='no'>cmp</span>   <span class='kw'>&lt;-</span> <span class='fu'><a href='components.html'>components</a></span>(<span class='no'>g</span>)
+<span class='no'>cmp23</span> <span class='kw'>&lt;-</span> <span class='no'>cmp</span><span class='kw'>[[</span><span class='fl'>23</span>]]
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>cmp23</span>)
+<span class='no'>p1_23</span> <span class='kw'>&lt;-</span> <span class='fu'>pmf</span>(<span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>cmp23</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(), <span class='no'>g</span>[<span class='no'>cmp23</span>])
+<span class='fu'>p1_23</span>(<span class='no'>z7</span>)
+<span class='fu'>p1_23</span>(<span class='no'>z1</span>)
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

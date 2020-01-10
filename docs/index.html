@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@
 <li>
 <code>fit_graph</code> which fits a decomposable graph. It has four types; forward selection (<code>fwd</code>), backward selection (<code>bwd</code>), tree (<code>tree</code>) and a combination of tree and forward (<code>tfwd</code>). Using <code>adj_lst</code> on an object returned by <code>fit_graph</code> gives the <strong>adjacency list</strong> corresponding to the graph. Similarly one can use <code>adj_mat</code> to obtain an adjacency matrix.</li>
 <li>
-<code>fit_outlier</code> which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list as input which can be obtained from an object returned by <code>fit_graph</code>.</li>
+<code>fit_outlier</code> which can be used to test if an observation is an outlier in some categorical data. It needs an adjacency list or an object returned from <code>fit_graph</code> (a <code>gengraph</code> object).</li>
 <li>
 <code>fit_multiple_models</code> which are useful when it is of interest to test for a new observation being an outlier in all classes in the given data.</li>
 </ul>
@@ -187,6 +187,14 @@ unacc_cars &lt;-<span class="st"> </span>car <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(class <span class="op">==</span><span class="st"> "u"</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>class)</code></pre></div>
 </div>
+<div id="fitting-the-interaction-graph" class="section level3">
+<h3 class="hasAnchor">
+<a href="#fitting-the-interaction-graph" class="anchor"></a>Fitting The Interaction Graph</h3>
+<p>The associations between variables in the <code>vgood_cars</code> class is estimated with an interaction graph</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g_vgood &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_graph.html">fit_graph</a></span>(vgood_cars, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(g_vgood)</code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
+</div>
 <div id="a-new-observation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#a-new-observation" class="anchor"></a>A New Observation</h3>
@@ -197,41 +205,39 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <div id="outlier-test" class="section level3">
 <h3 class="hasAnchor">
 <a href="#outlier-test" class="anchor"></a>Outlier Test</h3>
-<p>Now we test if <code>z</code> is an outlier in <code>vgood_cars</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_outlier.html">fit_outlier</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(vgood_cars), z, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
+<p>Now we test if <code>z</code> is an outlier in <code>vgood_cars</code>. The interaction graph <code>g_vgood</code> is an input since it models the relationship in the <code>vgood</code> class</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_outlier.html">fit_outlier</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(vgood_cars), z, g_vgood, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(m)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  -------------------------------- </span>
 <span class="co">#&gt;   Simulations: 10000 </span>
 <span class="co">#&gt;   Variables: 6 </span>
 <span class="co">#&gt;   Observations: 66 </span>
-<span class="co">#&gt;   Estimated mean: -16.23 </span>
-<span class="co">#&gt;   Estimated variance: 0.73 </span>
+<span class="co">#&gt;   Estimated mean: 9 </span>
+<span class="co">#&gt;   Estimated variance: 2.94 </span>
 <span class="co">#&gt;     ---------------------------   </span>
-<span class="co">#&gt;   Critical value: -15.57852 </span>
-<span class="co">#&gt;   Deviance: -3.350997 </span>
+<span class="co">#&gt;   Critical value: 10.29935 </span>
+<span class="co">#&gt;   Deviance: 34.75433 </span>
 <span class="co">#&gt;   P-value: 0 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;outlier, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span></code></pre></div>
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)
-<span class="co">#&gt; Picking joint bandwidth of 0.0167</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"> and verify that the estimated deviance of the selected car is -3.3509971 (the dotted line) which is larger than the critical value of -15.5785197. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
-<p>It should be noted here, that <code>fit_outlier</code> is a convenient wrapper around the two functions <code>fit_graph</code> and <code>outlier_model</code> which by theme-selves are more flexible.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)</code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 34.7543293, is much larger than the critical value of 10.2993482 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
 </div>
 </div>
 <div id="multiple-tests" class="section level2">
 <h2 class="hasAnchor">
 <a href="#multiple-tests" class="anchor"></a>Multiple Tests</h2>
-<p>Here we make a test for <code>z</code> being an outlier i all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here <span class="math inline">\(\alpha = 0.05\)</span>) and the dotted lines represents the observed deviance of <code>z</code> within the respective outlier test. We see that <code>z</code> is rejected in all but the true class of <code>z</code>. The odd looking densities is due to the fact that <code>car</code> does not contain that many variables. See other examples in the documentation of the vignettes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mm &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_multiple_models.html">fit_multiple_models</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(car), z, <span class="dt">response =</span> <span class="st">"class"</span>, <span class="dt">alpha =</span> <span class="fl">0.05</span>)
+<p>Here we make a test for <code>z</code> being an outlier in all four different car classes (the hypothesis are exclusive so no need for multiple hypothesis correction). The red areas are the significance levels (here <span class="math inline">\(\alpha = 0.05\)</span>) and the dotted lines represents the observed deviance of <code>z</code> within the respective outlier test. We see that <code>z</code> is rejected in all but the true class of <code>z</code>. The odd looking densities is due to the fact that <code>car</code> does not contain that many variables. See other examples in the documentation of the vignettes. Notice also, for some tests, there are no dotted line. This simply means, that the observed deviance is larger than all values and it would disturb the plot if included.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mm &lt;-<span class="st"> </span><span class="kw"><a href="reference/fit_multiple_models.html">fit_multiple_models</a></span>(car, z, <span class="dt">response =</span> <span class="st">"class"</span>, <span class="dt">alpha =</span> <span class="fl">0.05</span>)
 <span class="co">#&gt; 1 / 4  ... </span>
 <span class="co">#&gt; 2 / 4  ... </span>
 <span class="co">#&gt; 3 / 4  ... </span>
 <span class="co">#&gt; 4 / 4  ...</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mm)
-<span class="co">#&gt; Picking joint bandwidth of 0.0248</span></code></pre></div>
+<span class="co">#&gt; Picking joint bandwidth of 0.0496</span></code></pre></div>
 <p><img src="reference/figures/README-multiple_outlier_test-1.png" width="100%"></p>
 </div>
 <div id="example---variable-selection" class="section level2">

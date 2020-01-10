@@ -43,6 +43,9 @@
     <loc>https://mlindsk.github.io/molic/reference/entropy.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/fit_components.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/fit_graph.html</loc>
   </url>
   <url>
@@ -83,6 +86,9 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/plot.multiple_models.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.outlier.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/plot.outlier_model.html</loc>
