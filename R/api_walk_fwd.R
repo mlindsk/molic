@@ -74,9 +74,10 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   ##                  DELETING EDGES FROM CG IN CG_prime
   ## -----------------------------------------------------------------------------
   TVL  <- vector("list", 0L) # Temporary Vertex List (see Altmueller)
-  Sabs <- sapply(x$MSI, function(s) setequal(s$S, Sab)) # msi corresponds to CG
+  # msi corresponds to CG
+  Sabs <- vapply(x$MSI, FUN.VALUE = logical(1L), FUN =  function(s) setequal(s$S, Sab))
   prone_to_deletion <- x$MSI[Sabs]
-  MSab <- sapply(prone_to_deletion, function(z) { # See Altmueller
+  MSab <- vapply(prone_to_deletion, FUN.VALUE = logical(1L), FUN = function(z) { # See Altmueller
     es <- names(z$e)
     if( x$e %in% es) {
       return(TRUE)

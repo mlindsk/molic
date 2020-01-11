@@ -38,10 +38,13 @@ find_new_edge <- function(msi_prime, CG_prime) {
 
 # m : msi object
 # Cx: clique (vector of characters) 
-is_Cx <- function(m, Cx) sapply(m, function(x) setequal(x$C1, Cx) || setequal(x$C2, Cx))
+is_Cx <- function(m, Cx) vapply(m,
+  FUN.VALUE = logical(1L),
+  FUN = function(x) setequal(x$C1, Cx) || setequal(x$C2, Cx)
+)
 
 is_Ca_or_Cb <- function(m, x, y) {
-  sapply(m, function(z) {
+  vapply(m, FUN.VALUE = logical(1L), FUN = function(z) {
     is_CaCb <- setequal(z$C1, x) || setequal(z$C2, y)
     is_CbCa <- setequal(z$C1, y) || setequal(z$C2, x)
     is_CaCb || is_CbCa
@@ -49,22 +52,17 @@ is_Ca_or_Cb <- function(m, x, y) {
 }
 
 is_Ca_and_Cb <- function(m, x, y) {
-  sapply(m, function(z) {
+  vapply(m, FUN.VALUE = logical(1L), FUN = function(z) {
     is_CaCb <- setequal(z$C1, x) && setequal(z$C2, y)
     is_CbCa <- setequal(z$C1, y) && setequal(z$C2, x)
     is_CaCb || is_CbCa
   })
 }
 
-## make_G_dbl_prime <- function(Sab, G_A) {
-##   keepers <- setdiff(dimnames(G_A)[[1]], Sab)
-##   G_A[keepers, keepers]
-## }
-
 edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
   ## TVL  : Temporary vertex list
   ## MSab : logical indicating which prone_to_deletion (those with C1 \cap C2 = Sab) that has eab = (va, vb)
-  etd <- sapply(seq_along(MSab), function(k) {
+  etd <- vapply(seq_along(MSab), FUN.VALUE = logical(1L), FUN = function(k) {
     delete <- FALSE
     x <- prone_to_deletion[[k]]
     if( MSab[k] ) {
