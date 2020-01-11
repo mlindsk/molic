@@ -56,10 +56,10 @@ is_Ca_and_Cb <- function(m, x, y) {
   })
 }
 
-make_G_dbl_prime <- function(Sab, G_A) {
-  keepers <- setdiff(dimnames(G_A)[[1]], Sab)
-  G_A[keepers, keepers]
-}
+## make_G_dbl_prime <- function(Sab, G_A) {
+##   keepers <- setdiff(dimnames(G_A)[[1]], Sab)
+##   G_A[keepers, keepers]
+## }
 
 edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
   ## TVL  : Temporary vertex list

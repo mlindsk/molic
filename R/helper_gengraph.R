@@ -103,6 +103,9 @@ as_adj_lst <- function(A) {
 #' Converts an adjacency list to an adjacency matrix
 #'
 #' @param adj Adjacency list
+#' @examples
+#' adj <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+#' as_adj_mat(adj)
 #' @export
 as_adj_mat <- function(adj) {
   stopifnot(length(names(adj)) == length(adj))

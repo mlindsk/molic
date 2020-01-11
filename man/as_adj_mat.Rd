@@ -12,3 +12,7 @@ as_adj_mat(adj)
 \description{
 Converts an adjacency list to an adjacency matrix
 }
+\examples{
+adj <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+as_adj_mat(adj)
+}

@@ -13,6 +13,7 @@ sort_        <- function(x) paste0(sort(x), collapse = "|")
 .split_chars <- function(x) unlist(strsplit(x, ""))
 '%ni%'       <- Negate('%in%')
 
+
 ## ---------------------------------------------------------
 ##                EXPORTED HELPERS
 ## ---------------------------------------------------------
@@ -103,6 +104,42 @@ pmf <- function(A, adj, logp = FALSE) {
   }
 }
 
+#' Subgraph
+#'
+#' Construct a subgraph with a given set of nodes removed
+#'
+#' @param x Character vector of nodes
+#' @param g Adjacency list (named) or a neighbor matrix with dimnames given as the nodes
+#' @examples
+#' adj1 <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
+#' # Toy data so we can plot the graph
+#' d <- data.frame(a = "", b = "", c ="", d = "")
+#' g <- gengraph(d, type = "gen", adj = adj1)
+#' plot(g)
+#' subgraph(c("c", "b"), adj1)
+#' subgraph(c("b", "d"), as_adj_mat(adj1))
+#' @export
+subgraph <- function(x, g) {
+  # x: vector of nodes to delete
+  if (inherits(g, "matrix")) {
+    keepers <- setdiff(dimnames(g)[[1]], x)
+    g <- g[keepers, keepers]
+    return(g)
+  }
+  else if (inherits(g, "list")) {
+    l <- list(a = "a", b = "b")
+    g <- g[-match(x, names(g))]
+    g <- lapply(g, function(e) {
+      rm_idx <- as.vector(stats::na.omit(match(x, e)))
+      if (neq_empt_int(rm_idx)) return(e[-rm_idx])
+      return(e)
+    })
+    return(g)
+  }
+  else {
+    stop("g must either be a matrix of an adjacency list.", call. = FALSE)
+  }
+}
 
 #' A test for decomposability in undirected graphs
 #'

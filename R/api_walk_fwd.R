@@ -46,7 +46,7 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   G_prime_A[vb, va] <- 1L
   CG_prime     <- x$CG    
   CG_prime_A   <- x$CG_A
-  G_dbl_prime  <- make_G_dbl_prime(Sab, x$G_A)
+  G_dbl_prime  <- subgraph(Sab, x$G_A) # make_G_dbl_prime(Sab, x$G_A)
   msi_prime    <- x$MSI
         
   ## Vertices connected to a and b in G_dbl_prime
