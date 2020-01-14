@@ -12,7 +12,7 @@ An **R** package to perform outlier detection in contingency tables using decomp
 Getting Started
 ---------------
 
-If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/genetic_example.html) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. A thorough example of how to conduct an outlier analysis in genetic data can be found in the vignette [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html). Below we give a brief explanation of how to use **molic** and provide a small toy example. In the documentation (see above), we give examples of most functions using the `digits` data [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php).
+If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. A thorough example of how to conduct an outlier analysis in genetic data can be found in the vignette [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html). Below we give a brief explanation of how to use **molic** and provide a small toy example. In the documentation (see above), we give examples of most functions using the `digits` data [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php).
 
 You can install the current stable release of the package by using the `devtools` package:
 
