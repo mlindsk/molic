@@ -1,6 +1,7 @@
-# molic 1.2.0.9999
+# molic 1.2.1
 
 * `subgraph` function is now provided. 
+* `sapply'`s are now converted to `vapply'`s for safety and potentially more speed when fitting graphs.
 
 # molic 1.2.0
 
