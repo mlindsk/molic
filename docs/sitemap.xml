@@ -91,6 +91,9 @@
     <loc>https://mlindsk.github.io/molic/reference/plot.outlier.html</loc>
   </url>
   <url>
+    <loc>https://mlindsk.github.io/molic/reference/plot.outlier_model.html</loc>
+  </url>
+  <url>
     <loc>https://mlindsk.github.io/molic/reference/pmf.html</loc>
   </url>
   <url>
@@ -116,6 +119,9 @@
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/sptable.html</loc>
+  </url>
+  <url>
+    <loc>https://mlindsk.github.io/molic/reference/subgraph.html</loc>
   </url>
   <url>
     <loc>https://mlindsk.github.io/molic/reference/tgp_dat.html</loc>

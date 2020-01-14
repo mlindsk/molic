@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
-<p>If you want to learn the “behind the scenes” of the model it is recommended to go through <a href="https://mlindsk.github.io/molic/articles/">The Outlier Model</a> and look at the <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a> as you read along. See also the examples below and the software paper.</p>
+<p>If you want to learn the “behind the scenes” of the model it is recommended to go through <a href="https://mlindsk.github.io/molic/articles/genetic_example.html">The Outlier Model</a> and look at the <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a> as you read along. A thorough example of how to conduct an outlier analysis in genetic data can be found in the vignette <a href="https://mlindsk.github.io/molic/articles/genetic_example.html">Outlier Detection in Genetic Data</a>. Below we give a brief explanation of how to use <strong>molic</strong> and provide a small toy example. In the documentation (see above), we give examples of most functions using the <code>digits</code> data <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>.</p>
 <p>You can install the current stable release of the package by using the <code>devtools</code> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>The development version can be installed using (see e.g. the <code>NEWS.md</code> file at the develop branch to get a feeling of the upcoming features):</p>
@@ -199,7 +199,7 @@ unacc_cars &lt;-<span class="st"> </span>car <span class="op">%&gt;%</span>
 <h3 class="hasAnchor">
 <a href="#a-new-observation" class="anchor"></a>A New Observation</h3>
 <p>We imagine that a new observation is given; here we take a random observation from the <code>unacc</code> class.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">7</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">300718</span>)
 z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/sample.html">sample_n</a></span>(unacc_cars, <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>()</code></pre></div>
 </div>
 <div id="outlier-test" class="section level3">
@@ -213,18 +213,18 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt;   Simulations: 10000 </span>
 <span class="co">#&gt;   Variables: 6 </span>
 <span class="co">#&gt;   Observations: 66 </span>
-<span class="co">#&gt;   Estimated mean: 9 </span>
-<span class="co">#&gt;   Estimated variance: 2.94 </span>
+<span class="co">#&gt;   Estimated mean: 8.98 </span>
+<span class="co">#&gt;   Estimated variance: 2.5 </span>
 <span class="co">#&gt;     ---------------------------   </span>
-<span class="co">#&gt;   Critical value: 10.29935 </span>
-<span class="co">#&gt;   Deviance: 34.75433 </span>
-<span class="co">#&gt;   P-value: 0 </span>
+<span class="co">#&gt;   Critical value: 10.29936 </span>
+<span class="co">#&gt;   Deviance: 25.1124 </span>
+<span class="co">#&gt;   P-value: 3e-04 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;outlier, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span></code></pre></div>
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)</code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 34.7543293, is much larger than the critical value of 10.2993482 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 25.1124022, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
 </div>
 </div>
 <div id="multiple-tests" class="section level2">
@@ -237,7 +237,7 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt; 3 / 4  ... </span>
 <span class="co">#&gt; 4 / 4  ...</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mm)
-<span class="co">#&gt; Picking joint bandwidth of 0.0496</span></code></pre></div>
+<span class="co">#&gt; Picking joint bandwidth of 0.0489</span></code></pre></div>
 <p><img src="reference/figures/README-multiple_outlier_test-1.png" width="100%"></p>
 </div>
 <div id="example---variable-selection" class="section level2">
