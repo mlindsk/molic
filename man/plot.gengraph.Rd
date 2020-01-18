@@ -4,10 +4,13 @@
 \alias{plot.gengraph}
 \title{Plot}
 \usage{
-\method{plot}{gengraph}(x, ...)
+\method{plot}{gengraph}(x, vc = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{gengraph} object}
+
+\item{vc}{Named character vector; the names are the vertices and
+the elements are the colors of the nodes}
 
 \item{...}{Extra arguments. See the igraph package}
 }
@@ -15,9 +18,12 @@
 A wrapper around igraphs plot method for \code{gengraph} objects
 }
 \examples{
-d <- subset(digits, class == "1")[, 20:30]
-g <- gengraph(d, type = "fwd")
-plot(g)
-G <- fit_graph(d)
-plot(G)
+d  <- subset(digits, class == "1")[, 20:30]
+g  <- fit_graph(d)
+vs <- names(g$G_adj)
+vcol <- structure(vector("character", length(vs)), names = names(g$G_adj))
+vcol[1:4]  <- "lightsteelblue2"
+vcol[5:7]  <- "orange"
+vcol[8:11] <- "pink"
+plot(g, vcol)
 }

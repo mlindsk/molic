@@ -1,9 +1,13 @@
 # molic 1.2.1.9000
 
+ * IN PROGRESS: A new data set, `derma` has been included and the README has been rewritten to exploit this data instead of the old toy examples with cars.
+ * The `tgp_dat` data has now been compressed to save disk space.
+ * The `plot.gengraph` function applied to an object (`gengraph`) returned from one of the graph fitting functions (`fit_graph`, `fit_components` etc.) now takes an input that let the user specify the color of the nodes.
+
 # molic 1.2.1
 
-* `subgraph` function is now provided. 
-* `sapply'`s are now converted to `vapply'`s for safety and potentially more speed when fitting graphs.
+ * `subgraph` function is now provided. 
+ * `sapply'`s are now converted to `vapply'`s for safety and potentially more speed when fitting graphs.
 
 # molic 1.2.0
 

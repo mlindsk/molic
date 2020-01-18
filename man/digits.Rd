@@ -3,7 +3,7 @@
 \docType{data}
 \name{digits}
 \alias{digits}
-\title{A data frame observations corresponding to handwritten digits}
+\title{A data frame with observations corresponding to handwritten digits}
 \format{An object of class \code{data.frame} with 5620 rows and 65 columns.}
 \usage{
 digits

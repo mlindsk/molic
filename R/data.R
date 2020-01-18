@@ -1,4 +1,18 @@
-#' A data frame observations corresponding to handwritten digits
+#' Dermatology Database
+#'
+#' This data set contains 358 observations (we have removed 8 with missing values).
+#' It contains 12 clinical attributes and 21 histopathological attributes. The age
+#' attribute has been discretized. The class variable has six levels; each
+#' describing a skin disease.
+#' 
+#' @docType data
+#' 
+#' @references \href{https://archive.ics.uci.edu/ml/datasets/dermatology}{Dermatology Data Set}
+"derma"
+
+
+
+#' A data frame with observations corresponding to handwritten digits
 #'
 #' The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
 #' towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
