@@ -180,8 +180,8 @@ print.tree <- function(x, ...) print.gengraph(x, ...)
 #' @examples
 #' d  <- subset(digits, class == "1")[, 20:30]
 #' g  <- fit_graph(d)
-#' vs <- names(g$G_adj)
-#' vcol <- structure(vector("character", length(vs)), names = names(g$G_adj))
+#' vs <- colnames(d)
+#' vcol <- structure(vector("character", length(vs)), names = vs)
 #' vcol[1:4]  <- "lightsteelblue2"
 #' vcol[5:7]  <- "orange"
 #' vcol[8:11] <- "pink"
