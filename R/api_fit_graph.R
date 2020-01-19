@@ -103,7 +103,7 @@ fit_graph <- function(df,
 #' Fit a decomposable graphical model on each component
 #' @description Structure learning in decomposable graphical models on several components
 #' @param df data.frame
-#' @param comp A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)
+#' @param comp A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)
 #' @param type Character ("fwd", "bwd", "tree" or "tfwd")
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
 #' @param as_gen Logical. Convert to gengraph or not. If true, the graph can be plotted.

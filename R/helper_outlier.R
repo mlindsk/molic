@@ -247,7 +247,7 @@ utils::globalVariables(c(
 
 #' Plot Deviance
 #'
-#' A plot method to show the the approximated deviance distribution
+#' A plot method to show the approximated deviance distribution
 #' @param x An object returned from \code{fit_outlier}
 #' @param sig_col Color of the significance level area (default is red)
 #' @param ... Extra arguments; see details.
@@ -293,7 +293,7 @@ plot.outlier <- function(x, sig_col = "#FF0000A0", ...) {
 
 #' Plot Deviance of Multiple Models
 #'
-#' A plot method to show the the approximated deviance distribution of multiple models
+#' A plot method to show the approximated deviance distribution of multiple models
 #' @param x A \code{multiple_models} object returned from a called to \code{fit_multiple_models}
 #' @param sig_col Color of the significance level area (default is red)
 #' @param ... Extra arguments. See details.
@@ -355,35 +355,19 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @export
 plot.outlier_model <- function(x, ...) {
   graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
 }
 
-## #' Plot of pmf
-## #'
-## #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
-## #'
-## #' @param x A \code{outlier_model} object
-## #' @param ... Not used (for S3 compatability)
-## #' @export
-##  pmf <- function(x, ...) {
-##   UseMethod("pmf")
-## }
 
-## #' @rdname pmf
-## #' @export
-## pmf.outlier_model <- function(x, ...) {
-##   graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
-## }
-
-#' Emprical distribution function
+#' Empirical distribution function
 #'
 #' The empirical cdf of \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @export
 cdf <- function(x, ...) UseMethod("cdf")
 
@@ -397,7 +381,7 @@ cdf.outlier_model <- function(x, ...) return(x$cdf)
 #'
 #' @param x A \code{outlier_model} object
 #' @param dz The deviance of the observation \code{z}.
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @details The value \code{dz} can be obtained used the \code{deviance} function.
 #' @seealso \code{\link{deviance}}
 #' @export
@@ -433,16 +417,16 @@ critval.outlier_model <- function(m, alpha = 0.05) {
 #' Estimated mean of deviance statistic \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @export
 mean.outlier_model <- function(x, ...) return(x$mu)
 
 #' Variance
 #'
-#' Estimated variance of of the deviance statistic \code{T(Y)}
+#' Estimated variance of the deviance statistic \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @export
 variance <- function(x) UseMethod("variance")
 
@@ -453,7 +437,7 @@ variance.outlier_model <- function(x, ...) return(x$sigma)
 
 #' To Single Chars
 #'
-#' Convert all values in a dataframe or matrix of characters to a single character representation
+#' Convert all values in a data frame or matrix of characters to a single character representation
 #'
 #' @param x Data frame or matrix of characters
 #' @examples

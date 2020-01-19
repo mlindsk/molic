@@ -61,7 +61,7 @@ new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector
 #' @description A generic structure for decomposable graphical models
 #' @param df data.frame
 #' @param type character ("fwd", "bwd", "tree", "tfwd", "gen")
-#' @param adj A userspecified adjacency list
+#' @param adj A user-specified adjacency list
 #' @param q Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)
 #' @param ... Not used (for extendibility)
 #' @return A child class of a \code{gengraph} object

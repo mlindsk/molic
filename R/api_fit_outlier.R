@@ -224,7 +224,7 @@ fit_mixed_outlier <- function(m1, m2) {
 #' @param alpha The significance level
 #' @param type Character ("fwd", "bwd", "tree" or "tfwd") - the type of interaction graph to be used
 #' @param q Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)
-#' @param comp A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)
+#' @param comp A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
@@ -265,6 +265,3 @@ fit_multiple_models <- function(A,
   names(models) <- res_lvls
   structure(models, class = c("multiple_models", class(models)))
 }
-
-
-# fit_multiple_graphs
