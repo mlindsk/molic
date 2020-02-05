@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print — print.tree • molic</title>
+<title>Dermatology Database — derma • molic</title>
 
 
 <!-- jquery -->
@@ -33,8 +33,11 @@
 
 
 
-<meta property="og:title" content="Print — print.tree" />
-<meta property="og:description" content="A print method for tree objects" />
+<meta property="og:title" content="Dermatology Database — derma" />
+<meta property="og:description" content="This data set contains 358 observations (we have removed 8 with missing values).
+It contains 12 clinical attributes and 21 histopathological attributes. The age
+attribute has been discretized. The class variable has six levels; each
+describing a skin disease." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -117,37 +120,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print</h1>
+    <h1>Dermatology Database</h1>
     
-    <div class="hidden name"><code>print.tree.Rd</code></div>
+    <div class="hidden name"><code>derma.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A print method for <code>tree</code> objects</p>
+    <p>This data set contains 358 observations (we have removed 8 with missing values).
+It contains 12 clinical attributes and 21 histopathological attributes. The age
+attribute has been discretized. The class variable has six levels; each
+describing a skin disease.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for tree</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='no'>derma</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A <code>tree</code> object</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Not used (for S3 compatability)</p></td>
-    </tr>
-    </table>
 
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 358 rows and 35 columns.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href='https://archive.ics.uci.edu/ml/datasets/dermatology'>Dermatology Data Set</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#format">Format</a></li>
+      <li><a href="#references">References</a></li>
     </ul>
 
   </div>

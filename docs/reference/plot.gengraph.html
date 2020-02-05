@@ -66,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -88,6 +88,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/dermatitis.html">Detecting Skin Diseases</a>
+    </li>
     <li>
       <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
     </li>
@@ -124,7 +127,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for gengraph</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>vc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +137,11 @@
       <td><p>A <code>gengraph</code> object</p></td>
     </tr>
     <tr>
+      <th>vc</th>
+      <td><p>Named character vector; the names are the vertices and
+the elements are the colors of the nodes</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Extra arguments. See the igraph package</p></td>
     </tr>
@@ -141,13 +149,17 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>digits</span>, <span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>)[, <span class='fl'>20</span>:<span class='fl'>30</span>]
-<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='gengraph.html'>gengraph</a></span>(<span class='no'>d</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fwd"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>g</span>)</div><div class='img'><img src='plot.gengraph-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='no'>G</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>)</div><div class='output co'>#&gt;  Edges: 1 of 55 - delta-qic = 0.474001 
+    <pre class="examples"><div class='input'><span class='no'>d</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>digits</span>, <span class='no'>class</span> <span class='kw'>==</span> <span class='st'>"1"</span>)[, <span class='fl'>20</span>:<span class='fl'>30</span>]
+<span class='no'>g</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>)</div><div class='output co'>#&gt;  Edges: 1 of 55 - delta-qic = 0.474001 
 #&gt;  Edges: 2 of 55 - delta-qic = 0.447847 
 #&gt;  Edges: 3 of 55 - delta-qic = 0.162612 
 #&gt;  Edges: 4 of 55 - delta-qic = 0.001473 
-#&gt;  Edges: 5 of 55 - delta-qic = 0 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>G</span>)</div><div class='img'><img src='plot.gengraph-2.png' alt='' width='700' height='433' /></div></pre>
+#&gt;  Edges: 5 of 55 - delta-qic = 0 </div><div class='input'><span class='no'>vs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>d</span>)
+<span class='no'>vcol</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/structure'>structure</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>vector</a></span>(<span class='st'>"character"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>vs</span>)), <span class='kw'>names</span> <span class='kw'>=</span> <span class='no'>vs</span>)
+<span class='no'>vcol</span>[<span class='fl'>1</span>:<span class='fl'>4</span>]  <span class='kw'>&lt;-</span> <span class='st'>"lightsteelblue2"</span>
+<span class='no'>vcol</span>[<span class='fl'>5</span>:<span class='fl'>7</span>]  <span class='kw'>&lt;-</span> <span class='st'>"orange"</span>
+<span class='no'>vcol</span>[<span class='fl'>8</span>:<span class='fl'>11</span>] <span class='kw'>&lt;-</span> <span class='st'>"pink"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>g</span>, <span class='no'>vcol</span>)</div><div class='img'><img src='plot.gengraph-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -2,6 +2,7 @@ pandoc: 1.19.2.4
 pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
+  dermatitis: dermatitis.html
   genetic_example: genetic_example.html
   outlier_intro: outlier_intro.html
 urls:

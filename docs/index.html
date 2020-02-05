@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/dermatitis.html">Detecting Skin Diseases</a>
+    </li>
+    <li>
       <a href="articles/genetic_example.html">Outlier Detection in Genetic Data</a>
     </li>
     <li>
@@ -84,16 +87,26 @@
 <div id="about-molic" class="section level2">
 <h2 class="hasAnchor">
 <a href="#about-molic" class="anchor"></a>About molic</h2>
-<p>An <strong>R</strong> package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. <strong>molic</strong> also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using <a href="http://www.rcpp.org/">Rcpp</a>/C++ for better run-time performance.</p>
+<p>An <strong>R</strong> package to perform outlier detection in contingency tables (i.e. categorical data) using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. <strong>molic</strong> also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using <a href="http://www.rcpp.org/">Rcpp</a>/C++ for better run-time performance.</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
-<p>If you want to learn the “behind the scenes” of the model it is recommended to go through <a href="https://mlindsk.github.io/molic/articles/genetic_example.html">The Outlier Model</a> and look at the <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a> as you read along. A thorough example of how to conduct an outlier analysis in genetic data can be found in the vignette <a href="https://mlindsk.github.io/molic/articles/genetic_example.html">Outlier Detection in Genetic Data</a>. Below we give a brief explanation of how to use <strong>molic</strong> and provide a small toy example. In the documentation (see above), we give examples of most functions using the <code>digits</code> data <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>.</p>
+<p>The documentation can be found at <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a>.</p>
+<ul>
+<li>
+<a href="https://mlindsk.github.io/molic/articles/outlier_intro.html">The Outlier Model</a>: The “behind the scenes” of the model.</li>
+<li>
+<a href="https://mlindsk.github.io/molic/articles/genetic_example.html">Outlier Detection in Genetic Data</a>: An example of how to conduct an outlier analysis in genetic data.</li>
+<li>
+<a href="https://mlindsk.github.io/molic/articles/dermatitis.html">Detecting Skin Diseases</a>: An example of using the outlier model to detect skin diseases.</li>
+<li>Below we give a brief explanation of how to use <strong>molic</strong> and provide a small toy example. In the documentation (see above), we give examples of the main functions using the <code>digits</code> data <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>.</li>
+</ul>
 <p>You can install the current stable release of the package by using the <code>devtools</code> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p>The development version can be installed using (see e.g. the <code>NEWS.md</code> file at the develop branch to get a feeling of the upcoming features):</p>
+<p>The development version can be installed using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"mlindsk/molic@develop"</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>See e.g. the <code>NEWS.md</code> file at the develop branch to get a feeling of the upcoming features.</p>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2 class="hasAnchor">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A data frame observations corresponding to handwritten digits — digits • molic</title>
+<title>A data frame with observations corresponding to handwritten digits — digits • molic</title>
 
 
 <!-- jquery -->
@@ -33,11 +33,11 @@
 
 
 
-<meta property="og:title" content="A data frame observations corresponding to handwritten digits — digits" />
+<meta property="og:title" content="A data frame with observations corresponding to handwritten digits — digits" />
 <meta property="og:description" content="The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
 towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
 in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16)." />
+The resulting matrix for an observations was then of dimension 8x8 (with each cell having values between 0 and 16)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">molic</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -91,6 +91,9 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/dermatitis.html">Detecting Skin Diseases</a>
+    </li>
     <li>
       <a href="../articles/genetic_example.html">Outlier Detection in Genetic Data</a>
     </li>
@@ -117,7 +120,7 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A data frame observations corresponding to handwritten digits</h1>
+    <h1>A data frame with observations corresponding to handwritten digits</h1>
     
     <div class="hidden name"><code>digits.Rd</code></div>
     </div>
@@ -126,7 +129,7 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
     <p>The original data contained 32x32 bitmaps for each digit. Cell values are 1 if the grayscale color is more
 towards black and zero otherwise. These bitmaps were then converted into blocks of 4x4 non-overlapping blocks
 in which all the cell values were added (values ranging from 0 to 16).
-The resulting matrix for an observations was then of dimension 8x8 (with each cell having calues between 0 and 16).</p>
+The resulting matrix for an observations was then of dimension 8x8 (with each cell having values between 0 and 16).</p>
     </div>
 
     <pre class="usage"><span class='no'>digits</span></pre>
@@ -139,7 +142,7 @@ The resulting matrix for an observations was then of dimension 8x8 (with each ce
 
     <p>In the final version of the data in molic, we have a data frame (of characters) with 5620 rows and 65 columns,
 where the last column is the true class of the handwritten digit. All the remaining cells in the 64 columns was
-converted to values in a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p corresponding the the 16 possibilities. This is needed
+converted to values in a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p corresponding the 16 possibilities. This is needed
 in the outlier model. The to_single_chars() function can be exploited to achieve this for other data sets.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
