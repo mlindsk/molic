@@ -14,7 +14,7 @@
 \item{...}{Extra arguments. See details.}
 }
 \description{
-A plot method to show the the approximated deviance distribution of multiple models
+A plot method to show the approximated deviance distribution of multiple models
 }
 \details{
 The dotted line represents the observed deviance of the observation under the hypothesis

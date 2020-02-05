@@ -62,8 +62,8 @@ extract_model_simulations <- function(models) {
 }
 
 make_observation_info <- function(models) {
-  zdevs <- sapply(models, function(m) m$dev)
-  zpvs  <- sapply(models, function(m) m$pv)
+  zdevs <- .map_dbl(models, function(m) m$dev)
+  zpvs  <- .map_dbl(models, function(m) m$pv)
   data.frame(devs = zdevs, pvals = zpvs, response = names(models))
 }
 ## ---------------------------------------------------------
@@ -89,7 +89,7 @@ utils::globalVariables('z')
   if (!(length(C_marginals) - 1L)) {
     # The complete graph
     yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
-    return( sapply(yC1_sim, TY, C_marginals, S_marginals) )
+    return(.map_dbl(yC1_sim, TY, C_marginals, S_marginals))
   }
   doParallel::registerDoParallel(ncores)
   combine_ <- switch(type, "deviance"  = 'c', "raw" = "rbind")
@@ -217,7 +217,7 @@ print.outlier <- function(x, ...) {
 #'
 #' @param x A \code{outlier_model} object
 #' @param y An observation (name character vector)
-#' @param ... Not used (for S3 compatability)
+#' @param ... Not used (for S3 compatibility)
 #' @export
 deviance <- function(x, y, ...) {
   UseMethod("deviance")

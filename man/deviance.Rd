@@ -14,7 +14,7 @@ deviance(x, y, ...)
 
 \item{y}{An observation (name character vector)}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
 This function calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic which is also called the deviance

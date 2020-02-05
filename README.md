@@ -7,12 +7,17 @@ molic: Multivariate OutLIerdetection In Contingency tables
 About molic
 -----------
 
-An **R** package to perform outlier detection in contingency tables using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
+An **R** package to perform outlier detection in contingency tables (i.e. categorical data) using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
 
 Getting Started
 ---------------
 
-If you want to learn the "behind the scenes" of the model it is recommended to go through [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html) and look at the [documentation](https://mlindsk.github.io/molic/reference/index.html) as you read along. A thorough example of how to conduct an outlier analysis in genetic data can be found in the vignette [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html). Below we give a brief explanation of how to use **molic** and provide a small toy example. In the documentation (see above), we give examples of most functions using the `digits` data [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php).
+The documentation can be found at [documentation](https://mlindsk.github.io/molic/reference/index.html).
+
+-   [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html): The "behind the scenes" of the model.
+-   [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html): An example of how to conduct an outlier analysis in genetic data.
+-   [Detecting Skin Diseases](https://mlindsk.github.io/molic/articles/dermatitis.html): An example of using the outlier model to detect skin diseases.
+-   Below we give a brief explanation of how to use **molic** and provide a small toy example. In the documentation (see above), we give examples of the main functions using the `digits` data [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php).
 
 You can install the current stable release of the package by using the `devtools` package:
 
@@ -20,11 +25,13 @@ You can install the current stable release of the package by using the `devtools
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
-The development version can be installed using (see e.g. the `NEWS.md` file at the develop branch to get a feeling of the upcoming features):
+The development version can be installed using:
 
 ``` r
 devtools::install_github("mlindsk/molic@develop", build_vignettes = FALSE)
 ```
+
+See e.g. the `NEWS.md` file at the develop branch to get a feeling of the upcoming features.
 
 How To Cite
 -----------

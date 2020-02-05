@@ -12,8 +12,8 @@ variance(x)
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
-Estimated variance of of the deviance statistic \code{T(Y)}
+Estimated variance of the deviance statistic \code{T(Y)}
 }

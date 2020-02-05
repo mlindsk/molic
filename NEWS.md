@@ -1,6 +1,6 @@
-# molic 1.2.1.9000
+# molic 1.2.2
 
- * IN PROGRESS: A new data set, `derma` has been included and the README has been rewritten to exploit this data instead of the old toy examples with cars.
+ * A new data set, `derma` has been included and a new vignette using this data has been added. 
  * The `tgp_dat` data has now been compressed to save disk space.
  * The `plot.gengraph` function applied to an object (`gengraph`) returned from one of the graph fitting functions (`fit_graph`, `fit_components` etc.) now takes an input that let the user specify the color of the nodes.
 

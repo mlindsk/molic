@@ -3,7 +3,7 @@
 \name{cdf}
 \alias{cdf}
 \alias{cdf.outlier_model}
-\title{Emprical distribution function}
+\title{Empirical distribution function}
 \usage{
 cdf(x, ...)
 
@@ -12,7 +12,7 @@ cdf(x, ...)
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
 The empirical cdf of \code{T(Y)}

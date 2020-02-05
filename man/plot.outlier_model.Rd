@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
 A plot method to show the pmf of the approximated pmf of \code{T(Y)}

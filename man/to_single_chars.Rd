@@ -10,7 +10,7 @@ to_single_chars(x)
 \item{x}{Data frame or matrix of characters}
 }
 \description{
-Convert all values in a dataframe or matrix of characters to a single character representation
+Convert all values in a data frame or matrix of characters to a single character representation
 }
 \examples{
 d <- data.frame(x = c("11", "2"), y = c("2", "11"))
