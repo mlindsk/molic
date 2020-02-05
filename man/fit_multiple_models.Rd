@@ -31,7 +31,7 @@ fit_multiple_models(
 
 \item{q}{Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)}
 
-\item{comp}{A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)}
+\item{comp}{A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)}
 
 \item{nsim}{Number of simulations}
 

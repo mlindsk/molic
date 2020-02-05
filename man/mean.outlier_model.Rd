@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
 Estimated mean of deviance statistic \code{T(Y)}

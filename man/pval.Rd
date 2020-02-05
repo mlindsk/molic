@@ -14,7 +14,7 @@ pval(x, dz, ...)
 
 \item{dz}{The deviance of the observation \code{z}.}
 
-\item{...}{Not used (for S3 compatability)}
+\item{...}{Not used (for S3 compatibility)}
 }
 \description{
 Calculate the p-value for obtaining \code{ty_new} under \code{H_0}

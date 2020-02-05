@@ -174,24 +174,30 @@ print.tree <- function(x, ...) print.gengraph(x, ...)
 #'
 #' A wrapper around igraphs plot method for \code{gengraph} objects
 #' @param x A \code{gengraph} object
+#' @param vc Named character vector; the names are the vertices and
+#' the elements are the colors of the nodes
 #' @param ... Extra arguments. See the igraph package
 #' @examples
-#' d <- subset(digits, class == "1")[, 20:30]
-#' g <- gengraph(d, type = "fwd")
-#' plot(g)
-#' G <- fit_graph(d)
-#' plot(G)
+#' d  <- subset(digits, class == "1")[, 20:30]
+#' g  <- fit_graph(d)
+#' vs <- colnames(d)
+#' vcol <- structure(vector("character", length(vs)), names = vs)
+#' vcol[1:4]  <- "lightsteelblue2"
+#' vcol[5:7]  <- "orange"
+#' vcol[8:11] <- "pink"
+#' plot(g, vcol)
 #' @import igraph
 #' @export
-plot.gengraph <- function(x, ...) {
+plot.gengraph <- function(x, vc = NULL,  ...) {
   G      <- igraph::graph_from_adjacency_matrix(x$G_A, "undirected")
+  if (!is.null(vc)) V(G)$color <- vc
   args   <- list(...)
   args$x <- G
-  if( is.null(args$vertex.frame.color) ) args$vertex.frame.color = "black"
-  if( is.null(args$vertex.label.color) ) args$vertex.label.color = "black"
-  if( is.null(args$vertex.color)       ) args$vertex.color       = "lightsteelblue2"
-  if( is.null(args$vertex.size)        ) args$vertex.size        = 20
-  if( is.null(args$vertex.label.cex)   ) args$vertex.label.cex   = 1
+  if (is.null(args$vertex.frame.color)) args$vertex.frame.color = "black"
+  if (is.null(args$vertex.label.color)) args$vertex.label.color = "black"
+  if (is.null(args$vertex.color) && is.null(vc)) args$vertex.color = "lightsteelblue2"
+  if (is.null(args$vertex.size)       ) args$vertex.size        = 20
+  if (is.null(args$vertex.label.cex)  ) args$vertex.label.cex   = 1
   # if( is.null(args$vertex.label.dist)  ) args$vertex.label.dist  = 2
   do.call("plot.igraph", args)
 }

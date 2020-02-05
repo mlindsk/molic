@@ -11,7 +11,7 @@ gengraph(df, type = "fwd", adj = NULL, q = 0.5, ...)
 
 \item{type}{character ("fwd", "bwd", "tree", "tfwd", "gen")}
 
-\item{adj}{A userspecified adjacency list}
+\item{adj}{A user-specified adjacency list}
 
 \item{q}{Penalty term in the stopping criterion (\code{0} = AIC and \code{1} = BIC)}
 

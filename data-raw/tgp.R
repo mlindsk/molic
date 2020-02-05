@@ -31,7 +31,7 @@ colnames(df_meta_pop) <- c("sample_name",
 
 # save(df_meta_pop, file = "../data/df_meta_pop.Rdat")
 
-df <- read_delim("../inst/extdata/tgp_dat", ",", col_names = T) %>%
+df <- read_delim("../inst/extdata/tgp_dat.gz", ",", col_names = T) %>%
   gather(sample_name, snp, -X1) %>%
   spread(X1, snp)
 

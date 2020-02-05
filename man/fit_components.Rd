@@ -18,7 +18,7 @@ fit_components(
 \arguments{
 \item{df}{data.frame}
 
-\item{comp}{A list with character vectors. Each elementer in the list is a component in the graph (using expert knowledge)}
+\item{comp}{A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)}
 
 \item{type}{Character ("fwd", "bwd", "tree" or "tfwd")}
 

@@ -44,7 +44,7 @@ csptable <- function(x, b) {
 #' @export
 print.sptable <- function(x, ...) {
   vars  <- attr(x, "vars")
-  nchr  <- sum(sapply(vars, function(s) nchar(s))) + length(vars) - 1
+  nchr  <- sum(.map_int(vars, function(s) nchar(s))) + length(vars) - 1
   N     <- length(x)
   cells <- names(x)
   cat(paste0(vars, collapse = "-"), "\n")
