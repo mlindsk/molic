@@ -30,7 +30,7 @@ The documentation can be found at [documentation](https://mlindsk.github.io/moli
 
  -  [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html): The "behind the scenes" of the model.
  - [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html): An example of how to conduct an outlier analysis in genetic data.
- - [Detecting Skin Diseases](https://mlindsk.github.io/molic/articles/dermatitis.html): An example of using the outlier model to detect skin diseases. 
+ - [Detecting Skin Diseases](https://github.com/mlindsk/molic/blob/master/vignettes/dermatitis.Rmd): An example of using the outlier model to detect skin diseases. 
  - Below we give a brief explanation of how to use **molic** and provide a small toy example. In the documentation (see above), we give examples of the main functions using the `digits` data [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php).
 
 You can install the current stable release of the package by using the `devtools` package:
