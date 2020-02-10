@@ -126,9 +126,6 @@ mat_eur_b &lt;-<span class="st"> </span>eur_b <span class="op">%&gt;%</span><spa
 <span class="co"># Fitting the interaction graphs on the EUR data </span>
 ga &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_components.html">fit_components</a></span>(eur_a, <span class="dt">comp =</span> haps, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
 gb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_components.html">fit_components</a></span>(eur_b, <span class="dt">comp =</span> haps, <span class="dt">trace =</span> <span class="ot">FALSE</span>)
-<span class="co"># as_gen = TRUE converts the graph to a gengraph,</span>
-<span class="co"># the main object for graphs in the molic package</span>
-<span class="co"># This enables plotting and print info of the graph:</span>
 <span class="co"># print(ga)</span>
 <span class="co"># plot(ga, vertex.size = 1)</span>
 
@@ -154,24 +151,24 @@ z2  &lt;-<span class="st"> </span>amr <span class="op">%&gt;%</span>
 <span class="co"># The following takes a couple of minutes</span>
 m1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(mat_eur_a, z1, ga) <span class="co"># consider using more cores (ncores argument)</span>
 m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(mat_eur_b, z2, gb) <span class="co"># consider using more cores (ncores argument)</span>
-m  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_mixed_outlier.html">fit_mixed_outlier</a></span>(m1,m1)</code></pre></div>
+m  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fit_mixed_outlier.html">fit_mixed_outlier</a></span>(m1,m2)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(m)</code></pre></div>
 <pre><code>## 
 ##  -------------------------------- 
 ##   Simulations: 10000 
 ##   Variables: 302 
 ##   Observations: 1008 
-##   Estimated mean: 481.04 
-##   Estimated variance: 321.26 
+##   Estimated mean: 482.47 
+##   Estimated variance: 322.19 
 ##     ---------------------------   
-##   Critical value: 524.0553 
-##   Deviance: 534.5216 
-##   P-value: 0.0237 
+##   Critical value: 512.9414 
+##   Deviance: 508.0499 
+##   P-value: 0.0819 
 ##   Alpha: 0.05 
 ##   &lt;mixed_outlier, outlier, outlier_model, list&gt; 
 ##  --------------------------------</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)</code></pre></div>
-<p><img src="genetic_example_files/figure-html/unnamed-chunk-1-1.png" width="700"> We can conclude, from the <code>print</code> and <code>plot</code>, that <code>z</code> does not originate from Europe with a high degree of certainty. The red area depicts the <span class="math inline">\(0.05\)</span> significance level and the dotted line is the observed deviance of <code>z</code> (534.5215917).</p>
+<p><img src="genetic_example_files/figure-html/unnamed-chunk-1-1.png" width="700"> Thus, <code>z</code> does not deviate significantly from the Europe database. The red area depicts the <span class="math inline">\(0.05\)</span> significance level and the dotted line is the observed deviance of <code>z</code> (508.0498712). This is not a surprise, since Americans and Europeans have many similarities.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

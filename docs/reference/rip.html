@@ -126,7 +126,7 @@
     <p>Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rip</span>(<span class='no'>adj</span>)</pre>
+    <pre class="usage"><span class='fu'>rip</span>(<span class='no'>adj</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +134,10 @@
     <tr>
       <th>adj</th>
       <td><p>A named adjacency list of a decomposable graph</p></td>
+    </tr>
+    <tr>
+      <th>check</th>
+      <td><p>Boolean: check if adj is decomposable</p></td>
     </tr>
     </table>
 
