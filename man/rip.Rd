@@ -4,10 +4,12 @@
 \alias{rip}
 \title{Runnining Intersection Property}
 \usage{
-rip(adj)
+rip(adj, check = TRUE)
 }
 \arguments{
 \item{adj}{A named adjacency list of a decomposable graph}
+
+\item{check}{Boolean: check if adj is decomposable}
 }
 \description{
 Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.

@@ -54,7 +54,7 @@ d <- digits \%>\%
   filter(class == "1") \%>\%
   select(-class) 
 
-g <- fit_graph(d)
+g <- fit_graph(d, trace = FALSE)
 print(g)
 plot(g, vertex.size = 1)
 adjm <- adj_mat(g)

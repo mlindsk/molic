@@ -4,10 +4,12 @@
 \alias{mcs}
 \title{Maximum Cardinality Search}
 \usage{
-mcs(adj)
+mcs(adj, check = TRUE)
 }
 \arguments{
-\item{adj}{A named adjacency list of a decomposable grah}
+\item{adj}{A named adjacency list of a decomposable graph}
+
+\item{check}{Boolean: check if adj is decomposable}
 }
 \value{
 A list with a perfect numbering of the nodes and a perfect sequence of sets

@@ -75,9 +75,9 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   ## -----------------------------------------------------------------------------
   TVL  <- vector("list", 0L) # Temporary Vertex List (see Altmueller)
   # msi corresponds to CG
-  Sabs <- vapply(x$MSI, FUN.VALUE = logical(1L), FUN =  function(s) setequal(s$S, Sab))
+  Sabs <- .map_lgl(x$MSI,  function(s) setequal(s$S, Sab))
   prone_to_deletion <- x$MSI[Sabs]
-  MSab <- vapply(prone_to_deletion, FUN.VALUE = logical(1L), FUN = function(z) { # See Altmueller
+  MSab <- .map_lgl(prone_to_deletion, function(z) { # See Altmueller
     es <- names(z$e)
     if( x$e %in% es) {
       return(TRUE)

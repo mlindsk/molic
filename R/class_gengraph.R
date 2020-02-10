@@ -14,7 +14,7 @@ new_gengraph <- function(df, adj, cg = NULL, ...) {
 new_bwd <- function(df, adj = NULL, q = 0.5) {
   if(is.null(adj)) adj <- make_complete_graph(colnames(df))
   g    <- new_gengraph(df, adj)
-  g$CG <- rip2(adj)$C
+  g$CG <- rip(adj, check = FALSE)$C
   g$e  <- NULL # The newly deleted edge
   structure(g, class = c("bwd", class(g)))
 }

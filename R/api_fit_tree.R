@@ -45,7 +45,7 @@ kruskal.tree <- function(x) {
 ## as_fwd <- function(adj, mat, lst, ...) UseMethod("as_fwd")
 
 tree_as_fwd <- function(x, df) {
-  x$CG   <- rip2(x$G_adj)$C
+  x$CG   <- rip(x$G_adj, check = FALSE)$C
   x$e    <- new_edge()
   nC     <- length(x$CG)
   x$CG_A <- Matrix::Matrix(0L, nC, nC)

@@ -1,106 +1,36 @@
 ## ---------------------------------------------------------
 ##                NON-EXPORTED HELPERS
 ## ---------------------------------------------------------
-new_outlier_model <- function(A, sims, mu, sigma, cdf, Cms, Sms) {
-  structure(
-    list(
-      A     = A,
-      sims  = sims,
-      mu    = mu,
-      sigma = sigma,
-      cdf   = cdf,
-      Cms   = Cms,
-      Sms   = Sms
-    ),
-    class = c("outlier_model", "list")
-  )
-}
-
-new_outlier <- function(m, dev, pv, cv, a) {
-  # m : outlier_model object
-  m$dev    <- dev
-  m$pval   <- pv
-  m$cv     <- cv
-  m$alpha  <- a
-  class(m) <- c("outlier", class(m))
-  return(m)
-}
-
-new_mixed_outlier <- function(m, dev, pv, cv, a) {
-  # m : outlier_model object
-  m <- new_outlier(m, dev, pv, cv, a)
-  class(m) <- c("mixed_outlier", class(m))
-  return(m)
-}
-
-convolute <- function(m1, m2) {
-  # m1 and m2 : outlier_model objects
-  .sims <- m1$sims + m2$sims
-  .cdf  <- stats::ecdf(.sims)
-  .mu   <- m1$mu + m2$mu
-  .sig  <- m1$sigma + m2$sigma
-  m     <- new_outlier_model(rbind(m1$A, m2$A), .sims, .mu, .sig, .cdf, NULL, NULL)
-  return(m)
-}
-
-only_single_chars <- function(A) {
-  for (i in seq_along(nrow(A))) {
-    for (j in seq_along(ncol(A)))
-      if ( nchar(A[i,j]) != 1L ) return(FALSE)
-  }
-  return(TRUE)
-}
-
-extract_model_simulations <- function(models) {
-  if (!inherits(models, "multiple_models")) stop("`models` needs to be an object returned from `fit_multiple_models`")
-  sims <- lapply(seq_along(models), function(m) {
-    data.frame(Deviance = models[[m]]$sims,
-      response = names(models)[m],
-      stringsAsFactors = FALSE)
-  }) 
-  do.call(rbind, sims)
-}
-
-make_observation_info <- function(models) {
-  zdevs <- .map_dbl(models, function(m) m$dev)
-  zpvs  <- .map_dbl(models, function(m) m$pv)
-  data.frame(devs = zdevs, pvals = zpvs, response = names(models))
-}
-## ---------------------------------------------------------
-
-
-
-## Shut up CRAN check - foreach and z are good friends!
-utils::globalVariables('z') 
-
 .sim_internal <- function(A,
-                  C_marginals,
-                  S_marginals,
+                  cms,
+                  sms,
                   nsim         = 10000,
                   type         = "deviance",
                   ncores       = 1) {
   y <- replicate(nsim, vector("character", ncol(A)), simplify = FALSE)
   M <- nrow(A)
+  Hx_M    <- Hx_(M)
   Delta   <- colnames(A)
-  C1_vars <- attr(C_marginals[[1]], "vars")
+  C1_vars <- attr(cms[[1]], "vars")
   C1_idx  <- match(C1_vars, Delta)
-  p_nC1   <- C_marginals[[1]] / M
+  p_nC1   <- cms[[1]] / M
   yC1_sim <- sample(names(p_nC1), nsim, replace = TRUE, prob = p_nC1)
-  if (!(length(C_marginals) - 1L)) {
+  if (!(length(cms) - 1L)) {
     # The complete graph
     yC1_sim <- lapply(strsplit(yC1_sim, ""), function(z) {names(z) = C1_vars; z})
-    return(.map_dbl(yC1_sim, TY, C_marginals, S_marginals))
+    if (type == "deviance") yC1_sim <- 2 * (.map_dbl(yC1_sim, TY, cms, sms) - Hx_M) # D(Y) 
+    return(yC1_sim)
   }
   doParallel::registerDoParallel(ncores)
   combine_ <- switch(type, "deviance"  = 'c', "raw" = "rbind")
   y <- foreach::`%dopar%`(foreach::foreach(z = 1:nsim, .combine = combine_, .inorder = FALSE), {
     y_sim_z <- y[[z]]
     y_sim_z[C1_idx] <- .split_chars(yC1_sim[1])
-    for (k in 2:length(C_marginals)) {
-      nCk     <- C_marginals[[k]]
+    for (k in 2:length(cms)) {
+      nCk     <- cms[[k]]
       Ck_vars <- attr(nCk, "vars")     # Clique names
       Ck_idx  <- match(Ck_vars, Delta) # Where is Ck in Delta
-      nSk     <- S_marginals[[k]]      # For Sk = Ø we have that nSk = M
+      nSk     <- sms[[k]]              # For Sk = Ø we have that nSk = M
       Sk_vars <- attr(nSk, "vars")     # Separator names
       if (is.null(Sk_vars)) {          # For empty separators
         p_nCk_minus_nSk <- nCk / nSk   # nSk = M !
@@ -118,13 +48,29 @@ utils::globalVariables('z')
     }
     out <- structure(y_sim_z, names = Delta)
     if (type == "deviance") {
-      out <- TY(out, C_marginals, S_marginals)   # D(y) = 2*(T(y) - H(M))
+      out <- TY(out, cms, sms)   # D(y) = 2*(T(y) - H(M))
     }
     out
   })
   doParallel::stopImplicitCluster()
-  if (type == "deviance") y <- 2 * (y - Hx_(M)) # D(y)
+  if (type == "deviance") y <- 2 * (y - Hx_M) # D(y)
   return(y)
+}
+
+extract_model_simulations <- function(models) {
+  if (!inherits(models, "multiple_models")) stop("`models` needs to be an object returned from `fit_multiple_models`")
+  sims <- lapply(seq_along(models), function(m) {
+    data.frame(Deviance = models[[m]]$sims,
+      response = names(models)[m],
+      stringsAsFactors = FALSE)
+  }) 
+  do.call(rbind, sims)
+}
+
+make_observation_info <- function(models) {
+  zdevs <- .map_dbl(models, function(m) m$dev)
+  zpvs  <- .map_dbl(models, function(m) m$pv)
+  data.frame(devs = zdevs, pvals = zpvs, response = names(models))
 }
 
 ## ---------------------------------------------------------
@@ -157,9 +103,9 @@ utils::globalVariables('z')
 dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
   stopifnot( is.matrix(A) )
   RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
-  Cms   <- a_marginals(A, RIP$C)
-  Sms   <- a_marginals(A, RIP$S)
-  out   <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "raw", ncores = ncores)
+  cms   <- a_marginals(A, RIP$C)
+  sms   <- a_marginals(A, RIP$S)
+  out   <- .sim_internal(A, cms, sms, nsim = nsim, type = "raw", ncores = ncores)
   row.names(out) <- NULL
   return(out)
 }
@@ -226,24 +172,8 @@ deviance <- function(x, y, ...) {
 #' @rdname deviance
 #' @export
 deviance.outlier_model <- function(x, y,...) {
-  2 * (TY(y, x$Cms, x$Sms) - Hx_(nrow(x$A))) # D(y)
+  2 * (TY(y, x$cms, x$cms) - Hx_(nrow(x$A))) # D(y)
 }
-
-
-## R CMD check fails if not we make these globals (due to NSE)
-## https://www.r-bloggers.com/no-visible-binding-for-global-variable/
-utils::globalVariables(c(
-  ".region",      # plot.outlier
-  ".dev",         # plot.outlier
-  "Deviance",     # plot.multiple_models
-  "response",     # plot.multiple_models
-  "..quantile..", # plot.multiple_models
-  "x1",           # plot.multiple_models
-  "x2",           # plot.multiple_models
-  "y1",           # plot.multiple_models
-  "y2",           # plot.multiple_models
-  "y")            # plot.multiple_models
-)
 
 #' Plot Deviance
 #'
@@ -433,22 +363,3 @@ variance <- function(x) UseMethod("variance")
 #' @rdname variance
 #' @export
 variance.outlier_model <- function(x, ...) return(x$sigma)
-
-
-#' To Single Chars
-#'
-#' Convert all values in a data frame or matrix of characters to a single character representation
-#'
-#' @param x Data frame or matrix of characters
-#' @examples
-#' d <- data.frame(x = c("11", "2"), y = c("2", "11"))
-#' to_single_chars(d)
-#' @export
-to_single_chars <- function(x) {
-  ## Implicitly assumes that no columns has more than length(letters) = 26 unique levels
-  apply(x, 2, function(z) {
-    f <- as.factor(z)
-    levels(f) <- letters[1:length(levels(f))]
-    as.character(f)
-  })
-}

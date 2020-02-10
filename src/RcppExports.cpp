@@ -146,13 +146,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // mcs
-Rcpp::List mcs(Rcpp::List& adj);
-RcppExport SEXP _molic_mcs(SEXP adjSEXP) {
+Rcpp::List mcs(Rcpp::List& adj, bool check);
+RcppExport SEXP _molic_mcs(SEXP adjSEXP, SEXP checkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
-    rcpp_result_gen = Rcpp::wrap(mcs(adj));
+    Rcpp::traits::input_parameter< bool >::type check(checkSEXP);
+    rcpp_result_gen = Rcpp::wrap(mcs(adj, check));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -179,35 +180,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // rip
-Rcpp::List rip(Rcpp::List& adj);
-RcppExport SEXP _molic_rip(SEXP adjSEXP) {
+Rcpp::List rip(Rcpp::List& adj, bool check);
+RcppExport SEXP _molic_rip(SEXP adjSEXP, SEXP checkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
-    rcpp_result_gen = Rcpp::wrap(rip(adj));
-    return rcpp_result_gen;
-END_RCPP
-}
-// mcs2
-Rcpp::List mcs2(Rcpp::List& adj);
-RcppExport SEXP _molic_mcs2(SEXP adjSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
-    rcpp_result_gen = Rcpp::wrap(mcs2(adj));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rip2
-Rcpp::List rip2(Rcpp::List& adj);
-RcppExport SEXP _molic_rip2(SEXP adjSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type adj(adjSEXP);
-    rcpp_result_gen = Rcpp::wrap(rip2(adj));
+    Rcpp::traits::input_parameter< bool >::type check(checkSEXP);
+    rcpp_result_gen = Rcpp::wrap(rip(adj, check));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -308,12 +288,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_molic_subM", (DL_FUNC) &_molic_subM, 2},
     {"_molic_a_marginals", (DL_FUNC) &_molic_a_marginals, 2},
     {"_molic_TY", (DL_FUNC) &_molic_TY, 3},
-    {"_molic_mcs", (DL_FUNC) &_molic_mcs, 1},
+    {"_molic_mcs", (DL_FUNC) &_molic_mcs, 2},
     {"_molic_perfect_cliques", (DL_FUNC) &_molic_perfect_cliques, 1},
     {"_molic_perfect_separators", (DL_FUNC) &_molic_perfect_separators, 1},
-    {"_molic_rip", (DL_FUNC) &_molic_rip, 1},
-    {"_molic_mcs2", (DL_FUNC) &_molic_mcs2, 1},
-    {"_molic_rip2", (DL_FUNC) &_molic_rip2, 1},
+    {"_molic_rip", (DL_FUNC) &_molic_rip, 2},
     {"_molic_set_intersect", (DL_FUNC) &_molic_set_intersect, 2},
     {"_molic_set_union", (DL_FUNC) &_molic_set_union, 2},
     {"_molic_set_diff", (DL_FUNC) &_molic_set_diff, 2},
