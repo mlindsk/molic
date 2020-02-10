@@ -58,9 +58,6 @@ mat_eur_b <- eur_b %>% as.matrix()
 # Fitting the interaction graphs on the EUR data 
 ga <- fit_components(eur_a, comp = haps, trace = FALSE)
 gb <- fit_components(eur_b, comp = haps, trace = FALSE)
-# as_gen = TRUE converts the graph to a gengraph,
-# the main object for graphs in the molic package
-# This enables plotting and print info of the graph:
 # print(ga)
 # plot(ga, vertex.size = 1)
 
@@ -86,13 +83,13 @@ z2  <- amr %>%
 # The following takes a couple of minutes
 m1 <- fit_outlier(mat_eur_a, z1, ga) # consider using more cores (ncores argument)
 m2 <- fit_outlier(mat_eur_b, z2, gb) # consider using more cores (ncores argument)
-m  <- fit_mixed_outlier(m1,m1)
+m  <- fit_mixed_outlier(m1,m2)
 ```
 
 ```{r}
 print(m)
 plot(m)
 ```
-We can conclude, from the `print` and `plot`, that `z` does not originate from Europe with a high degree of certainty. The red area depicts the $0.05$ significance level and the dotted line is the observed deviance of `z` (`r m$dev`).
+Thus, `z` does not deviate significantly from the Europe database. The red area depicts the $0.05$ significance level and the dotted line is the observed deviance of `z` (`r m$dev`). This is not a surprise, since Americans and Europeans have many similarities.
 
 # References

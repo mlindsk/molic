@@ -6,7 +6,8 @@
 
 //' Maximum Cardinality Search
 //' 
-//' @param adj A named adjacency list of a decomposable grah
+//' @param adj A named adjacency list of a decomposable graph
+//' @param check Boolean: check if adj is decomposable
 //' @details If adj is not the adjacency list of a decomposable graph an error is raised
 //' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
 //' @examples
@@ -14,7 +15,7 @@
 //' mcs(x)
 //' @export
 // [[Rcpp::export]]
-Rcpp::List mcs(Rcpp::List & adj) {
+Rcpp::List mcs(Rcpp::List & adj, bool check = true) {
   VS  nodes = adj.names();
   int N = nodes.size();
   // Raise a WARNING if adj is the empty graph
@@ -56,20 +57,22 @@ Rcpp::List mcs(Rcpp::List & adj) {
     ne_v.push_back(v); // The closure of v
     VS anc    = VS(used_nodes.begin(), used_nodes.begin() + i + 1);
     VS B_i     = set_intersect(ne_v, anc);
-    int card_i = B_i.size();
-    if ( i > 1 && card_i > 2) {
+    if (check) {
+      int card_i = B_i.size();
+      if ( i > 1 && card_i > 2) {
       // ----------------------------------------------------------------------------------------------
       // Test for decomposability for step i. See Lauritzen for details
       // 1. cl(v_i) \cap {v_1, .., v_{i-1}} needs to be complete
       // 2. The check is always positive for i \in {1,2}
-      // 3. It is not neccesarry to check for ||ne_v|| < 3 since these are always complete in the graph
+      // 3. It is not necessary to check for ||ne_v|| < 3 since these are always complete in the graph
       // ----------------------------------------------------------------------------------------------
-      for (int j = 0; j < card_i; j++) {
-    	for (int k = j + 1; k < card_i - 1; k++) {
-	  auto adj_k = Rcpp::as<VS>(adj[B_i[k]]);
-    	  if ( !set_in(B_i[j], adj_k) ) Rcpp::stop("The corresponding graph of <adj> is not decomposable");
+	for (int j = 0; j < card_i; j++) {
+	  for (int k = j + 1; k < card_i; k++) { // k < card_i - 1
+	    auto adj_k = Rcpp::as<VS>(adj[B_i[k]]);
+	    if ( !set_in(B_i[j], adj_k) ) Rcpp::stop("The corresponding graph of <adj> is not decomposable");
     	}
       }
+     }
     }
     ps[i] = B_i;
   }
@@ -120,6 +123,7 @@ Rcpp::List perfect_separators(VVS & x) {
 //' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 //'
 //' @param adj A named adjacency list of a decomposable graph
+//' @param check Boolean: check if adj is decomposable
 //' @seealso \code{\link{mcs}}, \code{\link{is_decomposable}} 
 //' @examples
 //' x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
@@ -130,8 +134,8 @@ Rcpp::List perfect_separators(VVS & x) {
 //' y$S
 //' @export
 // [[Rcpp::export]]
-Rcpp::List rip(Rcpp::List & adj) {
-  auto  z = mcs(adj);
+Rcpp::List rip(Rcpp::List & adj, bool check = true) {
+  auto  z = mcs(adj, check);
   VVS pseq = z["ps"];
   VVS pc   = perfect_cliques(pseq);
   Rcpp::List ps = perfect_separators(pc);
@@ -142,59 +146,59 @@ Rcpp::List rip(Rcpp::List & adj) {
 // -------------------------------------------------------------------------
 // Used in backward selection where we dont need to test for decomposability
 // -------------------------------------------------------------------------
-// [[Rcpp::export]]
-Rcpp::List mcs2(Rcpp::List & adj) {
-  VS  nodes = adj.names();
-  int N = nodes.size();
-  // Raise a WARNING if adj is the empty graph
-  // if( !( N - 1 )) return VS(nodes[0]);
-  std::unordered_map<std::string, int> labels; // = {};
-  for( int i = 0; i < N; i++ ) {
-    labels.emplace(nodes[i], 0);
-  }
-  VVS ps(N);
-  decltype(nodes) remaining_nodes = nodes;
-  decltype(nodes) used_nodes(N, "");
-  auto v = nodes[0];
-  used_nodes[0] = v;
-  ps[0] = {v};
-  remaining_nodes.erase(remaining_nodes.begin()+0);
-  for( int i = 1; i < N; i++ ) {
-    auto ne_i = Rcpp::as<VS>(adj[v]);
-    // Increment neighbor nodes with a one
-    for (auto it = ne_i.begin(); it != ne_i.end(); ++it) {
-      auto ne_ = labels.find(*it);
-      ne_->second++;
-    }
-    std::string max_v;
-    int max_val = -1;
-    VS::iterator max_it;
-    for (auto it = remaining_nodes.begin(); it != remaining_nodes.end(); ++it) {
-      auto rn = labels.find(*it);
-      int max_candidate = rn->second;
-      if( max_candidate > max_val ) {
-	max_v   = *it;
-	max_val = max_candidate;
-	max_it  = it;
-      }
-    }
-    v = max_v;
-    used_nodes[i] = v;
-    remaining_nodes.erase(max_it);
-    auto ne_v = Rcpp::as<VS>(adj[v]);
-    ne_v.push_back(v); // The closure of v
-    VS anc    = VS(used_nodes.begin(), used_nodes.begin() + i + 1);
-    VS B_i     = set_intersect(ne_v, anc);
-    ps[i] = B_i;
-  }
-  return Rcpp::List::create(Rcpp::_["po"] = used_nodes , Rcpp::_["ps"] = ps);
-}
+// // [[Rcpp::export]]
+// Rcpp::List mcs2(Rcpp::List & adj) {
+//   VS  nodes = adj.names();
+//   int N = nodes.size();
+//   // Raise a WARNING if adj is the empty graph
+//   // if( !( N - 1 )) return VS(nodes[0]);
+//   std::unordered_map<std::string, int> labels; // = {};
+//   for( int i = 0; i < N; i++ ) {
+//     labels.emplace(nodes[i], 0);
+//   }
+//   VVS ps(N);
+//   decltype(nodes) remaining_nodes = nodes;
+//   decltype(nodes) used_nodes(N, "");
+//   auto v = nodes[0];
+//   used_nodes[0] = v;
+//   ps[0] = {v};
+//   remaining_nodes.erase(remaining_nodes.begin()+0);
+//   for( int i = 1; i < N; i++ ) {
+//     auto ne_i = Rcpp::as<VS>(adj[v]);
+//     // Increment neighbor nodes with a one
+//     for (auto it = ne_i.begin(); it != ne_i.end(); ++it) {
+//       auto ne_ = labels.find(*it);
+//       ne_->second++;
+//     }
+//     std::string max_v;
+//     int max_val = -1;
+//     VS::iterator max_it;
+//     for (auto it = remaining_nodes.begin(); it != remaining_nodes.end(); ++it) {
+//       auto rn = labels.find(*it);
+//       int max_candidate = rn->second;
+//       if( max_candidate > max_val ) {
+// 	max_v   = *it;
+// 	max_val = max_candidate;
+// 	max_it  = it;
+//       }
+//     }
+//     v = max_v;
+//     used_nodes[i] = v;
+//     remaining_nodes.erase(max_it);
+//     auto ne_v = Rcpp::as<VS>(adj[v]);
+//     ne_v.push_back(v); // The closure of v
+//     VS anc    = VS(used_nodes.begin(), used_nodes.begin() + i + 1);
+//     VS B_i     = set_intersect(ne_v, anc);
+//     ps[i] = B_i;
+//   }
+//   return Rcpp::List::create(Rcpp::_["po"] = used_nodes , Rcpp::_["ps"] = ps);
+// }
 
-// [[Rcpp::export]]
-Rcpp::List rip2(Rcpp::List & adj) {
-  auto  z = mcs2(adj);
-  VVS pseq = z["ps"];
-  VVS pc   = perfect_cliques(pseq);
-  Rcpp::List ps = perfect_separators(pc);
-  return Rcpp::List::create(Rcpp::_["C"] = pc , Rcpp::_["S"] = ps);
-}
+// // [[Rcpp::export]]
+// Rcpp::List rip2(Rcpp::List & adj) {
+//   auto  z = mcs2(adj);
+//   VVS pseq = z["ps"];
+//   VVS pc   = perfect_cliques(pseq);
+//   Rcpp::List ps = perfect_separators(pc);
+//   return Rcpp::List::create(Rcpp::_["C"] = pc , Rcpp::_["S"] = ps);
+// }

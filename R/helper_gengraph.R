@@ -120,45 +120,6 @@ as_adj_mat <- function(adj) {
   A
 }
 
-#' Finds the components of a graph
-#'
-#' @param adj Adjacency list
-#' @return A list with the elements being the components of the graph
-#' @export
-components <- function(adj) {
-  nodes <- names(adj)
-  comps <- list()
-  comps[[1]] <- dfs(adj, nodes[1])
-  while (TRUE) {
-    new_comp  <- setdiff(nodes, unlist(comps))
-    if (identical(new_comp, character(0))) return(comps)
-    comps <- c(comps, list(dfs(adj[new_comp], new_comp[1])))
-  }
-  return(comps)
-}
-
-
-#' Print
-#'
-#' A print method for \code{gengraph} objects
-#'
-#' @param x A \code{gengraph} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.gengraph <- function(x, ...) {
-  nv  <- ncol(x$G_A)
-  ne  <- sum(x$G_A)/2
-  cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
-  cat(" A Decomposable Graph With",
-    "\n -------------------------",
-    "\n  Nodes:", nv,
-    "\n  Edges:", ne, "/", nv*(nv-1)/2,
-    "\n  Cliques:", length(x$CG),
-    paste0("\n  ", cls),
-    "\n -------------------------\n"
-  )
-}
-
 #' Print
 #'
 #' A print method for \code{tree} objects

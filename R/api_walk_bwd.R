@@ -13,7 +13,8 @@
 #' library(dplyr)
 #' 
 #' d <- digits %>%
-#'   filter(class == "1")
+#'   filter(class == "1") %>%
+#'   select(10:20) # speed up runtime
 #'
 #' g <- gengraph(d, type = "bwd")
 #' s <- walk(g, d)
@@ -67,6 +68,6 @@ walk.bwd <- function(x, df, q = 0.5, thres = 5) {
   del_idx <- match(x$e, colnames(x$G_A))
   x$G_A[del_idx[1], del_idx[2]] <- 0L
   x$G_A[del_idx[2], del_idx[1]] <- 0L
-  x$CG <- rip2(x$G_adj)$C
+  x$CG <- rip(x$G_adj, check = FALSE)$C
   return(x)
 }

@@ -63,15 +63,16 @@ TY <- function(y, C_marginals, S_marginals) {
 
 #' Maximum Cardinality Search
 #' 
-#' @param adj A named adjacency list of a decomposable grah
+#' @param adj A named adjacency list of a decomposable graph
+#' @param check Boolean: check if adj is decomposable
 #' @details If adj is not the adjacency list of a decomposable graph an error is raised
 #' @return A list with a perfect numbering of the nodes and a perfect sequence of sets
 #' @examples
 #' x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
 #' mcs(x)
 #' @export
-mcs <- function(adj) {
-    .Call('_molic_mcs', PACKAGE = 'molic', adj)
+mcs <- function(adj, check = TRUE) {
+    .Call('_molic_mcs', PACKAGE = 'molic', adj, check)
 }
 
 perfect_cliques <- function(x) {
@@ -86,6 +87,7 @@ perfect_separators <- function(x) {
 #' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 #'
 #' @param adj A named adjacency list of a decomposable graph
+#' @param check Boolean: check if adj is decomposable
 #' @seealso \code{\link{mcs}}, \code{\link{is_decomposable}} 
 #' @examples
 #' x <- list(a = c("b", "d"), b = c("a", "c", "d"), c = c("b", "d"), d = c("a", "c", "b"))
@@ -95,16 +97,8 @@ perfect_separators <- function(x) {
 #' # Separators:
 #' y$S
 #' @export
-rip <- function(adj) {
-    .Call('_molic_rip', PACKAGE = 'molic', adj)
-}
-
-mcs2 <- function(adj) {
-    .Call('_molic_mcs2', PACKAGE = 'molic', adj)
-}
-
-rip2 <- function(adj) {
-    .Call('_molic_rip2', PACKAGE = 'molic', adj)
+rip <- function(adj, check = TRUE) {
+    .Call('_molic_rip', PACKAGE = 'molic', adj, check)
 }
 
 set_intersect <- function(v1, v2) {

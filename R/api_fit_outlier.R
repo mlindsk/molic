@@ -56,17 +56,17 @@ outlier_model <- function(A,
                           ncores     = 1,
                           validate   = TRUE
                           ) {
-  stopifnot( is.matrix(A) )
+  stopifnot(is.matrix(A))
   if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
   if (validate ) if( !only_single_chars(A)) stop("All values in A must be represented as a single character. Use to_single_chars(A)")
   RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
-  Cms   <- a_marginals(A, RIP$C)
-  Sms   <- a_marginals(A, RIP$S)
-  sims  <- .sim_internal(A, Cms, Sms, nsim = nsim, type = "deviance", ncores = ncores)
+  cms   <- a_marginals(A, RIP$C)
+  sms   <- a_marginals(A, RIP$S)
+  sims  <- .sim_internal(A, cms, sms, nsim = nsim, type = "deviance", ncores = ncores)
   mu    <- mean(sims)
   sigma <- stats::var(sims)
   cdf   <- stats::ecdf(sims)
-  return(new_outlier_model(A, sims, mu, sigma, cdf, Cms, Sms))
+  return(new_outlier_model(A, sims, mu, sigma, cdf, cms, sms))
 }
 
 #' Fit Outlier
@@ -118,7 +118,6 @@ fit_outlier <- function(A,
                         ncores   = 1,
                         trace    = FALSE,
                         validate = TRUE) {
-
   if (all(colnames(A) != names(z))) stop("Variables in A and the names of z is not in agreement!")
   if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
   Az   <- rbind(A, z)
