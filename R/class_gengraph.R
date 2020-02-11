@@ -72,7 +72,7 @@ new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector
 #' }
 #' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}
 #' @export
-gengraph <- function(df, type = "fwd", adj = NULL, q = 0.5, ...) {
+gengraph <- function(df, type = "gen", adj = NULL, q = 0.5, ...) {
   switch(type,
     "fwd"  = new_fwd(df, adj, q),
     "bwd"  = new_bwd(df, adj, q),
