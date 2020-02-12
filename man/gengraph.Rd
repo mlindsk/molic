@@ -4,7 +4,7 @@
 \alias{gengraph}
 \title{A generic and extendable structure for decomposable graphical models}
 \usage{
-gengraph(df, type = "fwd", adj = NULL, q = 0.5, ...)
+gengraph(df, type = "gen", adj = NULL, q = 0.5, ...)
 }
 \arguments{
 \item{df}{data.frame}

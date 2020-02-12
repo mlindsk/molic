@@ -172,7 +172,7 @@ deviance <- function(x, y, ...) {
 #' @rdname deviance
 #' @export
 deviance.outlier_model <- function(x, y,...) {
-  2 * (TY(y, x$cms, x$cms) - Hx_(nrow(x$A))) # D(y)
+  2 * (TY(y, x$cms, x$sms) - Hx_(nrow(x$A))) # D(y)
 }
 
 #' Plot Deviance
