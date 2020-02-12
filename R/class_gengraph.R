@@ -5,7 +5,7 @@ new_gengraph <- function(df, adj, cg = NULL, ...) {
     G_adj = adj,                                            # Graph as adjacency list
     G_A   = as_adj_mat(adj),                                # Graph as adjacency matrix
     CG    = cg,                                             # Clique list
-    LV    = vapply(df, function(x) length(unique(x)), 1L),  # Level vector (for stopping criteria)
+    LV    = .map_int(df, function(x) length(unique(x))),  # Level vector (for stopping criteria)
     MEM   = new.env(hash = TRUE)),                          # Memoiser - saving entropies to reuse
     class = c("gengraph", "list")
   )
