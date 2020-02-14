@@ -230,14 +230,14 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt;   Estimated variance: 2.5 </span>
 <span class="co">#&gt;     ---------------------------   </span>
 <span class="co">#&gt;   Critical value: 10.29936 </span>
-<span class="co">#&gt;   Deviance: 3.159159 </span>
-<span class="co">#&gt;   P-value: 1 </span>
+<span class="co">#&gt;   Deviance: 25.1124 </span>
+<span class="co">#&gt;   P-value: 3e-04 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;outlier, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span></code></pre></div>
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)</code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 3.1591589, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 25.1124022, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
 </div>
 </div>
 <div id="multiple-tests" class="section level2">
