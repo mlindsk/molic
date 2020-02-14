@@ -92,14 +92,14 @@
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
-<p>The documentation can be found at <a href="https://mlindsk.github.io/molic/reference/index.html">documentation</a>.</p>
+<p>The documentation can be found <a href="https://mlindsk.github.io/molic/reference/index.html">here</a>.</p>
 <ul>
 <li>
 <a href="https://mlindsk.github.io/molic/articles/outlier_intro.html">The Outlier Model</a>: The “behind the scenes” of the model.</li>
 <li>
 <a href="https://mlindsk.github.io/molic/articles/genetic_example.html">Outlier Detection in Genetic Data</a>: An example of how to conduct an outlier analysis in genetic data.</li>
 <li>
-<a href="https://github.com/mlindsk/molic/blob/master/vignettes/dermatitis.Rmd">Detecting Skin Diseases</a>: An example of using the outlier model to detect skin diseases.</li>
+<a href="https://mlindsk.github.io/molic/articles/dermatitis.html">Detecting Skin Diseases</a>: An example of using the outlier model to detect skin diseases.</li>
 <li>Below we give a brief explanation of how to use <strong>molic</strong> and provide a small toy example. In the documentation (see above), we give examples of the main functions using the <code>digits</code> data <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>.</li>
 </ul>
 <p>You can install the current stable release of the package by using the <code>devtools</code> package:</p>
@@ -230,14 +230,14 @@ z &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyvers
 <span class="co">#&gt;   Estimated variance: 2.5 </span>
 <span class="co">#&gt;     ---------------------------   </span>
 <span class="co">#&gt;   Critical value: 10.29936 </span>
-<span class="co">#&gt;   Deviance: 25.1124 </span>
-<span class="co">#&gt;   P-value: 3e-04 </span>
+<span class="co">#&gt;   Deviance: 3.159159 </span>
+<span class="co">#&gt;   P-value: 1 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;outlier, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span></code></pre></div>
 <p>Thus the car is declared an outlier on a <span class="math inline">\(0.05\)</span> significance level. We can visualize this by plotting the corresponding density of the deviance statistic as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(m)</code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 25.1124022, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"> Since the observed deviance of the selected car, 3.1591589, is much larger than the critical value of 10.2993615 the car is declared an outlier. The red area represents the significance level (here <span class="math inline">\(\alpha = 0.05\)</span>).</p>
 </div>
 </div>
 <div id="multiple-tests" class="section level2">
