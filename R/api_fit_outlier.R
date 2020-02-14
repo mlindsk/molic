@@ -58,7 +58,10 @@ outlier_model <- function(A,
                           ) {
   stopifnot(is.matrix(A))
   if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
-  if (validate ) if( !only_single_chars(A)) stop("All values in A must be represented as a single character. Use to_single_chars(A)")
+  if (validate ) {
+    if (any(is.na(A))) message("  Note: A has NA values. These have been treated as ordinay values.")
+    if( !only_single_chars(A)) stop("All values in A must be represented as a single character. Use to_single_chars(A)")
+  }
   RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
   cms   <- a_marginals(A, RIP$C)
   sms   <- a_marginals(A, RIP$S)
@@ -122,8 +125,9 @@ fit_outlier <- function(A,
   if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
   Az   <- rbind(A, z)
   if (validate) {
+    if (any(is.na(A))) stop("A has NA values.")
     if( !only_single_chars(Az) ) {
-      message("  Note: A has values larger than a single character. to_single_chars() was used to correct this")
+      message("A has values larger than a single character. to_single_chars() was used to correct this.")
       Az <- to_single_chars(Az)
       z   <- Az[nrow(Az), ]
     }    
