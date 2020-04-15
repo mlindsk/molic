@@ -5,7 +5,7 @@ fwd_init <- function(x, df, q = 0.5) {
   nodes <- colnames(df)
   n     <- length(nodes)
   pairs <- utils::combn(nodes, 2,  simplify = FALSE)
-  for( j in 1:n ) x$MEM[[nodes[j]]] <- entropy(df[nodes[j]])
+  for (j in 1:n) x$MEM[[nodes[j]]] <- entropy(df[nodes[j]])
   x$MSI <- lapply(seq_along(pairs), function(p) {
     v      <- pairs[[p]]
     edge_v <- sort_(v)
@@ -14,7 +14,7 @@ fwd_init <- function(x, df, q = 0.5) {
     dev      <- 2 * M * ed
     d_parms  <- -prod(x$LV[v] - 1)
     d_qic    <- dev + penalty * d_parms
-    if( d_qic >= attr(x$e, "d_qic") ) {
+    if (d_qic >= attr(x$e, "d_qic")) {
       x$e <<- new_edge(edge_v, d_qic, p)
     }
     list(C1 = v[1], C2 = v[2], S = character(0L), e = structure(ed, names = edge_v))
@@ -64,8 +64,8 @@ edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
   etd <- .map_lgl(seq_along(MSab), function(k) {
     delete <- FALSE
     x <- prone_to_deletion[[k]]
-    if( MSab[k] ) {
-      if( !all(x$C1 %in% Cab) && !all(x$C2 %in% Cab) ) {
+    if (MSab[k]) {
+      if (!all(x$C1 %in% Cab) && !all(x$C2 %in% Cab)) {
         delete <- TRUE
         TVL <- c(TVL, x$C1, x$C2)
       }
@@ -78,7 +78,7 @@ edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
       vb_in_C1_Sab <- all(C1_minus_Sab %in% ctb)
       vb_in_C2_Sab <- all(C2_minus_Sab %in% ctb)
       delete <- FALSE
-      if( (va_in_C1_Sab && vb_in_C2_Sab) || (va_in_C2_Sab && vb_in_C1_Sab) ) {
+      if ((va_in_C1_Sab && vb_in_C2_Sab) || (va_in_C2_Sab && vb_in_C1_Sab)) {
         delete <- TRUE
       }
     }
@@ -89,21 +89,21 @@ edges_to_delete <- function(prone_to_deletion, TVL, MSab, Cab, Sab, cta, ctb) {
 
 which_Cp_from_Cx_to_Cab <- function(CG_prime, C_prime_Cx, Cx, vx, Cab, Sab,  cty, TVL) {
   add <- vector("numeric", 0L)
-  for( k in C_prime_Cx ) {
+  for (k in C_prime_Cx) {
     Cp    <- CG_prime[[k]]
     Sp    <- intersect(Cp, Cx)
     Sn    <- intersect(Cp, Cab)
     Sab_x <- c(Sab, vx)
-    if( neq_empt_chr(Sab) ) {
-      if( all(Sp %in% Sab_x) ) {
+    if (neq_empt_chr(Sab)) {
+      if (all(Sp %in% Sab_x)) {
         add <- c(add, k)
       }
-      if( setequal(Sn, Sab_x) && !(any(setdiff(Cp, Sab_x) %in% cty)) ) {
+      if (setequal(Sn, Sab_x) && !(any(setdiff(Cp, Sab_x) %in% cty))) {
         add <- c(add, k)
       }
     }
     else {
-      if( vx %in% Sn || !neq_empt_chr(Sp) ) {
+      if (vx %in% Sn || !neq_empt_chr(Sp)) {
         add <- c(add, k)
       }
     }

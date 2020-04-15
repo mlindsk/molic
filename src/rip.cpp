@@ -59,7 +59,7 @@ Rcpp::List mcs(Rcpp::List & adj, bool check = true) {
     VS B_i     = set_intersect(ne_v, anc);
     if (check) {
       int card_i = B_i.size();
-      if ( i > 1 && card_i > 2) {
+      if (i > 1 && card_i > 2) {
       // ----------------------------------------------------------------------------------------------
       // Test for decomposability for step i. See Lauritzen for details
       // 1. cl(v_i) \cap {v_1, .., v_{i-1}} needs to be complete
@@ -88,14 +88,14 @@ VVS perfect_cliques(VVS & x) {
   // y: a perfect sequence of the cliques
   int n = x.size();
   VVS pc;
-  for(int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     std::vector<bool> v; // Dummy var to loop over
-    for(int j = 0; j < n; j++) {
-      if( j != i ) {
+    for (int j = 0; j < n; j++) {
+      if (j != i) {
 	v.push_back(set_issubeq(x[i], x[j]));
       }
     }
-    if( !set_any(v) ) {
+    if (!set_any(v)) {
       pc.push_back(x[i]); 
     }
   }
@@ -108,7 +108,7 @@ Rcpp::List perfect_separators(VVS & x) {
   // S_j := H_{j-1} \cap C_j, H_{j-1} := \cap_k C_{k-1}, k = 1, 2, ..., j-1
   int n = x.size();
   Rcpp::List ps(n);       // All elements initialized to NULL
-  if( n == 1 ) return ps; // List::create(_[""] = R_NilValue);
+  if (n == 1) return ps; // List::create(_[""] = R_NilValue);
   for (int i = 1; i < n; i++) {
     VS Hi_1;
     for (int j = 0; j < i; j++) {

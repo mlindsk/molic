@@ -49,7 +49,7 @@ print.sptable <- function(x, ...) {
   cells <- names(x)
   cat(paste0(vars, collapse = "-"), "\n")
   cat(paste0(rep("-", nchr), collapse = ""), "\n")
-  for( i in 1:N ) {
+  for (i in 1:N) {
     cat(paste0(cells[i], " : ", x[i]),"\n")
   }
 }

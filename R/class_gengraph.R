@@ -1,6 +1,6 @@
 # Give more arguments so we can call these constructors in the internal functions
 new_gengraph <- function(df, adj, cg = NULL, ...) {
-  if( !setequal(colnames(df), names(adj)) ) stop("column names of df does not correspond to adj")
+  if (!setequal(colnames(df), names(adj))) stop("column names of df does not correspond to adj")
   structure(list(
     G_adj = adj,                                            # Graph as adjacency list
     G_A   = as_adj_mat(adj),                                # Graph as adjacency matrix
@@ -12,7 +12,7 @@ new_gengraph <- function(df, adj, cg = NULL, ...) {
 }
 
 new_bwd <- function(df, adj = NULL, q = 0.5) {
-  if(is.null(adj)) adj <- make_complete_graph(colnames(df))
+  if (is.null(adj)) adj <- make_complete_graph(colnames(df))
   g    <- new_gengraph(df, adj)
   g$CG <- rip(adj, check = FALSE)$C
   g$e  <- NULL # The newly deleted edge
@@ -21,9 +21,9 @@ new_bwd <- function(df, adj = NULL, q = 0.5) {
 
 new_fwd <- function(df, adj = NULL, q = 0.5) {
   is_graph_null <- is.null(adj)
-  if( is_graph_null ) adj <- make_null_graph(colnames(df))
+  if (is_graph_null) adj <- make_null_graph(colnames(df))
   g <- new_gengraph(df, adj)
-  if( is_graph_null ) {
+  if (is_graph_null) {
     g$CG_A <- as_adj_mat(make_complete_graph(colnames(df))) # Can be more efficient!
     g$CG   <- as.list(names(adj))
   }
@@ -67,8 +67,8 @@ new_edge <- function(e = character(0), d_qic = 0, idx = integer(0), ins = vector
 #' @return A child class of a \code{gengraph} object
 #' @examples
 #' \dontrun{
+#' gengraph(digits, type = "fwd")
 #' gengraph(digits, type = "bwd")
-#' gengraph(digits, make_null_graph(colnames(digits)), type = "gen")
 #' }
 #' @seealso \code{\link{adj_lst.gengraph}}, \code{\link{adj_mat.gengraph}}, \code{\link{fit_graph}}, \code{\link{walk.fwd}}, \code{\link{walk.bwd}}
 #' @export

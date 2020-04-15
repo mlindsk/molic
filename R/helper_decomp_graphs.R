@@ -1,3 +1,19 @@
+## has_rip <- function(g) {
+##   # g: gengraph or adjacency list
+##   r <- rip(adj_lst(g))
+##   C <- r$C
+##   S <- r$S
+##   for (i in seq_along(S)[-1L]) {
+##     s_in_some_c <- FALSE
+##     for (j in seq_along(C)) {
+##       s_in_some_c <- all(S[[i]] %in% C[[j]])
+##       if (s_in_some_c) break
+##     }
+##     if (!s_in_some_c) return(FALSE)
+##   }
+##   return(TRUE)
+## }
+
 ## ---------------------------------------------------------
 ##                EXPORTED HELPERS
 ## ---------------------------------------------------------

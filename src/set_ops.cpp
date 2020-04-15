@@ -102,8 +102,8 @@ bool set_in(std::string & a, VS & b) {
 
 // [[Rcpp::export]]
 bool set_issubeq(VS &a, VS &b) {
-  for(auto const & av : a){
-    if( std::find(b.begin(), b.end(), av) == b.end() )
+  for (auto const & av : a){
+    if (std::find(b.begin(), b.end(), av) == b.end())
       return false;
   }
   return true;

@@ -79,9 +79,9 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   prone_to_deletion <- x$MSI[Sabs]
   MSab <- .map_lgl(prone_to_deletion, function(z) { # See Altmueller
     es <- names(z$e)
-    if( x$e %in% es) {
+    if (x$e %in% es) {
       return(TRUE)
-    } else if(rev_es(x$e) %in% es ) { # Bottleneck
+    } else if(rev_es(x$e) %in% es) { # Bottleneck
       return(TRUE)
     } else {
       return(FALSE)
@@ -92,14 +92,14 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   delete_edges <- etd$del
   TVL <- etd$TVL
 
-  if( neq_empt_lst(delete_edges) ) {
+  if (neq_empt_lst(delete_edges)) {
     delete_idx <- lapply(delete_edges, function(z) {
       sapply(seq_along(CG_prime), function(k) {
         y <- CG_prime[[k]]
         ifelse(setequal(z$C1, y) || setequal(z$C2, y), k, NA)
       })
     })
-    for( i in delete_idx ) {
+    for (i in delete_idx) {
       k <- stats::na.omit(i)
       CG_prime_A[k[1], k[2]] <- 0L
       CG_prime_A[k[2], k[1]] <- 0L
@@ -123,7 +123,7 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   add_b   <- which_Cp_from_Cx_to_Cab(CG_prime, C_prime_Cb, Cb, vb, Cab, Sab, cta, TVL)
   add     <- unique(c(add, add_b$add, add_b$add_tvl))
 
-  if( neq_empt_num(add) ) {
+  if (neq_empt_num(add)) {
     CG_prime_A[add, length(CG_prime)] <- 1L
     CG_prime_A[length(CG_prime), add] <- 1L
   }
@@ -140,13 +140,13 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   CG_Ca_idx <- attr(x$e, "ins")[1]
   CG_Cb_idx <- attr(x$e, "ins")[2]
 
-  if( Ca_in_Cab || Cb_in_Cab ) {
-    if( Ca_in_Cab && Cb_in_Cab ) {
+  if (Ca_in_Cab || Cb_in_Cab) {
+    if (Ca_in_Cab && Cb_in_Cab) {
       CG_prime     <- CG_prime[-Ca_Cb_idx]
       CG_prime_A   <- CG_prime_A[-Ca_Cb_idx, -Ca_Cb_idx]
       msi_prime    <- msi_prime[!is_Ca_or_Cb(msi_prime, Ca, Cb)]
     }
-    else if( Ca_in_Cab ) {
+    else if (Ca_in_Cab) {
       CG_prime     <- CG_prime[-CG_Ca_idx]
       CG_prime_A   <- CG_prime_A[-CG_Ca_idx, -CG_Ca_idx]
       msi_prime  <- msi_prime[!is_Cx(msi_prime, Ca)]
@@ -178,7 +178,7 @@ walk.fwd <- function(x, df, q = 0.5, thres = 5) {
   x$CG    <- CG_prime
   x$CG_A  <- CG_prime_A
   x$MSI   <- msi_prime
-  if( !neq_empt_lst(msi_prime) ) {
+  if (!neq_empt_lst(msi_prime)) {
     # If the graph is complete
     x$e <- new_edge(d_qic = NULL)
     return(x)

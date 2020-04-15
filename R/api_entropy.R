@@ -33,7 +33,7 @@ joint_entropy2 <- function(df) {
 #' 
 #' @export
 entropy <- function(df, thres = 5) {
-  if( ncol(df) <= thres ) return(joint_entropy(df))
+  if (ncol(df) <= thres) return(joint_entropy(df))
   else return(joint_entropy2(df))
 }
 
@@ -45,9 +45,9 @@ entropy_difference <- function(e, S, df, mem, thres = 5) {
   v <- unlist(es_to_vs(e))
 
   H_S <- 0L        
-  if (neq_empt_chr(S) ) {
+  if (neq_empt_chr(S)) {
     S_ <- sort_(S)
-    if( exists(S_, envir = mem, inherits = FALSE) ) {
+    if (exists(S_, envir = mem, inherits = FALSE)) {
       H_S <- mem[[S_]]
     } else {
       H_S  <- entropy(df[S], thres)
@@ -57,7 +57,7 @@ entropy_difference <- function(e, S, df, mem, thres = 5) {
 
   H_S_x <- 0L        
   Sx <- sort_(c(S, v[1]))
-  if( exists(Sx, envir = mem, inherits = FALSE) ) {
+  if (exists(Sx, envir = mem, inherits = FALSE)) {
     H_S_x <- mem[[Sx]]
   } else {
     H_S_x  <- entropy(df[c(S, v[1])], thres)
@@ -66,7 +66,7 @@ entropy_difference <- function(e, S, df, mem, thres = 5) {
   
   H_S_y <- 0L
   Sy <- sort_(c(S, v[2]))
-  if( exists(Sy, envir = mem, inherits = FALSE) ) {
+  if (exists(Sy, envir = mem, inherits = FALSE)) {
     H_S_y <- mem[[Sy]]
   } else {
     H_S_y  <- entropy(df[c(S, v[2])], thres)
@@ -75,7 +75,7 @@ entropy_difference <- function(e, S, df, mem, thres = 5) {
   
   H_S_xy <- 0L
   Sxy <- sort_(c(S, v))
-  if( exists(Sxy, envir = mem, inherits = FALSE) ) {
+  if (exists(Sxy, envir = mem, inherits = FALSE)) {
     H_S_xy <- mem[[Sxy]]
   } else {
     H_S_xy  <- entropy(df[c(S, v)], thres)
@@ -84,7 +84,7 @@ entropy_difference <- function(e, S, df, mem, thres = 5) {
   
   H_S_x_S_y <- H_S_x + H_S_y
   # Test needed to avoid < 0 due to floating point errors
-  edge_ent <- ifelse( isTRUE(all.equal(H_S_x_S_y, H_S_xy)), 0L,  H_S_x_S_y - H_S_xy - H_S )
-  return( list(ent = edge_ent, mem = mem ))
+  edge_ent <- ifelse(isTRUE(all.equal(H_S_x_S_y, H_S_xy)), 0L,  H_S_x_S_y - H_S_xy - H_S)
+  return(list(ent = edge_ent, mem = mem ))
 }
 
