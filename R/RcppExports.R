@@ -83,6 +83,10 @@ perfect_separators <- function(x) {
     .Call('_molic_perfect_separators', PACKAGE = 'molic', x)
 }
 
+parents <- function(po, ps) {
+    .Call('_molic_parents', PACKAGE = 'molic', po, ps)
+}
+
 #' Runnining Intersection Property
 #' @description Given a decomposable graph, this functions finds a perfect numbering on the vertices using maximum cardinality search, and hereafter returns a list with two elements: "C" - A RIP-ordering of the cliques and "S" - A RIP ordering of the separators.
 #'

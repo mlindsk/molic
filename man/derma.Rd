@@ -4,7 +4,9 @@
 \name{derma}
 \alias{derma}
 \title{Dermatology Database}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 358 rows and 35 columns.}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 358 rows and 35 columns.
+}
 \usage{
 derma
 }

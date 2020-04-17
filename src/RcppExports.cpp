@@ -179,6 +179,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// parents
+Rcpp::List parents(VS po, Rcpp::List ps);
+RcppExport SEXP _molic_parents(SEXP poSEXP, SEXP psSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< VS >::type po(poSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type ps(psSEXP);
+    rcpp_result_gen = Rcpp::wrap(parents(po, ps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rip
 Rcpp::List rip(Rcpp::List& adj, bool check);
 RcppExport SEXP _molic_rip(SEXP adjSEXP, SEXP checkSEXP) {
@@ -291,6 +303,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_molic_mcs", (DL_FUNC) &_molic_mcs, 2},
     {"_molic_perfect_cliques", (DL_FUNC) &_molic_perfect_cliques, 1},
     {"_molic_perfect_separators", (DL_FUNC) &_molic_perfect_separators, 1},
+    {"_molic_parents", (DL_FUNC) &_molic_parents, 2},
     {"_molic_rip", (DL_FUNC) &_molic_rip, 2},
     {"_molic_set_intersect", (DL_FUNC) &_molic_set_intersect, 2},
     {"_molic_set_union", (DL_FUNC) &_molic_set_union, 2},

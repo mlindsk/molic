@@ -28,5 +28,5 @@ Suggests:
     dplyr,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 SystemRequirements: C++11

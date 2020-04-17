@@ -65,7 +65,7 @@ int na_ya(RIV & na, std::string ya) {
 
 /*****************************************
  * In:
- * - na: The a-marginal tables
+ * - na: The a-marginal table
  * -  b: Named vector with positions of the b's
  * Out:  The b'th slice of the a-marginal table
  ***************************************/
@@ -75,24 +75,32 @@ RIV n_b(RIV & na, RIV & b) {
   /**
    *  - Assert that max(b) <= nv. Otherwise an error is produced.
    */
-  RIV  n_b_out;
-  VS   cells    = na.names();
-  VS   vars     = na.attr("vars");
-  int  nc       = cells.size();
-  int  nv       = vars.size();
-  int  nb       = b.size();
-  VS   names_b  = b.names();
-  VI   b_sorted = Rcpp::as<VI>(b);
-  VS   fix_b(nv);
-
+  RIV n_b_out;
+  VS  cells     = na.names();
+  VS  vars      = na.attr("vars");
+  int nc        = cells.size();
+  int nv        = vars.size();
+  int nb        = b.size();
+  VS  names_b   = b.names();
+  VI  b_sorted  = Rcpp::as<VI>(b);
+  VS  fix_b(nv);
+  
   // ensures correct deletion of b index
   std::sort(b_sorted.rbegin(), b_sorted.rend()); 
   std::fill(fix_b.begin(), fix_b.end(), ".");
 
+  // store the conditional information
+  VS  vars_cond_names;
+  RCV vars_cond = b.names();
+  
   for (int i = 0; i < b.size(); i++) {
-    fix_b[b[i]-1] = names_b[i];
+    int bi_idx = b[i] - 1;
+    fix_b[bi_idx] = names_b[i];
+    vars_cond_names.push_back(vars[bi_idx]);
   }
 
+  vars_cond.names() = vars_cond_names;
+  
   std::string fb;
   fb = std::accumulate(fix_b.begin(),fix_b.end(), fb);
   std::regex look(fb);
@@ -113,7 +121,7 @@ RIV n_b(RIV & na, RIV & b) {
     new_vars.erase(new_vars.begin() + b_sorted[j] - 1); 
   }
   n_b_out.attr("vars") = new_vars;
-
+  n_b_out.attr("vars_cond") = vars_cond;
   return n_b_out;
 }
 

@@ -7,6 +7,7 @@
 .map_int     <- function(x, fun, ...) vapply(X = x, FUN = fun, FUN.VALUE = integer(1), ...)
 .map_dbl     <- function(x, fun, ...) vapply(X = x, FUN = fun, FUN.VALUE = numeric(1), ...)
 .map_lgl     <- function(x, fun, ...) vapply(X = x, FUN = fun, FUN.VALUE = logical(1), ...)
+.map_lst     <- function(x, fun, ...) vapply(X = x, FUN = fun, FUN.VALUE = list(), ...)
 neq_null     <- function(x) !is.null(x)
 
 ## STRINGS
@@ -15,6 +16,7 @@ vs_to_es     <- function(e) lapply(e, paste0, collapse = "|")
 rev_es       <- function(e) .map_chr(es_to_vs(e), function(x) paste0(rev(x), collapse = "|"))
 sort_        <- function(x) paste0(sort(x), collapse = "|")
 .split_chars <- function(x) unlist(strsplit(x, ""))
+str_rem      <- function(s, pos) paste0(.split_chars(s)[-pos], collapse = "")
 
 ## SETS
 neq_empt_chr <- function(x) !identical(x, character(0))

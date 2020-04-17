@@ -4,25 +4,29 @@
 \alias{csptable}
 \title{Conditional sparse table}
 \usage{
-csptable(x, b)
+csptable(x, y, parray = TRUE)
 }
 \arguments{
 \item{x}{A sparse table obtained from \code{sptable}}
 
-\item{b}{A named vector of indicies for which the variables are fixed}
+\item{y}{Character vector with variables to condition on}
+
+\item{parray}{Logical if the cell values should be converted to probabilities}
 }
 \description{
-The names of \code{b} are the fixed values of the variables corresponding to the indicies
+Returns a conditional sparse contingency table conditioned on variables in \code{b}.
 }
 \details{
-Returns a conditional sparse contingency table (also called a slice) for the variables in \code{x} as a vector.
+If \code{y} is \code{NULL}, \code{x} is just converted to a \code{csptable} with no conditioning variables, i.e. the marginal table.
 }
 \examples{
 sp <- sptable(as.matrix(digits[, 1:3]))
 sp
-y  <- structure(2, names = "a")
-csptable(sp, y)
+length(sp)
+csp <- csptable(sp, c("V3"))
+csp
+length(csp)
 }
 \seealso{
-\code{\link{sptable}}
+\code{\link{sptable}}, \code{\link{slice_sptable}}
 }

@@ -77,39 +77,6 @@ make_observation_info <- function(models) {
 ##                   EXPORTED HELPERS
 ## ---------------------------------------------------------
 
-#' Simulate observations from a decomposable graphical model
-#'
-#' This function simulates observations from a DGM
-#' 
-#' @param A Character Matrix (data)
-#' @param adj Adjacency list of a decomposable graph
-#' @param nsim Number of simulations
-#' @param ncores Number of cores to use in parallelization
-#' @return This function returns a matrix of dimension \code{nsim x ncol(A)} where each row correspond to a simulated observation from a DGM represented by \code{adj}.
-#' @examples
-#'
-#' \dontrun{
-#' 
-#' library(dplyr)
-#' 
-#' d <- digits %>%
-#'   filter(class == "1") %>%
-#'   select(-class)
-#' G <- adj_lst(fit_graph(d))
-#' dgm_sim(as.matrix(d), G, nsim = 10)
-#'
-#' }
-#' @export
-dgm_sim <- function(A, adj, nsim = 1000, ncores = 1) {
-  stopifnot( is.matrix(A) )
-  RIP   <- rip(adj) # the rip (or actually mcs) will check for decomposability here
-  cms   <- a_marginals(A, RIP$C)
-  sms   <- a_marginals(A, RIP$S)
-  out   <- .sim_internal(A, cms, sms, nsim = nsim, type = "raw", ncores = ncores)
-  row.names(out) <- NULL
-  return(out)
-}
-
 #' Print outlier model
 #'
 #' A print method for \code{outlier_model} objects

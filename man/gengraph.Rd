@@ -25,8 +25,8 @@ A generic structure for decomposable graphical models
 }
 \examples{
 \dontrun{
+gengraph(digits, type = "fwd")
 gengraph(digits, type = "bwd")
-gengraph(digits, make_null_graph(colnames(digits)), type = "gen")
 }
 }
 \seealso{

@@ -4,7 +4,9 @@
 \name{tgp_haps}
 \alias{tgp_haps}
 \title{A named list of character vectors.}
-\format{An object of class \code{list} of length 109.}
+\format{
+An object of class \code{list} of length 109.
+}
 \usage{
 tgp_haps
 }

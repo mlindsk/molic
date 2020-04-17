@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-A print method for \code{sptable} and \code{csptable} objects
+A print method for \code{sptable} and \code{slice} objects
 }

@@ -70,13 +70,13 @@ amr <- tgp_dat %>%
 z1  <- amr %>%
   filter(grepl("a$", sample_name)) %>% 
   select(unname(unlist(haps))) %>%
-  slice(1) %>%
+  dplyr::slice(1) %>%
   unlist()
 
 z2  <- amr %>%
   filter(grepl("b$", sample_name)) %>% 
   select(unname(unlist(haps))) %>%
-  slice(1) %>%
+  dplyr::slice(1) %>%
   unlist()
 
 
