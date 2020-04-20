@@ -30,7 +30,7 @@ push         <- function(l, el, name = NULL) c(l, structure(list(el), names = na
 # `%[int%`   <- function(a, x) if (neq_empt_int(x)) return(a[x]) else return(a)
 # 
 
-
+## MISC
 only_single_chars <- function(A) {
   for (i in seq_along(nrow(A))) {
     for (j in seq_along(ncol(A)))
@@ -44,7 +44,7 @@ only_single_chars <- function(A) {
 ##                     EXPORTED HELPERS
 ## ---------------------------------------------------------
 
-#' To Single Chars
+#' Convert discrete values into a single character representation
 #'
 #' Convert all values in a data frame or matrix of characters to a single character representation
 #'
@@ -54,10 +54,12 @@ only_single_chars <- function(A) {
 #' to_single_chars(d)
 #' @export
 to_single_chars <- function(x) {
-  ## Implicitly assumes that no columns has more than length(letters) = 26 unique levels
+  # Implicitly assumes that no columns has more than length(chars) = 62 unique levels
+  # Consider saving the olde levels so we can retrive them again easily later
   apply(x, 2, function(z) {
     f <- as.factor(z)
-    levels(f) <- letters[1:length(levels(f))]
+    chars <- c(letters, LETTERS, 0:9)
+    levels(f) <- chars[1:length(levels(f))]
     as.character(f)
   })
 }

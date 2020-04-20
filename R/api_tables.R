@@ -26,11 +26,11 @@ sptable <- function(x) {
   sptab
 }
 
-sum.sptable <- function(x, y) {
-  # x : sptable
-  # y : variables to sum out (the separator)
-  
-}
+## sum.sptable <- function(x, y) {
+##   # x : sptable
+##   # y : variables to sum out (the separator)
+##   
+## }
 
 #' Slice of a sparse table
 #'

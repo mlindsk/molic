@@ -1,12 +1,13 @@
 pot_merge <- function(p1, p2, op = "*") {
+  # p1, p2 : sptable objects
   stopifnot(op %in% c("*", "/"))
-  v1   <- attr(p1, "vars")
-  v2   <- attr(p2, "vars")
-  sep  <- intersect(v1, v2)
-  pos1 <- match(sep, attr(p1, "vars"))
-  pos2 <- match(sep, attr(p2, "vars"))
-  conf1 <- find_cond_configs(p1, pos1)
-  conf2 <- find_cond_configs(p2, pos2)
+  v1     <- attr(p1, "vars")
+  v2     <- attr(p2, "vars")
+  sep    <- intersect(v1, v2)
+  pos1   <- match(sep, attr(p1, "vars"))
+  pos2   <- match(sep, attr(p2, "vars"))
+  conf1  <- find_cond_configs(p1, pos1)
+  conf2  <- find_cond_configs(p2, pos2)
   sc1    <- split(names(conf1), conf1)
   sc2    <- split(names(conf2), conf2)
   sc_sep <- intersect(names(sc1), names(sc2))
@@ -26,8 +27,8 @@ pot_merge <- function(p1, p2, op = "*") {
       for (j in seq_along(p2x)) {
         p1i <- p1x[i]
         p2j <- p2x[j]
-        p2j_name <- names(p2j)
-        new_name <- paste0(names(p1i), str_rem(p2j_name, pos2), collapse = "")
+        p2j_name  <- names(p2j)
+        new_name  <- paste0(names(p1i), str_rem(p2j_name, pos2), collapse = "")
         res[iter] <- if (op == "*") log(p1i) + log(p2j) else log(p1i) - log(p2j)
         res_names[iter] <- new_name
         iter <- iter + 1L
@@ -41,11 +42,14 @@ pot_merge <- function(p1, p2, op = "*") {
   return(pot)
 }
 
-## d <- as.matrix(tgp_dat[, 7:20])
-## colnames(d) <- letters[1:14]
+## library(dplyr)
 
-## pa_b <- parray(sptable(d[, 1:5]), c("b"))
-## pb_c <- parray(sptable(d[, c(2,4,6)]), NULL)
+## d <- as.matrix(tgp_dat[, 7:50])
+## colnames(d) <- letters[1:44]
+
+## pa_b <- parray(sptable(d[, 1:25]), letters[10:20])
+## pb_c <- parray(sptable(d[, 20:43]), NULL)
+
 ## pa_b
 ## pb_c
 ## pot_merge(pa_b, pb_c)
