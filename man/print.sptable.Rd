@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_tables.R
 \name{print.sptable}
 \alias{print.sptable}
-\title{Print table}
+\title{Print Sparse Table}
 \usage{
 \method{print}{sptable}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Not used (for S3 compatability)}
 }
 \description{
-A print method for \code{sptable} and \code{slice} objects
+A print method for \code{sptable} and \code{slice_sptable} objects
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper_misc.R
 \name{to_single_chars}
 \alias{to_single_chars}
-\title{To Single Chars}
+\title{Convert discrete values into a single character representation}
 \usage{
 to_single_chars(x)
 }

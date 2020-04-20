@@ -121,6 +121,7 @@ Rcpp::List perfect_separators(VVS & x) {
 
 // [[Rcpp::export]]
 Rcpp::List parents(VS po, Rcpp::List ps) {
+  // po: perfect ordering from mcs
   // ps: perfect sequence from mcs
   int npo = po.size();
   for (int i = 0; i < npo; i++) {
@@ -132,6 +133,7 @@ Rcpp::List parents(VS po, Rcpp::List ps) {
       ps[i] = psi;
     }
   }
+  ps.names() = po;
   return ps;
 }
 
