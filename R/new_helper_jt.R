@@ -1,5 +1,3 @@
-## pot_flow <- function(p, flow = "sum")
-
 new_junction_tree <- function(g) {
   
 }
