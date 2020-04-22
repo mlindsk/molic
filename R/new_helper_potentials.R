@@ -43,7 +43,7 @@ merge.sptable <- function(p1, p2, op = "*") {
   return(spt)
 }
 
-marginalize <- function(p, y, flow = sum, ...) UseMethod("marginalize")
+marginalize <- function(p, y, flow = sum) UseMethod("marginalize")
 
 marginalize.sptable <- function(p, y, flow = sum) {
   v <- attr(p, "vars")
