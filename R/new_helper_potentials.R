@@ -1,20 +1,63 @@
+is_onedim <- function(x) length(attr(x, "vars")) == 1L # x: sptable
+
+reposition_names <- function(x, pos) {
+  # x : names list
+  .map_chr(names(x), function(y) {
+    paste(.split_chars(y)[pos], collapse = "")
+  })    
+}
+
+
 merge.sptable <- function(p1, p2, op = "*") {
   # p1, p2 : sptable objects
   stopifnot(op %in% c("*", "/"))
   v1     <- attr(p1, "vars")
   v2     <- attr(p2, "vars")
+  if (length(v2) > length(v1)) {
+    tmp  <- p1
+    p1  <- p2
+    p2  <- tmp
+    v1  <- attr(p1, "vars")
+    v2  <- attr(p2, "vars")
+  }
+
   sep    <- intersect(v1, v2)
+
+  if (!neq_empt_chr(sep)) {
+    spt <- lapply(seq_along(p1), function(i) {
+      p1i <- p1[i]
+      structure(p2 * p1i, names = paste(names(p2), names(p1[i]), sep = ""))
+    })
+    spt <- unlist(spt)
+    attr(spt, "vars") <- c(v2, v1)
+    class(spt) <- c("sptable", class(spt))
+    return(spt)
+  }
+
+  ## ---------------------------------------------------------
+  ##        FIX: NEED TO HANDLE THE SINGLETON POTENTIALS!
+  ## ---------------------------------------------------------
+
+  
   pos1   <- match(sep, v1)
   pos2   <- match(sep, v2)
   cf1    <- find_cond_configs(p1, pos1)
   cf2    <- find_cond_configs(p2, pos2)
-  scf1    <- split(names(cf1), cf1)
-  scf2    <- split(names(cf2), cf2)
+
+  if (is_onedim(p1)) cf1 <- structure(names(cf1), names = names(cf1))
+  if (is_onedim(p2)) cf2 <- structure(names(cf2), names = names(cf2))
+
+
+  scf1   <- split(names(cf1), cf1)
+  scf2   <- split(names(cf2), cf2)
+  
+  names(scf2) <- reposition_names(scf2, pos2)
+
   sc_sep <- intersect(names(scf1), names(scf2))
-  if (length(sc_sep) == 1L && sc_sep == "") stop("Do we need these cases? If yes, implement it.")
-  # Note: Those not in sc_sep are structural zeroes
+    
   scf1    <- scf1[sc_sep]
   scf2    <- scf2[sc_sep]
+
   spt <- lapply(sc_sep, function(x) {
     scf1_x <- scf1[[x]]
     scf2_x <- scf2[[x]]
@@ -37,6 +80,7 @@ merge.sptable <- function(p1, p2, op = "*") {
     }
     structure(res, names = res_names)
   })
+
   spt <- unlist(spt)
   attr(spt, "vars") <- c(v1, setdiff(v2, v1))
   class(spt) <- c("sptable", class(spt))
@@ -80,3 +124,7 @@ marginalize.sptable <- function(p, y, flow = sum) {
 ## p <- parray(sptable(d[, 1:5]))
 ## marginalize(p, c("c", "e"), max)
 ## slice_sptable(p, c("A" = 5))
+
+## p1 <- sptable(d[, c(2,1,3), drop = FALSE])
+## p2 <- sptable(d[, 1:5, drop = FALSE])
+## merge(p1, p2)

@@ -13,7 +13,7 @@ parents_igraph <- function(g) {
 
 moralize_igraph <- function(g, parents) {
   if (is.null(igraph::vertex.attributes(g)$name)) { # Remove this in the future - nodes must have meaningful names according to data
-    g <- igraph::set_vertex_attr(g, "name", value = 1:length(igraph::V(g)))
+    g <- igraph::set_vertex_attr(g, "name", value = 1:igraph::vcount(g))
   }
   for (p in parents) {
     if (length(p) > 1) {
@@ -49,40 +49,62 @@ parents_jt <- function(x, lvs) {
   return(par)
 }
 
-new_singleton_jt <- function(cliques) {
-  stopifnot(length(cliques) == 1L)
-  jt             <- list()
-  coll_tree      <- matrix(0L)
-  dist_tree      <- coll_tree
-  attr(coll_tree, "leaves")   <- integer(0L)
-  attr(coll_tree, "parents")  <- list()
-  attr(dist_tree, "leaves")   <- integer(0L)
-  attr(dist_tree, "parents")  <- list()
-  collect <-  list(cliques = cliques, tree = coll_tree)
-  distribute <-  list(cliques = cliques, tree = dist_tree)
-  attr(collect, "is_singleton")    <- TRUE
-  attr(distribute, "is_singleton") <- TRUE
-  jt$schedule    <- list(collect = collect, distribute = distribute)
-  jt$cliques     <- cliques
-  jt$clique_tree <- matrix(0L)
-  class(jt)   <- c("jt", class(jt))
-  attr(jt, "direction")    <- "collect"
-  return(jt)
-}
+## new_singleton_jt <- function(jt, direction) {
+
+##   ## ---------------------------------------------------------
+##   ##        FIX: JUST NEED TO CHANGE ONE OF THE TREES!!!!
+##   ## ---------------------------------------------------------
+##   x <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
+  
+##   jt             <- list()
+##   coll_tree      <- matrix(0L)
+##   dist_tree      <- coll_tree
+##   attr(coll_tree, "leaves")   <- integer(0L)
+##   attr(coll_tree, "parents")  <- list()
+##   attr(dist_tree, "leaves")   <- integer(0L)
+##   attr(dist_tree, "parents")  <- list()
+##   collect <-  list(cliques = cliques, tree = coll_tree)
+##   distribute <-  list(cliques = cliques, tree = dist_tree)
+##   attr(collect, "is_singleton")    <- TRUE
+##   attr(distribute, "is_singleton") <- TRUE
+##   jt$schedule    <- list(collect = collect, distribute = distribute)
+##   jt$cliques     <- cliques
+##   jt$clique_tree <- matrix(0L)
+##   class(jt)   <- c("jt", class(jt))
+##   attr(jt, "direction") <- "collect"
+##   return(jt)
+## }
 
 prune_jt <- function(jt) {
   direction <- attr(jt, "direction")
   x <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
-  if (attr(x, "is_singleton")) stop("A singleton tree can not be pruned")
+
+  if (identical(x, "FULL")) stop("The junction tree has already been propagated in this direction!")
+
   leaves    <- attr(x$tree, "leaves")
   x$cliques <- x$cliques[-leaves]
   x$tree    <- x$tree[-leaves, -leaves]
+
+  still_not_singleton <- length(x$cliques) > 1L
+  if (!still_not_singleton) {
+    if (direction == "collect") {
+      jt$schedule$collect <- "FULL"
+      attr(jt, "direction") <- "distribute"
+    } else {
+      jt$schedule$distribute <- "FULL"
+      attr(jt, "direction")  <- "FULL"
+    }
+    return(jt)
+  }
+  
   attr(x$tree, "leaves")  <- leaves_jt(x$tree)
   attr(x$tree, "parents") <- parents_jt(x$tree, attr(x$tree, "leaves"))
   if (direction == "collect") {
     jt$schedule$collect <- list(cliques = x$cliques, tree = x$tree)
+    attr(jt$schedule$collect, "is_singleton") <- FALSE
   } else {
     jt$schedule$distribute <- list(cliques = x$cliques, tree = x$tree)
+    attr(jt$schedule$distribute, "is_singleton") <- FALSE
   }
   return(jt)
 }
@@ -112,13 +134,13 @@ new_schedule <- function(cliques) {
     }
   }
   # root  <- which.max(.map_int(cliques, length))
-  
   coll_lvs <- leaves_jt(coll_tree)
   dist_lvs <- leaves_jt(dist_tree)
   attr(coll_tree, "leaves")  <- coll_lvs
   attr(dist_tree, "leaves")  <- dist_lvs
   attr(coll_tree, "parents") <- parents_jt(coll_tree, coll_lvs)
   attr(dist_tree, "parents") <- parents_jt(dist_tree, dist_lvs)
+  # names(cliques) <- paste("C", 1:nc, sep = "")
   collect    <- list(cliques = cliques, tree = coll_tree)
   distribute <- list(cliques = cliques, tree = dist_tree)
   attr(collect, "is_singleton")    <- FALSE
@@ -127,7 +149,7 @@ new_schedule <- function(cliques) {
   
 }
 
-new_jt <- function(g, data, set_evidence = NULL, ...) {
+new_jt <- function(g, data, set_evidence = NULL, flow = sum, ...) {
 
   adj <- if (igraph::is.igraph(g)) {
     as_adj_lst(igraph::as_adjacency_matrix(g))    
@@ -140,37 +162,29 @@ new_jt <- function(g, data, set_evidence = NULL, ...) {
   
   rip_    <- rip(adj, check = FALSE)
   cliques <- rip_$C
+  names(cliques) <- paste("C", 1:length(cliques), sep = "")
   if (length(cliques) < 2) {
+    stop("Fix this...")
     return(new_singleton_jt(cliques))
   }
 
   # if (is.null(root)) re_order_cliques(cliques, root) { using kruskal?}
-  par <- if (igraph::is.igraph(g)) parents_igraph(g) else rip_$P
+  par       <- if (igraph::is.igraph(g)) parents_igraph(g) else rip_$P
   charge    <- new_charge(data, cliques, par)
   schedule  <- new_schedule(cliques)
-  jt        <- list(schedule = schedule[1:2], charge, cliques = cliques, clique_tree = schedule$clique_tree)
+  jt        <- list(schedule = schedule[1:2], charge = charge, cliques = cliques, clique_tree = schedule$clique_tree)
   class(jt) <- c("jt", class(jt))
   attr(jt, "direction") <- "collect" # collect, distribute or full
   return(jt)
 }
 
 plot_jt <- function(jt, ...) {
-  .names <- unlist(lapply(jt$cliques, function(x) paste(x, collapse = "\n")))
+  .names <- unlist(lapply(jt$schedule$collect$cliques, function(x) paste(x, collapse = "\n")))
   x <- jt$schedule$collect$tree
   dimnames(x) <- list(.names, .names)
   g <- igraph::graph_from_adjacency_matrix(x)
   plot(g, ...)
 }
-
-
-## library(dplyr)
-## d <- tgp_dat[1:500, 5:15]
-## g <- fit_graph(d, trace = FALSE)
-## gjt <- new_jt(g, d)
-
-## par(mfrow = c(1,2))
-## plot(g, vertex.size = 10)
-## plot_jt(gjt, vertex.size = 10)
 
 new_charge <- function(data, cliques, conditional_parents) {
   potC <- vector("list", length(cliques))
@@ -185,23 +199,71 @@ new_charge <- function(data, cliques, conditional_parents) {
         if (is.null(potC[[k]])) {
           potC[[k]] <- pspt
         } else {
+
+          ## try_this <- try(merge(potC[[k]], pspt))
+          ## if (inherits(try_this, "try-error")) browser()
+          
           potC[[k]] <- merge(potC[[k]], pspt)
         }
       }
     }
   }
-  pots <- list(potC = potC, potS = potS)
+  names(potS) <- paste("S", 1:length(potS), sep = "")
+  names(potC) <- names(cliques)
+  pots <- list(C = potC, S = potS)
   return(pots)
 }
 
+send_messages <- function(jt) {
+  direction <- attr(jt, "direction")
+  x   <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
+  lvs <- attr(x$tree, "leaves")
+  par <- attr(x$tree, "parents")
 
-## update_charge <- function(jt) {
-  
-## }
+  for (k in seq_along(lvs)) {
+    lvs_k <- lvs[k]
+    par_k <- par[[k]]
+    for (pk in par_k) {
+      Ck  <- x$cliques[[lvs_k]]
+      Cpk <- x$cliques[[pk]]
+      Sk  <- intersect(Ck, Cpk)
+      if (neq_empt_chr(Sk)) { # if empty, no messages should be sent
+        ## v <- attr(jt$charge$C[[lvs_k]], "vars")
+        ## if (any(is.na(match(Sk, v)))) browser()
+        ## ---------------------------------------------------------
+        ##                         FIX!
+        ## ---------------------------------------------------------
+        # x$cliques and jt$cliques does not correspond after a single prune!
+        # Thus lvs_k is not the correct index for jt$charge$potC... Hmmm
+        ## ---------------------------------------------------------
+        
+        Ck_names  <- names(x$cliques)[lvs_k]
+        Cpk_names <- names(x$cliques)[pk]
+        
+        message_k <- marginalize(jt$charge$C[[Ck_names]], Sk)
+        jt$charge$C[[Cpk_names]]    <- merge(jt$charge$C[[Cpk_names]], message_k, "*")
+        jt$charge$C[[Ck_names]] <- merge(jt$charge$C[[Ck_names]], message_k, "/")
+        ## We need to check for direction here; for distribute we also need to update potS
+      }      
+    }
+  }
+  prune_jt(jt)
+}
 
-## new_schedule <- function() {
-  
-## }
+## library(dplyr)
+## d    <- tgp_dat[1:500, 5:40]
+## g    <- fit_graph(d, trace = FALSE)
+## gjt  <- new_jt(g, d)
+## pgjt <- prune_jt(gjt)
+## plot_jt(gjt)
+## plot_jt(pgjt)
+
+
+## m <- send_messages(gjt)
+## m <- send_messages(m)
+## plot_jt(m)
+
+## send_messages(sgjt)
 
 ## library(igraph)
 ## set.seed(7)
