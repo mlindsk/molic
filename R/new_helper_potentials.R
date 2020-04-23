@@ -1,7 +1,7 @@
 is_onedim <- function(x) length(attr(x, "vars")) == 1L # x: sptable
 
 reposition_names <- function(x, pos) {
-  # x : names list
+  # x : named list
   .map_chr(names(x), function(y) {
     paste(.split_chars(y)[pos], collapse = "")
   })    
@@ -10,11 +10,14 @@ reposition_names <- function(x, pos) {
 
 merge.sptable <- function(p1, p2, op = "*") {
   # p1, p2 : sptable objects
+
   stopifnot(op %in% c("*", "/"))
+
   v1     <- attr(p1, "vars")
   v2     <- attr(p2, "vars")
+
   if (length(v2) > length(v1)) {
-    tmp  <- p1
+    tmp <- p1
     p1  <- p2
     p2  <- tmp
     v1  <- attr(p1, "vars")
@@ -22,7 +25,8 @@ merge.sptable <- function(p1, p2, op = "*") {
   }
 
   sep    <- intersect(v1, v2)
-
+  
+  # If no variables in common it is easy
   if (!neq_empt_chr(sep)) {
     spt <- lapply(seq_along(p1), function(i) {
       p1i <- p1[i]
@@ -34,11 +38,6 @@ merge.sptable <- function(p1, p2, op = "*") {
     return(spt)
   }
 
-  ## ---------------------------------------------------------
-  ##        FIX: NEED TO HANDLE THE SINGLETON POTENTIALS!
-  ## ---------------------------------------------------------
-
-  
   pos1   <- match(sep, v1)
   pos2   <- match(sep, v2)
   cf1    <- find_cond_configs(p1, pos1)
@@ -50,8 +49,9 @@ merge.sptable <- function(p1, p2, op = "*") {
 
   scf1   <- split(names(cf1), cf1)
   scf2   <- split(names(cf2), cf2)
-  
-  names(scf2) <- reposition_names(scf2, pos2)
+
+  # The same variables may be in different positions in p1 and p2
+  if (!identical(names(scf1), names(scf2))) names(scf2) <- reposition_names(scf2, pos2)
 
   sc_sep <- intersect(names(scf1), names(scf2))
     
@@ -87,12 +87,12 @@ merge.sptable <- function(p1, p2, op = "*") {
   return(spt)
 }
 
-marginalize <- function(p, y, flow = sum) UseMethod("marginalize")
+marginalize <- function(p, s, flow = sum) UseMethod("marginalize")
 
-marginalize.sptable <- function(p, y, flow = sum) {
+marginalize.sptable <- function(p, s, flow = sum) {
   v <- attr(p, "vars")
-  if (any(is.na(match(y, v)))) stop("some variables in y are not in p")
-  marg_vars <- setdiff(v, y)
+  if (any(is.na(match(s, v)))) stop("some variables in s are not in p")
+  marg_vars <- setdiff(v, s)
   pos <- match(marg_vars, v)
   cf  <- find_cond_configs(p, pos)
   scf <- split(names(cf), cf)
