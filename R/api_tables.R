@@ -43,8 +43,9 @@ sptable <- function(x) {
 parray <- function(x, y = NULL) {
   stopifnot(inherits(x, "sptable"))
   if (is.null(y)) {
-    class(x) <- c("parray", class(x))
-    x / sum(x)
+    xs <- x / sum(x)
+    class(xs) <- c("parray", class(x))
+    return(xs)
   }
   pos  <- match(y, attr(x, "vars"))
   conf <- find_cond_configs(x, pos)

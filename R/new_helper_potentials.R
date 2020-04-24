@@ -15,7 +15,7 @@ merge.sptable <- function(p1, p2, op = "*") {
 
   v1     <- attr(p1, "vars")
   v2     <- attr(p2, "vars")
-
+  
   if (length(v2) > length(v1)) {
     tmp <- p1
     p1  <- p2
@@ -46,15 +46,13 @@ merge.sptable <- function(p1, p2, op = "*") {
   if (is_onedim(p1)) cf1 <- structure(names(cf1), names = names(cf1))
   if (is_onedim(p2)) cf2 <- structure(names(cf2), names = names(cf2))
 
-
   scf1   <- split(names(cf1), cf1)
   scf2   <- split(names(cf2), cf2)
 
   # The same variables may be in different positions in p1 and p2
-  if (!identical(names(scf1), names(scf2))) names(scf2) <- reposition_names(scf2, pos2)
+  names(scf2) <- reposition_names(scf2, pos2)
 
-  sc_sep <- intersect(names(scf1), names(scf2))
-    
+  sc_sep  <- intersect(names(scf1), names(scf2))
   scf1    <- scf1[sc_sep]
   scf2    <- scf2[sc_sep]
 
