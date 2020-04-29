@@ -29,12 +29,27 @@ triangulate_igraph <- function(g) {
 as_undirected_igraph <- function(g) igraph::as.undirected(g)
 
 
-plot_jt <- function(jt, ...) {
-  direction <- attr(jt, "direction")
-  x <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
-  .names <- unlist(lapply(x$cliques, function(y) paste(y, collapse = "\n")))
-  dimnames(x$tree) <- list(.names, .names)
-  g <- igraph::graph_from_adjacency_matrix(x$tree)
+## plot_jt <- function(jt, ...) {
+##   direction <- attr(jt, "direction")
+##   x <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
+##   .names <- unlist(lapply(x$cliques, function(y) paste(y, collapse = "\n")))
+##   dimnames(x$tree) <- list(.names, .names)
+##   g <- igraph::graph_from_adjacency_matrix(x$tree)
+##   plot(g, ...)
+## }
+
+print.jt <- function(x, ...) {
+  nq <- length(x$cliques)
+  dir_ <- attr(x, "direction")
+  cat("Direction: ", dir_, "\n", " (Fix this print method)\n")
+}
+
+plot.jt <- function(x, ...) {
+  direction <- attr(x, "direction")
+  jt <- if (direction == "collect") x$schedule$collect else x$schedule$distribute
+  .names <- unlist(lapply(jt$cliques, function(y) paste(y, collapse = "\n")))
+  dimnames(jt$tree) <- list(.names, .names)
+  g <- igraph::graph_from_adjacency_matrix(jt$tree)
   plot(g, ...)
 }
 
@@ -101,8 +116,9 @@ prune_jt <- function(jt) {
   direction <- attr(jt, "direction")
   x <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
 
-  if (identical(x, "FULL")) 7
-  stop("The junction tree has already been propagated in this direction!")
+  if (identical(x, "FULL")) {
+    stop("The junction tree has already been propagated in this direction!")  
+  }
 
   leaves <- attr(x$tree, "leaves")
   pars   <- attr(x$tree, "parents")
@@ -138,6 +154,32 @@ prune_jt <- function(jt) {
   }
   
   return(jt)
+}
+
+set_evidence_jt <- function(charge, cliques, evidence) {
+
+  evidence_iter <- 0L
+  le <- length(evidence)
+
+  for (k in rev(seq_along(cliques))) {
+    for (i in seq_along(evidence)) {
+      Ck <- cliques[[k]]
+      e  <- evidence[i]
+      e_var <- names(e)
+      e_val <- unname(e)
+      if (e_var %in% Ck) {
+        e_pos_charge_k    <- match(e_var, attr(charge$C[[k]], "vars"))
+        charge_k_by_e_pos <- find_cond_configs(charge$C[[k]], e_pos_charge_k)
+        browser()
+        idx_to_keep        <- which(charge_k_by_e_pos == e_val)
+        charge$C[[k]] <- charge$C[[k]][idx_to_keep]
+        evidence_iter <- evidence_iter + 1L
+        if (evidence_iter == le) {
+          return(charge)
+        }
+      }
+    }
+  }      
 }
 
 
@@ -177,23 +219,8 @@ new_jt <- function(g, data, evidence = NULL, flow = sum, ...) {
   par    <- if (!is.null(par_igraph)) par_igraph  else rip_$P
   charge <- new_charge(data, cliques, par)
 
-
-  ## TODO: Make it much cleaner using a function
-  ## ---------------------------------------------------------
-  ## if (!is.null(evidence)) {
-  ##   # evidence : named vector
-  ##   lapply(charge$C, function(x) {
-  ##     browser()
-  ##     vx <- attr(x, "vars")
-  ##     e_in_vx <- which(names(evidence) %in% vx)
-  ##     if (!neq_empt_int(e_in_vx)) return(x)
-
-  ##     .split_chars(x)
-  ##     e
-      
-  ##   })
-  ## }
-  ## ---------------------------------------------------------
+  # browser()
+  if (!is.null(evidence)) charge <- set_evidence_jt(charge, cliques, evidence)
   
   schedule  <- new_schedule(cliques)
   jt        <- list(
@@ -261,7 +288,6 @@ new_charge <- function(data, cliques, conditional_parents) {
 
     spt  <- sptable(as.matrix(data[, c(x, parx), drop = FALSE]))
     pspt <- parray(spt, parx)
-
     
     for (k in seq_along(cliques)) {
       family_in_Ck <- all(c(x, parx) %in% cliques[[k]])
@@ -284,23 +310,3 @@ new_charge <- function(data, cliques, conditional_parents) {
   return(pots)
 }
 
-## propagate <- function(jt) {
-
-##   browser()
-##   tmp_C       <- jt$C
-##   tmp_rtree   <- jt$rtree
-##   tmp_leaves  <- leaves(tmp_rtree)
-##   tmp_parents <- parents_jt(tmp_rtree,  tmp_leaves)
-
-##   # Push the first message here?
-  
-##   while (neq_empt_int(tmp_leaves)) { # use attr(jt, "is_singleton") instead!
-##     tmp_C    <- tmp_C[-tmp_leaves]
-##     tmp_rtree <- tmp_tree[-tmp_leaves, -tmp_leaves]
-##     tmp_leaves <- leaves(tmp_rtree)
-##     tmp_parents <- parents_jt(jt, tmp_leaves)
-
-##     # Pass the following messages here!
-
-##   }
-## }

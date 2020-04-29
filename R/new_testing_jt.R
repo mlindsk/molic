@@ -1,4 +1,3 @@
-
 ## ---------------------------------------------------------
 ##                    TESTING!!!
 ## ---------------------------------------------------------
@@ -138,58 +137,46 @@
 ##                   EXAMPLE 3
 ##               (Decomposable MRF)
 ## ---------------------------------------------------------
-library(dplyr)
-d <- tgp_dat[1:500, 5:70] # with 200 additional edges.  Rounding errors.
+
+## d <- tgp_dat[1:500, 5:70] # with 200 additional edges.  Rounding errors.
 ## d <- tgp_dat[1:500, 5:50] # Rounding errors - but close! (38 cliques)
 ## d <- tgp_dat[1:500, 5:30] # Rounding errors - way off! (20 cliques)
-d <- tgp_dat[1:500, 5:20] # Relatively close!
 
-## d <- tgp_dat[1:500, 5:10] # Exact!
+## library(dplyr)
+## d <- tgp_dat[1:500, 5:10]
+## colnames(d) <- c(letters, LETTERS, 1:9)[1:ncol(d)]
 
-## d <- tgp_dat[1:500, 5:11] # Exact!
+## g  <- fit_graph(d, trace = FALSE)
+## e  <- c(d = "A", b = "C")
+## jt <- new_jt(g, d, e, flow = sum)
 
-## d <- tgp_dat[, 5:15] # Off by a lot!
+## plot(jt)
+## print(jt)
 
-## d <- d %>%
-##   to_single_chars() %>%
-##   as.data.frame() %>%
-##   as_tibble() %>%
-##   mutate_all(as.character)
-
-colnames(d) <- c(letters, LETTERS, 1:9)[1:ncol(d)]
-
-g   <- fit_graph(d, trace = FALSE)
-
-e <- c(a = "T", d = "A")
-
-gjt <- new_jt(g, d, e, flow = sum)
+## par(mfrow = c(1, 2))
+## plot.gengraph(g, structure(rep("orange", ncol(d)), names = colnames(d)), vertex.size = 10)
+## plot_jt(jt, vertex.size = 15)
 
 
-par(mfrow = c(1, 2))
-plot.gengraph(g, structure(rep("orange", ncol(d)), names = colnames(d)), vertex.size = 10)
-plot_jt(gjt, vertex.size = 15)
+## m <- send_messages(jt)
+## while (attr(m, "direction") != "FULL") m <- send_messages(m)
 
+## c1 <- m$charge$C$C1; c1
+## v1 <- attr(c1, "vars")
+## parray(sptable(as.matrix(d[, v1])))[names(c1)]
 
-m <- send_messages(gjt)
-## # while (m$schedule$collect != "FULL") m <- send_messages(m)
-while (attr(m, "direction") != "FULL") m <- send_messages(m)
+## c2 <- m$charge$C$C2; c2
+## v2 <- attr(c2, "vars")
+## parray(sptable(as.matrix(d[, v2])))[names(c2)]
 
-c1 <- m$charge$C$C1; c1
-v1 <- attr(c1, "vars")
-parray(sptable(as.matrix(d[, v1])))[names(c1)]
+## c3 <- m$charge$C$C3; c3
+## v3 <- attr(c3, "vars")
+## parray(sptable(as.matrix(d[, v3])))[names(c3)]
 
-c2 <- m$charge$C$C2; c2
-v2 <- attr(c2, "vars")
-parray(sptable(as.matrix(d[, v2])))[names(c2)]
+## c4 <- m$charge$C$C4; c4
+## v4 <- attr(c4, "vars")
+## parray(sptable(as.matrix(d[, v4])))[names(c4)]
 
-c3 <- m$charge$C$C3; c3
-v3 <- attr(c3, "vars")
-parray(sptable(as.matrix(d[, v3])))[names(c3)]
-
-c4 <- m$charge$C$C4; c4
-v4 <- attr(c4, "vars")
-parray(sptable(as.matrix(d[, v4])))[names(c4)]
-
-c5 <- m$charge$C$C5; c5
-v5 <- attr(c5, "vars")
-parray(sptable(as.matrix(d[, v5])))[names(c5)]
+## c5 <- m$charge$C$C5; c5
+## v5 <- attr(c5, "vars")
+## parray(sptable(as.matrix(d[, v5])))[names(c5)]

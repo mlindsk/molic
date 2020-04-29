@@ -1,8 +1,17 @@
-is_onedim <- function(x) length(attr(x, "vars")) == 1L # x: sptable
+find_cond_configs <- function(x, pos) {
+  # x  : sptable
+  # pos: the position of the conditional variables
+  skeleton <- paste(rep("@", nchar(names(x)[1])))
+  .map_chr(names(x), function(s) {
+    sk <- skeleton
+    s_pos_val <- .map_chr(pos, function(l) substr(s, l, l))
+    sk[pos] <- s_pos_val
+    paste(gsub("@", "", sk), collapse = "")
+  })
+}
 
 reposition_names <- function(x, pos) {
   # x : named list
-  # browser()
   structure(x, names =.map_chr(names(x), function(y) {
     paste(.split_chars(y)[pos], collapse = "")
   }))
@@ -22,7 +31,9 @@ merge.sptable <- function(p1, p2, op = "*") {
   if (!neq_empt_chr(sep)) {
     spt <- lapply(seq_along(p1), function(i) {
       p1i <- p1[i]
-      structure(do.call(op, list(p2, p1i)), names = paste(names(p2), names(p1[i]), sep = ""))
+      structure(do.call(op, list(p2, p1i)),
+        names = paste(names(p2), names(p1[i]), sep = "")
+      )
     })
     spt <- unlist(spt)
     attr(spt, "vars") <- c(v2, v1)
@@ -30,19 +41,18 @@ merge.sptable <- function(p1, p2, op = "*") {
     return(spt)
   }
 
-
   pos1   <- match(sep, v1)
   pos2   <- match(sep, v2)
 
   cf1    <- find_cond_configs(p1, pos1)
   cf2    <- find_cond_configs(p2, pos2)
 
-  ## if (is_onedim(p1)) cf1 <- structure(names(cf1), names = names(cf1))
-  ## if (is_onedim(p2)) cf2 <- structure(names(cf2), names = names(cf2))
-
   scf1   <- split(names(cf1), cf1)
   scf2   <- split(names(cf2), cf2)
 
+  ## TODO: Wrap this in a function
+  ## ---------------------------------------------------------
+  
   # No need for repositioning if leng(sep) > 1 (they must agree then).
   if (length(sep) > 1L) {
     pos1_sep <- structure(seq_along(pos1), names = v1[pos1])
@@ -51,12 +61,13 @@ merge.sptable <- function(p1, p2, op = "*") {
     pos2_new <- pos2_sep[names(pos1_sep)]
     scf2     <- reposition_names(scf2, pos2_new)
   }
-
+  ## ---------------------------------------------------------
+  
   # Thos not in sc_sep are structural zeroes!
   sc_sep  <- intersect(names(scf1), names(scf2))
   scf1    <- scf1[sc_sep]
   scf2    <- scf2[sc_sep]
-  
+   
   spt <- lapply(sc_sep, function(x) {
 
     scf1_x <- scf1[[x]]
@@ -95,15 +106,20 @@ merge.sptable <- function(p1, p2, op = "*") {
 marginalize <- function(p, s, flow = sum) UseMethod("marginalize")
 
 marginalize.sptable <- function(p, s, flow = sum) {
+
   v <- attr(p, "vars")
-  if (any(is.na(match(s, v)))) stop("some variables in s are not in p")
+  if (any(is.na(match(s, v)))) stop("Some variables in s are not in p")
+
   marg_vars <- setdiff(v, s)
   pos <- match(marg_vars, v)
+
   cf  <- find_cond_configs(p, pos)
   scf <- split(names(cf), cf)
+
   spt <- lapply(scf, function(e) {
     flow(p[e])
   })
+
   spt <- unlist(spt)
   attr(spt, "vars") <- marg_vars
   class(spt) <- c("sptable", class(spt))

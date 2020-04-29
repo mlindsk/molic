@@ -1,15 +1,3 @@
-find_cond_configs <- function(x, pos) {
-  # x  : sptable
-  # pos: the position of the conditional variables
-  skeleton <- paste(rep("@", nchar(names(x)[1])))
-  .map_chr(names(x), function(s) {
-    sk <- skeleton
-    s_pos_val <- .map_chr(pos, function(l) substr(s, l, l))
-    sk[pos] <- s_pos_val
-    paste(gsub("@", "", sk), collapse = "")
-  })
-}
-
 #' Sparse table
 #'
 #' Returns a sparse contingency table for the variables in \code{x} as a vector .
@@ -77,7 +65,22 @@ print.sptable <- function(x, ...) {
   }
   cat(" Vars:", paste0(vars, collapse = "-"), "\n")
   cat("", paste0(rep("-", nchr), collapse = ""), "\n")
-  print(utils::head(x, n = N))
+  for (k in seq_along(cells)) {
+    cat(cells[k], ":", x[k], "\n")
+  }
+  invisible(x)
+}
+
+.set_as_sptable <- function(x) {
+  structure(x, class = c("sptable", class(x)))
+}
+
+`[<-.sptable` <- function(x, i, value) {
+  NextMethod()
+}
+
+`[.sptable` <- function(x, i) {
+  structure(.set_as_sptable(NextMethod()) , vars = attr(x, "vars"))
 }
 
 
