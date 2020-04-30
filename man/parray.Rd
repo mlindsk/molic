@@ -11,6 +11,9 @@ parray(x, y = NULL)
 
 \item{y}{Character vector with variables to condition on}
 }
+\value{
+A \code{sptable} object
+}
 \description{
 Returns a sparse conditional probability table conditioned on variables in \code{b}.
 }
@@ -23,5 +26,5 @@ psp <- parray(sp, c("V1", "V2"))
 sum(psp[1:length(letters[1:17])]) # V3 has 17 levels.
 }
 \seealso{
-\code{\link{sptable}}, \code{\link{slice_sptable}}
+\code{\link{sptable}}
 }

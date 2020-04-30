@@ -16,5 +16,5 @@ Returns a sparse contingency table for the variables in \code{x} as a vector .
 sptable(as.matrix(digits[, 1:2]))
 }
 \seealso{
-\code{\link{csptable}}
+\code{\link{parray}}
 }

@@ -11,6 +11,7 @@
 ## colnames(d) <- letters[1:10]
 ## dm <- d %>% as.matrix()
 
+
 # Vars: b-a
 # Vars: c-a
 # - FIND THE CORRECT VALUE!! (Maybe using Sørens API ?)
@@ -35,10 +36,6 @@
 ##                 (igraph DAG)
 ## ---------------------------------------------------------
 
-#### FIX --- SOME CLIQUE POTENTIALS MAY BE SET TO THE IDENTITY
-#### SINCE NO CONDITIOANLS CORRESPOND TO THIS DUE TO TRIANGULATION
-#### TAKE THIS INTO ACCOUNT!!!
-
 ## library(dplyr)
 ## library(igraph)
 ## d <- tgp_dat[1:500, 5:70]
@@ -56,16 +53,18 @@
 ## d
 
 ## jt <- new_jt(g, d)
-## plot_jt(jt)
+## plot(jt)
 
 ## m  <- send_messages(jt)
-## plot_jt(m)
+## plot(m)
 
 ## m2 <- send_messages(m)
-## plot_jt(m2)
+## plot(m2)
 
 ## # Sanity check
 ## sum(m2$charge$C$C1)
+## m2$charge$C$C1
+## molic::parray(sptable(d %>% select(a, b, c, d) %>% as.matrix()))
 ## sum(m2$charge$C$C2)
 
 ## m3 <- send_messages(m2)
@@ -143,7 +142,7 @@
 ## d <- tgp_dat[1:500, 5:30] # Rounding errors - way off! (20 cliques)
 
 ## library(dplyr)
-## d <- tgp_dat[1:500, 5:10]
+## d <- tgp_dat[1:2000, 5:10]
 ## colnames(d) <- c(letters, LETTERS, 1:9)[1:ncol(d)]
 
 ## g  <- fit_graph(d, trace = FALSE)
@@ -155,23 +154,25 @@
 
 ## par(mfrow = c(1, 2))
 ## plot.gengraph(g, structure(rep("orange", ncol(d)), names = colnames(d)), vertex.size = 10)
-## plot_jt(jt, vertex.size = 15)
+## plot(jt, vertex.size = 15)
 
 
 ## m <- send_messages(jt)
+
+## plot(m)
 ## while (attr(m, "direction") != "FULL") m <- send_messages(m)
 
 ## c1 <- m$charge$C$C1; c1
 ## v1 <- attr(c1, "vars")
-## parray(sptable(as.matrix(d[, v1])))[names(c1)]
+## parray(sptable(as.matrix(d[, v1])))
 
 ## c2 <- m$charge$C$C2; c2
 ## v2 <- attr(c2, "vars")
-## parray(sptable(as.matrix(d[, v2])))[names(c2)]
+## parray(sptable(as.matrix(d[, v2])))
 
 ## c3 <- m$charge$C$C3; c3
 ## v3 <- attr(c3, "vars")
-## parray(sptable(as.matrix(d[, v3])))[names(c3)]
+## parray(sptable(as.matrix(d[, v3])))
 
 ## c4 <- m$charge$C$C4; c4
 ## v4 <- attr(c4, "vars")
@@ -180,3 +181,172 @@
 ## c5 <- m$charge$C$C5; c5
 ## v5 <- attr(c5, "vars")
 ## parray(sptable(as.matrix(d[, v5])))[names(c5)]
+
+
+## ---------------------------------------------------------
+##                    EXAMPLE 4
+## ---------------------------------------------------------
+## library(dplyr)
+## library(gRbase)
+## library(gRain)
+
+## ---------------------------------------------------------
+##                      DATA
+## ---------------------------------------------------------
+
+## g <- dag(
+##   "asia",
+##   "smoke",
+##   c("tub", "asia"),
+##   c("either", "tub", "lung"),
+##   c("lung", "smoke"),
+##   c("bronc", "smoke"),
+##   c("xray", "either"),
+##   c("dysp", "either", "bronc")
+## )
+
+## plot(g)
+
+## data(chestSim500, package = "gRbase")
+## d_gr <- chestSim500 # %>% molic:::to_single_chars() %>% as.data.frame()
+## d_mc <- d_gr %>% mutate_all(as.character)
+
+## ---------------------------------------------------------
+##                     GRAIN
+## ---------------------------------------------------------
+## cpt   <- extractCPT(d_gr, g)
+## jt_gr <- compileCPT(cpt)
+## jt_gr <- grain(jt_gr)
+## jt_gr <- gRbase::compile(jt_gr, propagate = TRUE, smooth = 0)
+## querygrain(jt_gr, nodes = c("xray", "either"), type = "joint")
+
+## Without evidence
+##  ---------------- 
+##  Vars: xray-either 
+##  ---------------- 
+## aa : 0.8967073 
+## ba : 0.04393666 
+## bb : 0.059356 
+
+
+## ## ---------------------------------------------------------
+## ##                      MOLIC
+## ## ---------------------------------------------------------
+## jt_mc <- new_jt(as(g, "igraph"), d_mc)
+## plot(jt_mc)
+## while(attr(jt_mc, "direction") != "FULL") jt_mc <- send_messages(jt_mc)
+
+
+## ## C1:
+## # a:
+## jt_mc$charge$C$C1
+## querygrain(jt_gr, nodes = c("asia", "tub"), type = "joint")
+
+
+## ## # Sanity check:
+## at    <- as.matrix(d_mc[, c("asia", "tub")])
+## sp_at <- sptable(at)
+## molic::parray(sp_at)
+
+## # C2
+## jt_mc$charge$C$C2
+## querygrain(jt_gr, nodes = c("either", "tub"), type = "joint")
+
+## # C3
+## jt_mc$charge$C$C3
+## querygrain(jt_gr, nodes = c("smoke", "lung", "either"), type = "joint")
+
+## # C4
+## jt_mc$charge$C$C4
+## querygrain(jt_gr, nodes = c("smoke", "bronc", "either"), type = "joint")
+
+
+## # C5:
+## jt_mc$charge$C$C5
+## querygrain(jt_gr, nodes = c("dysp", "either", "bronc"), type = "joint")
+
+## ---------------------------------------------------------
+## ---------------------------------------------------------
+## ---------------------------------------------------------
+## ---------------------------------------------------------
+## ---------------------------------------------------------
+## ---------------------------------------------------------
+
+## library(igraph)
+## library(dplyr)
+## g <- make_tree(8) %>% set_vertex_attr("name", value = LETTERS[1:8])
+
+## library(gRbase)
+
+## g <- dag(
+##   "asia",
+##   "smoke",
+##   c("tub", "asia"),
+##   c("either", "tub", "lung"),
+##   c("lung", "smoke"),
+##   c("bronc", "smoke"),
+##   c("xray", "either"),
+##   c("dysp", "either", "bronc")
+## )
+
+## g <- as(g, "igraph")
+## saveRDS(g, "g.Rds")
+
+## g <- readRDS("g.Rds")
+## plot(g)
+
+## ---------------------------------------------------------
+##                    MOLIC ASIA 
+## ---------------------------------------------------------
+## library(igraph)
+## library(dplyr)
+## d_gr <- readRDS("d.RDS") %>% molic:::to_single_chars() %>% as.data.frame()
+## d_mc <- d_gr %>% mutate_all(as.character) %>% as_tibble()
+
+## g <- readRDS("g.Rds")
+## is_dag(g)
+## plot(g)
+
+## ## pg  <- parents_igraph(g)
+## ## mg  <- moralize_igraph(g, pg)
+## ## mgt <- as.undirected(triangulate_igraph(mg))
+
+## ## par(mfrow = c(1, 3))
+## ## plot(g)
+## ## plot(mg)
+## ## plot(mgt)
+
+## jt_mc <- new_jt(g, d_mc)
+## jt_mc$charge$C
+## jt_mc$cliques
+
+## plot(jt_mc)
+## while(attr(jt_mc, "direction") != "collect") jt_mc <- send_messages(jt_mc)
+
+## while(attr(jt_mc, "direction") != "FULL") jt_mc <- send_messages(jt_mc)
+
+## jt_mc$charge$C[1:3]
+
+## msg <- marginalize(jt_mc$charge$C[[1]], "asia")
+## merge(jt_mc$charge$C[[2]], msg)
+
+
+## jt_mc <- send_messages(jt_mc)
+## plot(jt_mc)
+## jt_mc$charge$C[1:3]
+
+## jt_mc <- send_messages(jt_mc)
+## plot(jt_mc)
+## jt_mc$charge$C[1:3]
+
+## jt_mc <- send_messages(jt_mc)
+## plot(jt_mc)
+## jt_mc$charge$C[1:3]
+
+## jt_mc <- send_messages(jt_mc)
+## plot(jt_mc)
+## jt_mc$charge$C[1:3]
+
+
+## jt_mc$charge$C$C2
+## parray(sptable(as.matrix(d_mc[, c("either", "tub")])))
