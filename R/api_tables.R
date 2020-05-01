@@ -90,6 +90,7 @@ print.sptable <- function(x, ...) {
 
 #' @export
 `[.sptable` <- function(x, i) {
+  if (is.character(i) && !all(i %in% names(x))) return(0L)
   structure(.set_as_sptable(NextMethod()) , vars = attr(x, "vars"))
 }
 
@@ -145,9 +146,6 @@ merge.sptable <- function(p1, p2, op = "*") {
   scf1   <- split(names(cf1), cf1)
   scf2   <- split(names(cf2), cf2)
 
-  ## TODO: Wrap this in a function
-  ## ---------------------------------------------------------
-  
   # No need for repositioning if leng(sep) > 1 (they must agree then).
   if (length(sep) > 1L) {
     pos1_sep <- structure(seq_along(pos1), names = v1[pos1])
@@ -156,7 +154,6 @@ merge.sptable <- function(p1, p2, op = "*") {
     pos2_new <- pos2_sep[names(pos1_sep)]
     scf2     <- reposition_names(scf2, pos2_new)
   }
-  ## ---------------------------------------------------------
   
   # Those not in sc_sep are structural zeroes!
   sc_sep  <- intersect(names(scf1), names(scf2))
@@ -201,9 +198,11 @@ merge.sptable <- function(p1, p2, op = "*") {
   return(spt)
 }
 
-marginalize <- function(p, s, flow = sum) UseMethod("marginalize")
+marginalize <- function(p, s, flow = "sum") UseMethod("marginalize")
 
-marginalize.sptable <- function(p, s, flow = sum) {
+marginalize.sptable <- function(p, s, flow = "sum") {
+
+  if (flow %ni% c("sum", "max")) stop("flow must be 'sum' or 'max'")
   
   v <- attr(p, "vars")
   if (any(is.na(match(s, v)))) stop("Some variables in s are not in p")
@@ -215,7 +214,7 @@ marginalize.sptable <- function(p, s, flow = sum) {
   scf <- split(names(cf), cf)
 
   spt <- lapply(scf, function(e) {
-    flow(p[e])
+    if (flow == "sum") sum(p[e]) else max(p[e])
   })
   
   spt <- unlist(spt)

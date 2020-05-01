@@ -21,7 +21,7 @@
 #'
 #' @param A A character matrix of data
 #' @param adj Adjacency list or gengraph object of a decomposable graph. See \code{fit_graph}.
-#' @param logp Logical; if TRUE, probabilities p are given as log(p).
+#' @param logp Logical; if TRUE, the log probabilities are returned
 #' @return A function - the probability mass function corresponding
 #' to the decomposable graph \code{adj} using \code{A} to estimate
 #' the probabilities.
@@ -83,7 +83,7 @@ pmf <- function(A, adj, logp = FALSE) {
   ncms <- a_marginals(A, cms)
   nsms <- a_marginals(A, sms)
   .pmf <- function(y) {
-    ny <- vapply(seq_along(ncms), FUN.VALUE = 1, FUN =  function(i) {
+    ny <- .map_dbl(seq_along(ncms), function(i) {
       nci    <- ncms[[i]]
       nsi    <- nsms[[i]]
       yci    <- y[match(attr(nci, "vars"), names(y))]
@@ -162,10 +162,11 @@ is_decomposable <- function(adj) {
 
 #' Finds the components of a graph
 #'
-#' @param adj Adjacency list
-#' @return A list with the elements being the components of the graph
+#' @param adj Adjacency list or \code{gengraph} object
+#' @return A list where the elements are the components of the graph
 #' @export
 components <- function(adj) {
+  if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
   nodes <- names(adj)
   comps <- list()
   comps[[1]] <- dfs(adj, nodes[1])
@@ -175,28 +176,6 @@ components <- function(adj) {
     comps <- c(comps, list(dfs(adj[new_comp], new_comp[1])))
   }
   return(comps)
-}
-
-
-#' Print
-#'
-#' A print method for \code{gengraph} objects
-#'
-#' @param x A \code{gengraph} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.gengraph <- function(x, ...) {
-  nv  <- ncol(x$G_A)
-  ne  <- sum(x$G_A)/2
-  cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
-  cat(" A Decomposable Graph With",
-    "\n -------------------------",
-    "\n  Nodes:", nv,
-    "\n  Edges:", ne, "/", nv*(nv-1)/2,
-    "\n  Cliques:", length(x$CG),
-    paste0("\n  ", cls),
-    "\n -------------------------\n"
-  )
 }
 
 

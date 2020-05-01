@@ -1,7 +1,7 @@
 ## ---------------------------------------------------------
 ##                NON-EXPORTED HELPERS
 ## ---------------------------------------------------------
-# For tracing the model selection procedure in git_graph
+# For tracing the model selection procedure in fit_graph
 msg <- function(k, complete, val, stop_crit) {
   cat(paste(" Edges:", k, "of", complete, "-", stop_crit, "=", round(val, 6L)),"\n")
 }
@@ -118,6 +118,34 @@ as_adj_mat <- function(adj) {
     A[d, idx] <- 1L
   }
   A
+}
+
+#' Print
+#'
+#' A print method for \code{gengraph} objects
+#'
+#' @param x A \code{gengraph} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.gengraph <- function(x, ...) {
+  nv  <- ncol(x$G_A)
+  ne  <- sum(x$G_A)/2
+  cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
+  clique_sizes <- .map_int(x$CG, length)
+  max_C <- max(clique_sizes)
+  min_C <- min(clique_sizes)
+  avg_C <- mean(clique_sizes)
+  cat(" A Decomposable Graph With",
+    "\n -------------------------",
+    "\n  Nodes:", nv,
+    "\n  Edges:", ne, "/", nv*(nv-1)/2,
+    "\n  Cliques:", length(x$CG),
+    "\n   - max:", max_C,
+    "\n   - min:", min_C,
+    "\n   - avg:", round(avg_C, 2),
+    paste0("\n  ", cls),
+    "\n -------------------------\n"
+  )
 }
 
 #' Print

@@ -12,9 +12,8 @@
 ## dm <- d %>% as.matrix()
 
 
-# Vars: b-a
-# Vars: c-a
-# - FIND THE CORRECT VALUE!! (Maybe using Sørens API ?)
+## p <- parray(sptable(dm[, c("b", "a")]), "a")
+
 ## pb_a1 <- parray(sptable(dm[, c("b", "a")]), "a")
 ## pb_a2 <- parray(sptable(dm[, c("a", "b")]), "a")
 ## pc_a1 <- parray(sptable(dm[, c("c", "a")]), "a")
@@ -30,12 +29,10 @@
 ## pcad <- parray(sptable(dm[, c("c", "a", "d")]))
 ## merge(pabc, pcad)
 
-
 ## ---------------------------------------------------------
 ##                   EXAMPLE 1
 ##                 (igraph DAG)
 ## ---------------------------------------------------------
-
 ## library(dplyr)
 ## library(igraph)
 ## d <- tgp_dat[1:500, 5:70]
@@ -52,13 +49,15 @@
 ## colnames(d) <- letters[1:10]
 ## d
 
-## jt <- new_jt(g, d)
-## plot(jt)
-
-## m  <- send_messages(jt)
+## e  <- c(a = "T", b = "C", c = "A", j = "A", g = "T")
+## jt <- new_jt(g, d, e, flow = "max")
+## m  <- send_messages(jt, "max")
+## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
 ## plot(m)
-
-## m2 <- send_messages(m)
+## attr(m, "max_config")
+## m$charge$C
+## m <- send_messages(jt, "max")
+## m <- send_messages(m, "max")
 ## plot(m2)
 
 ## # Sanity check
@@ -94,13 +93,14 @@
 ## g <- fit_graph(d, trace = FALSE, q = 0)
 ## for (k in 1:50) g <- walk(g, d)
 
-## gjt  <- new_jt(g, d, flow = sum)
+## gjt  <- new_jt(g, d, flow = "max")
 ## par(mfrow = 1:2)
 ## plot(g, vertex.size = 2)
 ## plot_jt(gjt, vertex.size = 15)
 
-## m <- send_messages(gjt)
-## while (attr(m, "direction") != "FULL") m <- send_messages(m)
+## m <- send_messages(gjt, "max")
+## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
+## attr(m, "max_config")
 
 ## c1 <- m$charge$C$C1; c1
 ## v1 <- attr(c1, "vars")
@@ -142,12 +142,15 @@
 ## d <- tgp_dat[1:500, 5:30] # Rounding errors - way off! (20 cliques)
 
 ## library(dplyr)
-## d <- tgp_dat[1:2000, 5:10]
+## d <- tgp_dat[1:500, 3:5]
 ## colnames(d) <- c(letters, LETTERS, 1:9)[1:ncol(d)]
 
 ## g  <- fit_graph(d, trace = FALSE)
-## e  <- c(d = "A", b = "C")
-## jt <- new_jt(g, d, e, flow = sum)
+## # e  <- c(d = "A", b = "C")
+## jt <- new_jt(g, d, flow = "max")
+## m <- send_messages(jt, "max")
+## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
+## attr(m, "max_config")
 
 ## plot(jt)
 ## print(jt)

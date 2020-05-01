@@ -132,8 +132,16 @@ prune_jt <- function(jt) {
 }
 
 set_evidence_jt <- function(charge, cliques, evidence) {
-  for (k in rev(seq_along(cliques))) {
-    Ck <- cliques[[k]]
+  # We dont loop over the cliques now, since some clique
+  # potentials may not have as many variables as the
+  # corresponding clique in the triangulated graph.
+  # Say, C = {a,b,c}, then potC may be {b,c} if a is
+  # already put in another clique. But {b,c} is still
+  # "implicitly a function" of {a}. But we must take this
+  # into account when setting evidence.
+  # for (k in seq_along(cliques)) {
+  for (k in seq_along(charge$C)) {
+    Ck <- attr(charge$C[[k]], "vars")
     for (i in seq_along(evidence)) {
       e     <- evidence[i]
       e_var <- names(e)
@@ -150,7 +158,7 @@ set_evidence_jt <- function(charge, cliques, evidence) {
 }
 
 
-new_jt <- function(g, data, evidence = NULL, flow = sum, validate = TRUE) {
+new_jt <- function(g, data, evidence = NULL, flow = "sum", validate = TRUE) {
 
   if (validate) {
     if( !only_single_chars(data)) {
@@ -192,25 +200,42 @@ new_jt <- function(g, data, evidence = NULL, flow = sum, validate = TRUE) {
   ## See SOREN and Lau p. 58 for specifying another root easily!
   ## ---------------------------------------------------------
 
-  par <- if (!is.null(par_igraph)) par_igraph  else rip_$P
-
+  par    <- if (!is.null(par_igraph)) par_igraph  else rip_$P
   charge <- new_charge(data, cliques, par)
 
   if (!is.null(evidence)) charge <- set_evidence_jt(charge, cliques, evidence)
   
   schedule  <- new_schedule(cliques)
   jt        <- list(
-    schedule    = schedule[1:2],
+    schedule    = schedule[1:2], # collect and distribute
     charge      = charge,
     cliques     = cliques,
-    clique_tree = schedule$clique_tree)
-  class(jt) <- c("jt", class(jt))
+    clique_tree = schedule$clique_tree
+  )
+  
+  class(jt)             <- c("jt", class(jt))
   attr(jt, "direction") <- "collect" # collect, distribute or full
+  attr(jt, "flow")      <- flow
+  if (flow == "max") {
+    attr(jt, "max_config") <- structure(
+      vector("character", length = ncol(data)), names = colnames(data)
+    )
+  }
   return(jt)
 }
 
-send_messages <- function(jt, flow = sum) {
-  
+.get_max_info <- function(pot) {
+  # Helper function to locate the maximum configuration
+  max_idx    <- which.max(pot)
+  max_config <- pot[max_idx]
+  max_vars   <- attr(max_config, "vars")
+  max_vals   <- .split_chars(names(max_config))
+  return(structure(max_vals, names = max_vars, max_idx = max_idx))
+}
+
+
+send_messages <- function(jt, flow = "sum") {
+
   direction <- attr(jt, "direction")
   x   <- if (direction == "collect") jt$schedule$collect else jt$schedule$distribute
   lvs <- attr(x$tree, "leaves")
@@ -220,7 +245,7 @@ send_messages <- function(jt, flow = sum) {
 
     lvs_k <- lvs[k]
     par_k <- par[[k]]
-
+    
     # Skip if the leave has no parents (can occur in distribute)    
     if (!neq_empt_int(par_k)) next
     
@@ -229,54 +254,77 @@ send_messages <- function(jt, flow = sum) {
       C_lvs_k <- x$cliques[[lvs_k]]
       C_par_k <- x$cliques[[pk]]
       Sk      <- intersect(C_lvs_k, C_par_k)
+      C_lvs_k_name <- names(x$cliques)[lvs_k]
+      C_par_k_name <- names(x$cliques)[pk]
 
-      if (neq_empt_chr(Sk)) { # if empty, no messages should be sent
+      if (neq_empt_chr(Sk)) { # if empty, no messages should be sent unless flow = max
 
-        C_lvs_k_name <- names(x$cliques)[lvs_k]
-        C_par_k_name <- names(x$cliques)[pk]
-
-        message_k_conditional_names <- setdiff(C_lvs_k, Sk)
-        
-        message_k <- marginalize(jt$charge$C[[C_lvs_k_name]], message_k_conditional_names, flow)
-
-        jt$charge$C[[C_par_k_name]] <- merge(jt$charge$C[[C_par_k_name]], message_k, "*")
+        message_k_names <- setdiff(C_lvs_k, Sk)
 
         if (direction == "collect") {
+          message_k <- marginalize(jt$charge$C[[C_lvs_k_name]], message_k_names, attr(jt, "flow"))
+          jt$charge$C[[C_par_k_name]] <- merge(jt$charge$C[[C_par_k_name]], message_k, "*")
           jt$charge$C[[C_lvs_k_name]] <- merge(jt$charge$C[[C_lvs_k_name]], message_k, "/")
-          
         }
 
         if (direction == "distribute") {
-          ## TODO: Just paste S and  par_k
-          S_k_name <- paste("S", str_rem(C_par_k_name, 1L), sep = "")
+
+          # TODO: CLEAN THIS MESS
+          
+          if (attr(jt, "flow") == "max") {
+            ## The child:
+            max_idx <- which.max(jt$charge$C[[C_lvs_k_name]])
+            jt$charge$C[[C_lvs_k_name]] <- jt$charge$C[[C_lvs_k_name]][max_idx]
+            max_vars <- attr(jt$charge$C[[C_lvs_k_name]], "vars")
+            max_vals <- .split_chars(names(jt$charge$C[[C_lvs_k_name]]))
+            attr(jt, "max_config")[max_vars] <- max_vals
+          }
+
+          message_k <- marginalize(jt$charge$C[[C_lvs_k_name]], message_k_names, attr(jt, "flow"))
+          jt$charge$C[[C_par_k_name]] <- merge(jt$charge$C[[C_par_k_name]], message_k, "*")
+
+          if (attr(jt, "flow") == "max") {
+            ## The parent:
+            ## max_idx    <- which.max(jt$charge$C[[C_par_k_name]])
+            ## max_config <- jt$charge$C[[C_par_k_name]][max_idx]
+            ## max_vars   <- attr(max_config, "vars")
+            ## max_vals   <- .split_chars(names(max_config))
+            ## attr(jt, "max_config")[max_vars] <- max_vals
+            max_info_par <- get_max_info(jt$charge$C[[C_par_k_name]])
+            attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
+          }
+          
+          S_k_name <- paste("S", pk, sep = "") # str_rem(C_par_k_name, 1L), sep = "")
           jt$charge$S[[S_k_name]] <- message_k
         }
         
+      } else if (direction == "distribute") { # This else if clause, ensures that parents with no leaves are taken care of
+        
+        if (attr(jt, "flow") == "max") {
+          ## The parent:
+          ## max_idx    <- which.max(jt$charge$C[[C_par_k_name]])
+          ## max_config <- jt$charge$C[[C_par_k_name]][max_idx]
+          ## max_vars   <- attr(max_config, "vars")
+          ## max_vals   <- .split_chars(names(max_config))
+          # attr(jt, "max_config")[max_vars] <- max_vals
+          max_info_par <- get_max_info(jt$charge$C[[C_par_k_name]])
+          attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
+
+          ## The child:
+          ## max_idx    <- which.max(jt$charge$C[[C_lvs_k_name]])
+          ## max_config <- jt$charge$C[[C_lvs_k_name]][max_idx]
+          ## max_vars   <- attr(max_config, "vars")
+          ## max_vals   <- .split_chars(names(max_config))
+          ## attr(jt, "max_config")[max_vars] <- max_vals
+
+          max_info_lvs <- get_max_info(jt$charge$C[[C_lvs_k_name]])
+          attr(jt, "max_config")[names(max_info_lvs)] <- unname(max_info_lvs)
+        }
       }      
     }
   }
   prune_jt(jt)
 }
-
-## $C1
-## [1] "asia" "tub" 
-
-## $C2
-## [1] "either" "tub"   
-
-## $C3
-## [1] "either" "lung"   "smoke" 
-
-## $C4
-## [1] "bronc"  "either" "smoke" 
-
-## $C5
-## [1] "bronc"  "dysp"   "either"
-
-## $C6
-## [1] "either" "xray"
-
-## NO CLIQUE WITH c("either", "tub", "lung") ? 
 
 new_charge <- function(data, cliques, conditional_parents) {
 
@@ -318,19 +366,4 @@ new_charge <- function(data, cliques, conditional_parents) {
   names(potC) <- names(cliques)
   pots <- list(C = potC, S = potS)
   return(pots)
-}
-
-print.jt <- function(x, ...) {
-  nq <- length(x$cliques)
-  dir_ <- attr(x, "direction")
-  cat("Direction: ", dir_, "\n", " (Fix this print method)\n")
-}
-
-plot.jt <- function(x, ...) {
-  direction <- attr(x, "direction")
-  jt <- if (direction == "collect") x$schedule$collect else x$schedule$distribute
-  .names <- unlist(lapply(jt$cliques, function(y) paste(y, collapse = "\n")))
-  dimnames(jt$tree) <- list(.names, .names)
-  g <- igraph::graph_from_adjacency_matrix(jt$tree)
-  graphics::plot(g, ...)
 }

@@ -7,10 +7,10 @@
 components(adj)
 }
 \arguments{
-\item{adj}{Adjacency list}
+\item{adj}{Adjacency list or \code{gengraph} object}
 }
 \value{
-A list with the elements being the components of the graph
+A list where the elements are the components of the graph
 }
 \description{
 Finds the components of a graph

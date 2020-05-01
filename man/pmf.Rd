@@ -11,7 +11,7 @@ pmf(A, adj, logp = FALSE)
 
 \item{adj}{Adjacency list or gengraph object of a decomposable graph. See \code{fit_graph}.}
 
-\item{logp}{Logical; if TRUE, probabilities p are given as log(p).}
+\item{logp}{Logical; if TRUE, the log probabilities are returned}
 }
 \value{
 A function - the probability mass function corresponding
