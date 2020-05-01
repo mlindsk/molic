@@ -142,6 +142,25 @@ deviance.outlier_model <- function(x, y,...) {
   2 * (TY(y, x$cms, x$sms) - Hx_(nrow(x$A))) # D(y)
 }
 
+
+#' Detect Outliers
+#'
+#' This function finds the outliers in some data given an outlier model
+#'
+#' @param x A \code{outlier_model} object
+#' @param d Character matrix (data)
+#' @param alpha Sigficance level
+#' @export
+outliers <- function(x, d, alpha = 0.05) UseMethod("outliers")
+
+outliers.outlier_model <- function(x, d, alpha = 0.05) {
+  .map_lgl(1:nrow(d), function(i) {
+    zi <- unlist(d[i, ])
+    pv <- pval(x, deviance(x, zi))
+    pv <= alpha
+  })  
+}
+
 #' Plot Deviance
 #'
 #' A plot method to show the approximated deviance distribution

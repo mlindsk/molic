@@ -247,7 +247,7 @@ send_messages <- function(jt, flow = "sum") {
     par_k <- par[[k]]
     
     # Skip if the leave has no parents (can occur in distribute)    
-    if (!neq_empt_int(par_k)) next
+    # if (!neq_empt_int(par_k)) next
     
     for (pk in par_k) {
       
@@ -257,7 +257,7 @@ send_messages <- function(jt, flow = "sum") {
       C_lvs_k_name <- names(x$cliques)[lvs_k]
       C_par_k_name <- names(x$cliques)[pk]
 
-      if (neq_empt_chr(Sk)) { # if empty, no messages should be sent unless flow = max
+      if (neq_empt_chr(Sk)) { # if empty, no messages should be sent unless flow = max, then we bookkeep the max config
 
         message_k_names <- setdiff(C_lvs_k, Sk)
 
@@ -269,11 +269,10 @@ send_messages <- function(jt, flow = "sum") {
 
         if (direction == "distribute") {
 
-          # TODO: CLEAN THIS MESS
-          
           if (attr(jt, "flow") == "max") {
             ## The child:
             max_idx <- which.max(jt$charge$C[[C_lvs_k_name]])
+            # Here we must change the leave potential and send this new message to the parent
             jt$charge$C[[C_lvs_k_name]] <- jt$charge$C[[C_lvs_k_name]][max_idx]
             max_vars <- attr(jt$charge$C[[C_lvs_k_name]], "vars")
             max_vals <- .split_chars(names(jt$charge$C[[C_lvs_k_name]]))
@@ -285,12 +284,7 @@ send_messages <- function(jt, flow = "sum") {
 
           if (attr(jt, "flow") == "max") {
             ## The parent:
-            ## max_idx    <- which.max(jt$charge$C[[C_par_k_name]])
-            ## max_config <- jt$charge$C[[C_par_k_name]][max_idx]
-            ## max_vars   <- attr(max_config, "vars")
-            ## max_vals   <- .split_chars(names(max_config))
-            ## attr(jt, "max_config")[max_vars] <- max_vals
-            max_info_par <- get_max_info(jt$charge$C[[C_par_k_name]])
+            max_info_par <- .get_max_info(jt$charge$C[[C_par_k_name]])
             attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
           }
           
@@ -302,22 +296,11 @@ send_messages <- function(jt, flow = "sum") {
         
         if (attr(jt, "flow") == "max") {
           ## The parent:
-          ## max_idx    <- which.max(jt$charge$C[[C_par_k_name]])
-          ## max_config <- jt$charge$C[[C_par_k_name]][max_idx]
-          ## max_vars   <- attr(max_config, "vars")
-          ## max_vals   <- .split_chars(names(max_config))
-          # attr(jt, "max_config")[max_vars] <- max_vals
-          max_info_par <- get_max_info(jt$charge$C[[C_par_k_name]])
+          max_info_par <- .get_max_info(jt$charge$C[[C_par_k_name]])
           attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
 
           ## The child:
-          ## max_idx    <- which.max(jt$charge$C[[C_lvs_k_name]])
-          ## max_config <- jt$charge$C[[C_lvs_k_name]][max_idx]
-          ## max_vars   <- attr(max_config, "vars")
-          ## max_vals   <- .split_chars(names(max_config))
-          ## attr(jt, "max_config")[max_vars] <- max_vals
-
-          max_info_lvs <- get_max_info(jt$charge$C[[C_lvs_k_name]])
+          max_info_lvs <- .get_max_info(jt$charge$C[[C_lvs_k_name]])
           attr(jt, "max_config")[names(max_info_lvs)] <- unname(max_info_lvs)
         }
       }      

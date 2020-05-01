@@ -2,13 +2,17 @@
 #'
 #' A model based on decomposable graphical models for outlier detection
 #'
-#' @param A Character Matrix (data) with the new observation of interest appended
+#' @param A Character matrix (data)
 #' @param adj Adjacency list or gengraph object of a decomposable graph without the
 #' observation of interest. See details
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param validate Logical. See details.
-#' @details It is assumed that all cell values in \code{A}, for all variables,
+#' @details This function is used to find outliers within a dataset. This is different
+#' from \code{fit_outlier} which is used to detect if a new observation is an outlier
+#' in some homogeneous dataset.
+#'
+#' It is assumed that all cell values in \code{A}, for all variables,
 #' are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 #' If cell values are not single characters, one may exploit the \code{to_single_chars} function
 #'
@@ -16,38 +20,7 @@
 #' an ajacency list, just a named \code{list}, of their own choice if needed.
 #' @seealso \code{\link{fit_outlier}}, \code{\link{fit_graph}}
 #' @examples
-#' \dontrun{
-#' library(dplyr)
-#' 
-#' # All handwritten digits that have true class equal to a "1".
-#' d <- digits %>% # subset(digits, class == "1")
-#'   filter(class == "1") %>%
-#'   select(-class)
-#'
-#' # A handwritten digit with true class equal to "7"
-#' z <- digits %>%
-#'   filter(class == "7") %>%
-#'   select(-class) %>%
-#'   slice(1) %>%
-#'   unlist()
-#' 
-#' # Fit an interaction graph
-#' g <- fit_graph(d, trace = FALSE)
-#' plot(g, vertex.size = 1.5)
-#'
-#' # Append z to the class of "1" digits
-#' dz <- rbind(d, z)
-#' 
-#' # The outlier model
-#' set.seed(7)
-#' m <- outlier_model(as.matrix(dz), g, nsim = 1000)
-#' print(m)
-#' plot(m)
-#' 
-#' # z is declared as an outlier in the "1" class on a 0.05 significance level
-#' dvz <- deviance(m, z)
-#' pval(m, dvz)
-#' }
+#' See the 'fit_outlier' procedure
 #' @keywords internal
 #' @export
 outlier_model <- function(A,
@@ -85,7 +58,11 @@ outlier_model <- function(A,
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
 #' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
-#' @details The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
+#' @details Notice, that \code{z} must not be included in \code{A}! Hence, if the purpose
+#' is to find outliers within a dataset, one should use \code{outlier_model} once, and then
+#' call the \code{outliers} function.
+#'
+#' The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
 #' an adjacency list, just a named \code{list}, of their own choice if needed.
 #' @seealso \code{\link{outlier_model}}, \code{\link{fit_graph}}
 #' @examples
@@ -95,8 +72,14 @@ outlier_model <- function(A,
 #' # All handwritten digits that have true class equal to a "1".
 #' d <- digits %>%
 #'   filter(class == "1") %>%
-#'   select(-class)
+#'   select(-class) %>%
+#'   as_tibble()
 #'
+#' # -----------------------------------------------------------
+#' #                        EXAMPLE 1
+#' #         Testing if a new observation is an outlier
+#' # -----------------------------------------------------------
+#' 
 #' # A handwritten digit with true class equal to "7"
 #' z <- digits %>%
 #'   filter(class == "7") %>%
@@ -108,9 +91,19 @@ outlier_model <- function(A,
 #' g <- fit_graph(d, trace = FALSE)
 #' 
 #' # Test if z is an outlier in class "1"
-#' m <- fit_outlier(as.matrix(d), z, g)
-#' print(m)
-#' plot(m)
+#' m1 <- fit_outlier(as.matrix(d), z, g)
+#' print(m1)
+#' plot(m1)
+#'
+#' # -----------------------------------------------------------
+#' #                        EXAMPLE 2
+#' #    Testing which observations within d are outliers
+#' # -----------------------------------------------------------
+#'
+#' m2 <- outlier_model(as.matrix(d), g)
+#' outs <- outliers(m2, d)
+#' d[which(outs), ] # 29 outliers (out of 571 observatiobs is 5% as expected)
+#' 
 #' }
 #' @export
 fit_outlier <- function(A,
@@ -121,6 +114,8 @@ fit_outlier <- function(A,
                         ncores   = 1,
                         trace    = FALSE,
                         validate = TRUE) {
+  # TODO: z may no contain NAs since we are armed with the junction max-flow alg. now
+  # - in this case, we impute the NAs given the observed (evidence)
   if (all(colnames(A) != names(z))) stop("Variables in A and the names of z is not in agreement!")
   if (inherits(adj, "gengraph")) adj <- adj_lst(adj)
   Az   <- rbind(A, z)
