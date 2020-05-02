@@ -7,7 +7,7 @@
 outlier_model(A, adj, nsim = 10000, ncores = 1, validate = TRUE)
 }
 \arguments{
-\item{A}{Character Matrix (data) with the new observation of interest appended}
+\item{A}{Character matrix (data)}
 
 \item{adj}{Adjacency list or gengraph object of a decomposable graph without the
 observation of interest. See details}
@@ -22,6 +22,10 @@ observation of interest. See details}
 A model based on decomposable graphical models for outlier detection
 }
 \details{
+This function is used to find outliers within a dataset. This is different
+from \code{fit_outlier} which is used to detect if a new observation is an outlier
+in some homogeneous dataset.
+
 It is assumed that all cell values in \code{A}, for all variables,
 are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 If cell values are not single characters, one may exploit the \code{to_single_chars} function
@@ -30,38 +34,7 @@ The \code{adj} object is most typically found using \code{fit_graph}. But the us
 an ajacency list, just a named \code{list}, of their own choice if needed.
 }
 \examples{
-\dontrun{
-library(dplyr)
-
-# All handwritten digits that have true class equal to a "1".
-d <- digits \%>\% # subset(digits, class == "1")
-  filter(class == "1") \%>\%
-  select(-class)
-
-# A handwritten digit with true class equal to "7"
-z <- digits \%>\%
-  filter(class == "7") \%>\%
-  select(-class) \%>\%
-  slice(1) \%>\%
-  unlist()
-
-# Fit an interaction graph
-g <- fit_graph(d, trace = FALSE)
-plot(g, vertex.size = 1.5)
-
-# Append z to the class of "1" digits
-dz <- rbind(d, z)
-
-# The outlier model
-set.seed(7)
-m <- outlier_model(as.matrix(dz), g, nsim = 1000)
-print(m)
-plot(m)
-
-# z is declared as an outlier in the "1" class on a 0.05 significance level
-dvz <- deviance(m, z)
-pval(m, dvz)
-}
+See the 'fit_outlier' procedure
 }
 \seealso{
 \code{\link{fit_outlier}}, \code{\link{fit_graph}}

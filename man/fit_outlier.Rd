@@ -37,6 +37,10 @@ without the observation of interest. See details}
 A convenient wrapper for doing outlier test
 }
 \details{
+Notice, that \code{z} must not be included in \code{A}! Hence, if the purpose
+is to find outliers within a dataset, one should use \code{outlier_model} once, and then
+call the \code{outliers} function.
+
 The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
 an adjacency list, just a named \code{list}, of their own choice if needed.
 }
@@ -47,7 +51,13 @@ library(dplyr)
 # All handwritten digits that have true class equal to a "1".
 d <- digits \%>\%
   filter(class == "1") \%>\%
-  select(-class)
+  select(-class) \%>\%
+  as_tibble()
+
+# -----------------------------------------------------------
+#                        EXAMPLE 1
+#         Testing if a new observation is an outlier
+# -----------------------------------------------------------
 
 # A handwritten digit with true class equal to "7"
 z <- digits \%>\%
@@ -60,9 +70,19 @@ z <- digits \%>\%
 g <- fit_graph(d, trace = FALSE)
 
 # Test if z is an outlier in class "1"
-m <- fit_outlier(as.matrix(d), z, g)
-print(m)
-plot(m)
+m1 <- fit_outlier(as.matrix(d), z, g)
+print(m1)
+plot(m1)
+
+# -----------------------------------------------------------
+#                        EXAMPLE 2
+#    Testing which observations within d are outliers
+# -----------------------------------------------------------
+
+m2 <- outlier_model(as.matrix(d), g)
+outs <- outliers(m2, d)
+d[which(outs), ] # 29 outliers (out of 571 observatiobs is 5\% as expected)
+
 }
 }
 \seealso{

@@ -217,7 +217,8 @@ new_jt <- function(g, data, evidence = NULL, flow = "sum", validate = TRUE) {
   attr(jt, "direction") <- "collect" # collect, distribute or full
   attr(jt, "flow")      <- flow
   if (flow == "max") {
-    attr(jt, "max_config") <- structure(
+    # most probable explanation
+    attr(jt, "mpe") <- structure(
       vector("character", length = ncol(data)), names = colnames(data)
     )
   }
@@ -276,7 +277,7 @@ send_messages <- function(jt, flow = "sum") {
             jt$charge$C[[C_lvs_k_name]] <- jt$charge$C[[C_lvs_k_name]][max_idx]
             max_vars <- attr(jt$charge$C[[C_lvs_k_name]], "vars")
             max_vals <- .split_chars(names(jt$charge$C[[C_lvs_k_name]]))
-            attr(jt, "max_config")[max_vars] <- max_vals
+            attr(jt, "mpe")[max_vars] <- max_vals
           }
 
           message_k <- marginalize(jt$charge$C[[C_lvs_k_name]], message_k_names, attr(jt, "flow"))
@@ -285,7 +286,7 @@ send_messages <- function(jt, flow = "sum") {
           if (attr(jt, "flow") == "max") {
             ## The parent:
             max_info_par <- .get_max_info(jt$charge$C[[C_par_k_name]])
-            attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
+            attr(jt, "mpe")[names(max_info_par)] <- unname(max_info_par)
           }
           
           S_k_name <- paste("S", pk, sep = "") # str_rem(C_par_k_name, 1L), sep = "")
@@ -297,11 +298,11 @@ send_messages <- function(jt, flow = "sum") {
         if (attr(jt, "flow") == "max") {
           ## The parent:
           max_info_par <- .get_max_info(jt$charge$C[[C_par_k_name]])
-          attr(jt, "max_config")[names(max_info_par)] <- unname(max_info_par)
+          attr(jt, "mpe")[names(max_info_par)] <- unname(max_info_par)
 
           ## The child:
           max_info_lvs <- .get_max_info(jt$charge$C[[C_lvs_k_name]])
-          attr(jt, "max_config")[names(max_info_lvs)] <- unname(max_info_lvs)
+          attr(jt, "mpe")[names(max_info_lvs)] <- unname(max_info_lvs)
         }
       }      
     }

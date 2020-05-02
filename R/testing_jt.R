@@ -54,7 +54,7 @@
 ## m  <- send_messages(jt, "max")
 ## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
 ## plot(m)
-## attr(m, "max_config")
+## attr(m, "mpe")
 ## m$charge$C
 ## m <- send_messages(jt, "max")
 ## m <- send_messages(m, "max")
@@ -100,7 +100,7 @@
 
 ## m <- send_messages(gjt, "max")
 ## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
-## attr(m, "max_config")
+## attr(m, "mpe")
 
 ## c1 <- m$charge$C$C1; c1
 ## v1 <- attr(c1, "vars")
@@ -150,7 +150,7 @@
 ## jt <- new_jt(g, d, flow = "max")
 ## m <- send_messages(jt, "max")
 ## while (attr(m, "direction") != "FULL") m <- send_messages(m, "max")
-## attr(m, "max_config")
+## attr(m, "mpe")
 
 ## plot(jt)
 ## print(jt)

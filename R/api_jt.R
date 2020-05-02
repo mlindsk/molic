@@ -12,7 +12,7 @@
 #' are represented as a single character. If \code{validate} is \code{TRUE} this is checked.
 #' If values are not single characters, one may exploit the \code{to_single_chars} function.
 #' @return A \code{jt} object
-#' @seealso \code{\link{query_belief}}, \code{\link{max_config}}, \code{\link{get_cliques}}
+#' @seealso \code{\link{query_belief}}, \code{\link{mpe}}, \code{\link{get_cliques}}
 #' @examples
 #'
 #' # Setting up the network
@@ -49,12 +49,12 @@
 #' 
 #' # Example 3: max-flow without evidence
 #' jt3 <- jt(g, d, flow = "max")
-#' max_config(jt3)
+#' mpe(jt3)
 #' 
 #' # Example 4: max-flow with evidence
 #' e4  <- c(a = "T", b = "C", c = "A", j = "A", g = "T")
 #' jt4 <- jt(g, d, e4, flow = "max")
-#' max_config(jt4)
+#' mpe(jt4)
 #' 
 #' # Notice, that the value of "d" has changed to "C" compared
 #' # to max(jt3) where the value was "T" as a consequence
@@ -68,7 +68,7 @@ jt <- function(g, data, evidence = NULL, flow = "sum", propagate = TRUE, validat
   return(m)
 }
 
-#' Max Configuration
+#' Most Probable Explanation
 #'
 #' Returns the most probable configuration given the evidence entered in the junction tree
 #' 
@@ -77,13 +77,13 @@ jt <- function(g, data, evidence = NULL, flow = "sum", propagate = TRUE, validat
 #' @examples
 #' # See the 'jt' function
 #' @export
-max_config <- function(x) UseMethod("max_config")
+mpe <- function(x) UseMethod("mpe")
 
-#' @rdname max_config
+#' @rdname mpe
 #' @export
-max_config.jt <- function(x) {
+mpe.jt <- function(x) {
   if(attr(x, "flow") != "max") stop("The flow of the junction tree is not 'max'.")
-  return(attr(x, "max_config"))
+  return(attr(x, "mpe"))
 }
 
 
@@ -107,7 +107,7 @@ get_cliques.jt <- function(x) x$cliques
 #' @param type Either 'marginal' or 'joint'
 #' @examples
 #' # See the 'jt' function
-#' @seealso \code{\link{jt}}, \code{\link{max_config}}
+#' @seealso \code{\link{jt}}, \code{\link{mpe}}
 #' @export
 query_belief <- function(x, nodes, type = "marginal") UseMethod("query_belief")
 
@@ -120,7 +120,7 @@ query_belief.jt <- function(x, nodes, type = "marginal") {
   
   if (attr(x, "flow") == "max") {
     stop("It does not make sense to query probablities from a junction tree with max-flow. ",
-      "Use max_config(x) to obtain the max configuration.")
+      "Use mpe(x) to obtain the max configuration.")
   }
   
   node_lst <- if (type == "joint") {
