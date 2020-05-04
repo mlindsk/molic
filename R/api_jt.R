@@ -46,6 +46,9 @@
 #' query_belief(jt2, c("a", "d", "g"), type = "joint")
 #' # Notice that, the configuration "TTT" has changed
 #' # dramatically as a consequence of the evidence
+#'
+#' # We can get the probability of the evidence:
+#' query_evidence(jt2)
 #' 
 #' # Example 3: max-flow without evidence
 #' jt3 <- jt(g, d, flow = "max")
@@ -59,6 +62,10 @@
 #' # Notice, that the value of "d" has changed to "C" compared
 #' # to max(jt3) where the value was "T" as a consequence
 #' # of the new evidence
+#'
+#' # Example 5: investigating the clique graph before propagating
+#' # TBA
+#' 
 #' @export
 jt <- function(g, data, evidence = NULL, flow = "sum", propagate = TRUE, validate = TRUE) {
   jt <- new_jt(g, data, evidence, flow, validate)
@@ -97,6 +104,33 @@ get_cliques <- function(x) UseMethod("get_cliques")
 #' @rdname get_cliques
 #' @export
 get_cliques.jt <- function(x) x$cliques
+
+
+#' Query Evidence 
+#'
+#' Get the probability of the evidence entered in the junction tree object
+#'
+#' @param x A junction tree object, \code{jt}.
+#' @examples
+#' # See the 'jt' function
+#' @seealso \code{\link{jt}}, \code{\link{mpe}}
+#' @export
+query_evidence <- function(x) UseMethod("query_evidence")
+
+#' @rdname query_evidence
+#' @export
+query_evidence.jt <- function(x) {
+  if(attr(x, "flow") != "sum") {
+    stop("The flow of the junction tree must be 'sum'.")
+  }
+  if (attr(x, "direction") == "collect") {
+    stop("In order to query the probabilty of evidence, ",
+      "the junction tree must at least be propagted to ",
+      "the root node.")
+  }
+  return(attr(x, "probability_of_evidence"))
+}
+
 
 #' Query probabilities
 #'

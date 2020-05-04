@@ -111,7 +111,9 @@ prune_jt <- function(jt) {
     if (direction == "collect") {
       jt$schedule$collect    <- "FULL"
       attr(jt, "direction")  <- "distribute"
-      jt$charge$C[["C1"]] <- jt$charge$C[["C1"]] / sum(jt$charge$C[["C1"]])
+      probability_of_evidence <- sum(jt$charge$C[["C1"]])
+      attr(jt, "probability_of_evidence") <- probability_of_evidence
+      jt$charge$C[["C1"]] <- jt$charge$C[["C1"]] / probability_of_evidence
     } else {
       jt$schedule$distribute <- "FULL"
       attr(jt, "direction")  <- "FULL"
@@ -196,8 +198,8 @@ new_jt <- function(g, data, evidence = NULL, flow = "sum", validate = TRUE) {
 
   ## TODO: Specify a root in advance
   ## ---------------------------------------------------------
-  # if (is.null(root)) re_order_cliques(cliques, root) { using kruskal?}
-  ## See SOREN and Lau p. 58 for specifying another root easily!
+  # if (is.null(root)) reorder_cliques(cliques, root) { using kruskal } ?
+  ## See Soren and Lau p. 58 for specifying another root easily!
   ## ---------------------------------------------------------
 
   par    <- if (!is.null(par_igraph)) par_igraph  else rip_$P
@@ -274,6 +276,7 @@ send_messages <- function(jt, flow = "sum") {
             ## The child:
             max_idx <- which.max(jt$charge$C[[C_lvs_k_name]])
             # Here we must change the leave potential and send this new message to the parent
+            # - and so we can't use .get_max_info
             jt$charge$C[[C_lvs_k_name]] <- jt$charge$C[[C_lvs_k_name]][max_idx]
             max_vars <- attr(jt$charge$C[[C_lvs_k_name]], "vars")
             max_vals <- .split_chars(names(jt$charge$C[[C_lvs_k_name]]))
@@ -289,7 +292,7 @@ send_messages <- function(jt, flow = "sum") {
             attr(jt, "mpe")[names(max_info_par)] <- unname(max_info_par)
           }
           
-          S_k_name <- paste("S", pk, sep = "") # str_rem(C_par_k_name, 1L), sep = "")
+          S_k_name <- paste("S", pk, sep = "") # str_rem(C_par_k_name, 1L)
           jt$charge$S[[S_k_name]] <- message_k
         }
         

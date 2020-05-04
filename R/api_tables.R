@@ -1,7 +1,33 @@
 ## ---------------------------------------------------------
+##                NON-EXPORTED HELPERS
+## ---------------------------------------------------------
+find_cond_configs <- function(x, pos) {
+  # x  : sptable
+  # pos: the position of the conditional variables
+  skeleton <- paste(rep("@", nchar(names(x)[1])))
+  .map_chr(names(x), function(s) {
+    sk <- skeleton
+    s_pos_val <- .map_chr(pos, function(l) substr(s, l, l))
+    sk[pos] <- s_pos_val
+    paste(gsub("@", "", sk), collapse = "")
+  })
+}
+
+reposition_names <- function(x, pos) {
+  # x : named list
+  structure(x, names =.map_chr(names(x), function(y) {
+    paste(.split_chars(y)[pos], collapse = "")
+  }))
+}
+
+.set_as_sptable <- function(x) {
+  structure(x, class = c("sptable", class(x)))
+}
+
+
+## ---------------------------------------------------------
 ##                 EXPORTED FUNCTIONS
 ## ---------------------------------------------------------
-
 #' Sparse table
 #'
 #' Returns a sparse contingency table for the variables in \code{x} as a vector .
@@ -50,70 +76,20 @@ parray <- function(x, y = NULL) {
   return(parr)
 }
 
-#' Print Sparse Table
+#' Merge sparse tables
 #'
-#' A print method for \code{sptable} and \code{slice_sptable} objects
-#'
-#' @param x A \code{sptable} object
-#' @param ... Not used (for S3 compatability)
+#' Multiplication or division of two sparse tables
+#' 
+#' @param p1 A \code{sptable} object
+#' @param p2 A \code{sptable} object
+#' @param op Either "*" (multiplication) or "/" (division)
+#' @examples
+#' p1 <- sptable(as.matrix(tgp_dat[, 3:5]))
+#' p2 <- sptable(as.matrix(tgp_dat[, 4:6]))
+#' p1
+#' p2
+#' merge(p1,p2, "/")
 #' @export
-print.sptable <- function(x, ...) {
-  vars      <- attr(x, "vars")
-  vars_cond <- attr(x, "vars_cond")
-  nchr  <- sum(.map_int(vars, function(s) nchar(s))) + length(vars) + nchar("Vars:") - 1
-  N     <- length(x)
-  cells <- names(x)
-  cat("", paste0(rep("-", nchr), collapse = ""), "\n")
-  if (inherits(x, "slice")) {
-    cat("", paste(paste(names(vars_cond), "= "), vars_cond, sep = "", collapse = ", "), "\n")    
-  }
-  cat(" Vars:", paste0(vars, collapse = "-"), "\n")
-  cat("", paste0(rep("-", nchr), collapse = ""), "\n")
-  for (k in seq_along(cells)) {
-    cat(cells[k], ":", x[k], "\n")
-  }
-  invisible(x)
-}
-
-
-## ---------------------------------------------------------
-##                NON-EXPORTED HELPERS
-## ---------------------------------------------------------
-.set_as_sptable <- function(x) {
-  structure(x, class = c("sptable", class(x)))
-}
-
-#' @export
-`[<-.sptable` <- function(x, i, value) {
-  NextMethod()
-}
-
-#' @export
-`[.sptable` <- function(x, i) {
-  if (is.character(i) && !all(i %in% names(x))) return(0L)
-  structure(.set_as_sptable(NextMethod()) , vars = attr(x, "vars"))
-}
-
-find_cond_configs <- function(x, pos) {
-  # x  : sptable
-  # pos: the position of the conditional variables
-  skeleton <- paste(rep("@", nchar(names(x)[1])))
-  .map_chr(names(x), function(s) {
-    sk <- skeleton
-    s_pos_val <- .map_chr(pos, function(l) substr(s, l, l))
-    sk[pos] <- s_pos_val
-    paste(gsub("@", "", sk), collapse = "")
-  })
-}
-
-reposition_names <- function(x, pos) {
-  # x : named list
-  structure(x, names =.map_chr(names(x), function(y) {
-    paste(.split_chars(y)[pos], collapse = "")
-  }))
-}
-
-
 merge.sptable <- function(p1, p2, op = "*") {
   # p1, p2 : sptable objects
   
@@ -198,8 +174,20 @@ merge.sptable <- function(p1, p2, op = "*") {
   return(spt)
 }
 
+#' Marginalize
+#'
+#' @param p A \code{sptable} object
+#' @param s The variables to marginalize out
+#' @param flow Either "sum" or "max" where "max" is most useful in connection to the internals of  junction tree algorithm.
+#' @examples
+#' p <- sptable(as.matrix(tgp_dat[, 3:5]))
+#' p
+#' marginalize(p, "rs10134526")
+#' @export
 marginalize <- function(p, s, flow = "sum") UseMethod("marginalize")
 
+#' @rdname marginalize
+#' @export
 marginalize.sptable <- function(p, s, flow = "sum") {
 
   if (flow %ni% c("sum", "max")) stop("flow must be 'sum' or 'max'")
@@ -223,6 +211,41 @@ marginalize.sptable <- function(p, s, flow = "sum") {
   return(spt)
 }
 
+#' Print Sparse Table
+#'
+#' A print method for \code{sptable} and \code{slice_sptable} objects
+#'
+#' @param x A \code{sptable} object
+#' @param ... Not used (for S3 compatability)
+#' @export
+print.sptable <- function(x, ...) {
+  vars      <- attr(x, "vars")
+  vars_cond <- attr(x, "vars_cond")
+  nchr  <- sum(.map_int(vars, function(s) nchar(s))) + length(vars) + nchar("Vars:") - 1
+  N     <- length(x)
+  cells <- names(x)
+  cat("", paste0(rep("-", nchr), collapse = ""), "\n")
+  if (inherits(x, "slice")) {
+    cat("", paste(paste(names(vars_cond), "= "), vars_cond, sep = "", collapse = ", "), "\n")    
+  }
+  cat(" Vars:", paste0(vars, collapse = "-"), "\n")
+  cat("", paste0(rep("-", nchr), collapse = ""), "\n")
+  for (k in seq_along(cells)) {
+    cat(cells[k], ":", x[k], "\n")
+  }
+  invisible(x)
+}
+
+#' @export
+`[<-.sptable` <- function(x, i, value) {
+  NextMethod()
+}
+
+#' @export
+`[.sptable` <- function(x, i) {
+  if (is.character(i) && !all(i %in% names(x))) return(0L)
+  structure(.set_as_sptable(NextMethod()) , vars = attr(x, "vars"))
+}
 
 
 ## library(dplyr)
