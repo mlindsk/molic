@@ -8,7 +8,7 @@ IMPORTANT NOTE
 -----------
 
 I'm refactoring the **molic** package at the moment. More specifically this means
- - separating the modelselection procedure `fit_graph` into its own package found at [efs](https://github.com/mlindsk/efs)
+ - separating the modelselection procedure `fit_graph` into its own package found at [ess](https://github.com/mlindsk/ess)
  - a minor, but breakly, change in the `fit_outlier` API
  - removal of the `outlier_model` function - everthyng needed is to be contained in `fit_outlier` (I'll provide examples and more explanations why I do this - hopefully to the better)
  - at some point I'll include a brand new outlier test that we are working on, not based on likelihood ratios (but still on graphical models)
