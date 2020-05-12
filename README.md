@@ -4,6 +4,17 @@ molic: Multivariate OutLIerdetection In Contingency tables
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis Build Status](https://travis-ci.com/mlindsk/molic.svg?token=AuXvB5mAnHuxQxKszxph&branch=master)](https://travis-ci.com/mlindsk/molic) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/mlindsk/molic?branch=master&svg=true)](https://ci.appveyor.com/project/mlindsk/molic) [![status](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8/status.svg)](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8) [![DOI](https://zenodo.org/badge/177729633.svg)](https://zenodo.org/badge/latestdoi/177729633)
 
+IMPORTANT NOTE
+-----------
+
+I'm refactoring the **molic** package at the moment. More specifically this means
+ - separating the modelselection procedure `fit_graph` into its own package found at [efs](https://github.com/mlindsk/efs)
+ - a minor, but breakly, change in the `fit_outlier` API
+ - removal of the `outlier_model` function - everthyng needed is to be contained in `fit_outlier` (I'll provide examples and more explanations why I do this - hopefully to the better)
+ - at some point I'll include a brand new outlier test that we are working on, not based on likelihood ratios (but still on graphical models)
+ 
+I hope it is not too much inconvenience. Stay tuned.
+
 About molic
 -----------
 
