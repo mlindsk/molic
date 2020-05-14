@@ -1,0 +1,12 @@
+pandoc: 1.19.2.4
+pkgdown: 1.5.1
+pkgdown_sha: ~
+articles:
+  dermatitis: dermatitis.html
+  genetic_example: genetic_example.html
+  outlier_intro: outlier_intro.html
+last_built: 2020-05-14T10:28Z
+urls:
+  reference: https://mlindsk.github.io/molic/reference
+  article: https://mlindsk.github.io/molic/articles
+
