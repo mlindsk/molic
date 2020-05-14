@@ -15,6 +15,7 @@ Installation
 You can install the current stable release of the package by using the `devtools` package:
 
 ``` r
+devtools::install_github("mlindsk/ess", build_vignettes = FALSE)   # ess will soon be on CRAN and this will not be needed then
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
@@ -66,10 +67,10 @@ print(m1)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 111 
-#>   Estimated mean: 42.58 
-#>   Estimated variance: 34.51 
+#>   Estimated mean: 43.4 
+#>   Estimated variance: 34.4 
 #>  --------------------------------
-#>   Critical value: 53.24268 
+#>   Critical value: 53.83349 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
 #>  --------------------------------
@@ -118,9 +119,9 @@ Retrieving the p-values:
 
 ``` r
 pval(m1, dev1)
-#> [1] 0.0101
+#> [1] 0.0112
 pval(m1, dev2)
-#> [1] 0.0848
+#> [1] 0.1
 ```
 
 Example 2 - Testing if a new observation is an outlier
@@ -146,10 +147,10 @@ print(m2)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 112 
-#>   Estimated mean: 43.66 
-#>   Estimated variance: 36.86 
+#>   Estimated mean: 42.89 
+#>   Estimated variance: 35.94 
 #>  --------------------------------
-#>   Critical value: 54.64489 
+#>   Critical value: 53.75469 
 #>   Deviance: 77.92978 
 #>   P-value: 0 
 #>   Alpha: 0.05 

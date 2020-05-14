@@ -30,6 +30,7 @@ An **R** package to perform outlier detection in contingency tables (i.e. catego
 You can install the current stable release of the package by using the `devtools` package: 
 
 ```{r, eval = FALSE}
+devtools::install_github("mlindsk/ess", build_vignettes = FALSE)   # ess will soon be on CRAN and this will not be needed then
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
