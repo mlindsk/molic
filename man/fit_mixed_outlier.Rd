@@ -21,6 +21,7 @@ A convenient function for outlier detection with mixed information
 for an introduction to the genetic data used here
 
 library(dplyr)
+library(ess)  # for fit_components
 
 # The components - here microhaplotypes
 haps <- tgp_haps
@@ -39,21 +40,18 @@ eur_b <- eur \%>\%
   filter(grepl("b$", sample_name)) \%>\%
   select(-c(1:2))
 
-mat_eur_a <- eur_a \%>\% select(-c(1:2)) \%>\% as.matrix()
-mat_eur_b <- eur_b \%>\% select(-c(1:2)) \%>\% as.matrix()
 
 # Fitting the interaction graphs on the EUR data 
 ga <- fit_components(eur_a, comp = haps, trace = FALSE, as_gen = TRUE)
 gb <- fit_components(eur_b, comp = haps, trace = FALSE, as_gen = TRUE)
 
 # as_gen = TRUE converts the graph to a gengraph,
-# the main object for graphs in the molic package
+# the main object for graphs in the ess package.
 # This enables plotting and print info of the graph:
-# print(ga)
-# plot(ga, vertex.size = 1)
+print(ga)
+plot(ga, vertex.size = 1)
 
 # Testing if an American is an outlier in Europe
-
 amr <- tgp_dat \%>\%
   as_tibble() \%>\%
   filter(pop_meta == "AMR")
@@ -71,10 +69,10 @@ z2  <- amr \%>\%
   slice(1) \%>\%
   unlist()
 
-
-m1 <- fit_outlier(mat_eur_a, z1, ga) # consider using more cores (ncores argument)
-m2 <- fit_outlier(mat_eur_a, z2, gb) # consider using more cores (ncores argument)
+m1 <- fit_outlier(eur_a, ga, z1) # consider using more cores (ncores argument)
+m2 <- fit_outlier(eur_b, gb, z2) # consider using more cores (ncores argument)
 m  <- fit_mixed_outlier(m1,m2)
 plot(m)
+
 }
 }

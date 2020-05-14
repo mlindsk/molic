@@ -65,12 +65,12 @@ y     <- unlist(derma[80, -35]) # a patient with seboreic dermatitis
 psor  <- derma %>%
   filter(ES == "psoriasis") %>%
   dplyr::select(-ES)
-psormat <- as.matrix(psor)
 ```
 
 Next, we fit the interaction graph for the psoriasis patients:
 
 ```{r fit_graph}
+library(ess)
 g <- fit_graph(psor, q = 0, trace = FALSE)
 ```
 
@@ -95,7 +95,7 @@ The take home message here is, that we cannot assume independence between the at
 
 ```{r comment = NA}
 set.seed(300718)
-m <- fit_outlier(psormat, y, g)
+m <- fit_outlier(psor, g, y)
 print(m)
 ```
 

@@ -2,17 +2,20 @@
 % Please edit documentation in R/helper_outlier.R
 \name{outliers}
 \alias{outliers}
+\alias{outliers.outlier}
 \title{Detect Outliers}
 \usage{
 outliers(x, d, alpha = 0.05)
+
+\method{outliers}{outlier}(x, d, alpha = 0.05)
 }
 \arguments{
-\item{x}{A \code{outlier_model} object}
+\item{x}{A \code{outlier} object}
 
 \item{d}{Character matrix (data)}
 
 \item{alpha}{Sigficance level}
 }
 \description{
-This function finds the outliers in some data given an outlier model
+Find the outliers in some data given an outlier model
 }

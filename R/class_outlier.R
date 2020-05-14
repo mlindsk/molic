@@ -13,10 +13,18 @@ new_outlier_model <- function(A, sims, mu, sigma, cdf, cms, sms) {
   )
 }
 
-new_outlier <- function(m, dev, pv, cv, a) {
+new_novelty <- function(m, dev, pv, cv, a) {
   # m : outlier_model object
   m$dev    <- dev
   m$pval   <- pv
+  m$cv     <- cv
+  m$alpha  <- a
+  class(m) <- c("novelty", class(m))
+  return(m)
+}
+
+new_outlier <- function(m, cv, a) {
+  # m : outlier_model object
   m$cv     <- cv
   m$alpha  <- a
   class(m) <- c("outlier", class(m))
@@ -25,7 +33,7 @@ new_outlier <- function(m, dev, pv, cv, a) {
 
 new_mixed_outlier <- function(m, dev, pv, cv, a) {
   # m : outlier_model object
-  m <- new_outlier(m, dev, pv, cv, a)
+  m <- new_novelty(m, dev, pv, cv, a)
   class(m) <- c("mixed_outlier", class(m))
   return(m)
 }

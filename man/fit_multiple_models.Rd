@@ -19,7 +19,7 @@ fit_multiple_models(
 )
 }
 \arguments{
-\item{A}{A data frame (data) without the new observation \code{z} appended}
+\item{A}{A character matrix or data.frame}
 
 \item{z}{Named vector (same names as \code{colnames(A)} but without the class variable)}
 
@@ -42,7 +42,7 @@ fit_multiple_models(
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
 }
 \description{
-A convenient wrapper function to conduct multiple tests for a single observation
+A convenient wrapper function to conduct multiple novelty tests for a new observation
 }
 \examples{
 # TBA

@@ -85,7 +85,9 @@ make_observation_info <- function(models) {
 #' @param ... Not used (for S3 compatability)
 #' @export
 print.outlier_model <- function(x, ...) {
+
   cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
+
   cat(
     "\n --------------------------------",
     "\n  Simulations:",         length(x$sims),
@@ -93,35 +95,28 @@ print.outlier_model <- function(x, ...) {
     "\n  Observations:",        nrow(x$A),
     "\n  Estimated mean:",      round(x$mu, 2),
     "\n  Estimated variance:",  round(x$sigma, 2),
-    paste0("\n  ", cls),
     "\n --------------------------------\n"
   )
-}
 
-#' Print outlier
-#'
-#' A print method for \code{outlier} objects
-#'
-#' @param x A \code{outlier} object
-#' @param ... Not used (for S3 compatability)
-#' @export
-print.outlier <- function(x, ...) {
-  cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
-  cat(
-    "\n --------------------------------",
-    "\n  Simulations:",         length(x$sims),
-    "\n  Variables:",           ncol(x$A),
-    "\n  Observations:",        nrow(x$A),
-    "\n  Estimated mean:",      round(x$mu, 2),
-    "\n  Estimated variance:",  round(x$sigma, 2),
-    "\n    ---------------------------  ",
-    "\n  Critical value:", x$cv,
+  if (inherits(x, "novelty")) {
+    cat(
+    "  Critical value:", x$cv,
     "\n  Deviance:", x$dev,
     "\n  P-value:", x$pval,
     "\n  Alpha:", x$alpha,
     paste0("\n  ", cls),
     "\n --------------------------------\n"
-  )
+    )
+  }
+
+  if (inherits(x, "outlier")) {
+    cat(
+    "  Critical value:", x$cv,
+    "\n  Alpha:", x$alpha,
+    paste0("\n  ", cls),
+    "\n --------------------------------\n"
+    )    
+  }
 }
 
 #' Calculate deviance
@@ -145,15 +140,17 @@ deviance.outlier_model <- function(x, y,...) {
 
 #' Detect Outliers
 #'
-#' This function finds the outliers in some data given an outlier model
+#' Find the outliers in some data given an outlier model
 #'
-#' @param x A \code{outlier_model} object
+#' @param x A \code{outlier} object
 #' @param d Character matrix (data)
 #' @param alpha Sigficance level
 #' @export
 outliers <- function(x, d, alpha = 0.05) UseMethod("outliers")
 
-outliers.outlier_model <- function(x, d, alpha = 0.05) {
+#' @rdname outliers
+#' @export
+outliers.outlier <- function(x, d, alpha = 0.05) {
   .map_lgl(1:nrow(d), function(i) {
     zi <- unlist(d[i, ])
     pv <- pval(x, deviance(x, zi))
@@ -161,31 +158,27 @@ outliers.outlier_model <- function(x, d, alpha = 0.05) {
   })  
 }
 
-#' Plot Deviance
+#' Plot Distribution of Test Statistic
 #'
-#' A plot method to show the approximated deviance distribution
+#' A plot method to show the approximated distribution of the deviance test statistic
+#' 
 #' @param x An object returned from \code{fit_outlier}
 #' @param sig_col Color of the significance level area (default is red)
-#' @param ... Extra arguments; see details.
-#' @details The dotted line represents the observed deviance of the observation under the hypothesis
+#' @param ... Not used. For S3 compatability.
+#' @details The dotted line represents the observed test statistic of \code{z}
 #' and the colored (red is default) area under the graph represents the significance level.
-#' Thus, if the dotted line is to the left of the colored area, the hypothesis that the observation
-#' is an outlier cannot be rejected. Notice however, if there is no dotted line, this simply means,
-#' that the observed deviance is larger than all values and it would disturb the plot if included.
 #'
-#' No extra arguments \code{...} are implement at the moment.
-#' @examples
-#' # TBA
-#' 1L
+#' Thus, if \code{z} is supplied and the dotted line is to the left of the colored area,
+#' the hypothesis that the observation is an outlier cannot be rejected. Notice however,
+#' if there is no dotted line, this simply means, that the observed test statistic is
+#' larger than all values and it would disturb the plot if included.
 #' @export
-plot.outlier <- function(x, sig_col = "#FF0000A0", ...) {
-  # args <- list(...)
-  # Old base approach:
-  # graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
-  # dat <- data.frame(Deviance = x$sims, y = "")
+plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
+
   dat <- with(stats::density(x$sims), data.frame(x, y))
   dat$.region <- x$cv
-  dat$.dev    <- x$dev
+  dat$.dev <- x$dev
+  
   p <- ggplot2::ggplot(data = dat, mapping = ggplot2::aes(x = x, y = y)) +
     ggplot2::geom_line() +
     ggplot2::geom_ribbon(data = subset(dat, x >= .region),
@@ -200,10 +193,15 @@ plot.outlier <- function(x, sig_col = "#FF0000A0", ...) {
       fill   = "#A0A0A0A0",
       colour = "#A0A0A0A0",
       alpha  = 0.7)
+
   p <- p + ggplot2::theme_bw() + ggplot2::ylab("") + ggplot2::xlab("Deviance")
-  if (dat$.dev[1] < max(x$sims)) {
-    p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = .dev), linetype = "dotted")
+
+  if (inherits(x, "novelty")) {
+    if (dat$.dev[1] < max(x$sims)) {
+      p <- p + ggplot2::geom_vline(ggplot2::aes(xintercept = .dev), linetype = "dotted")
+    }
   }
+
   return(p)
 }
 
@@ -266,16 +264,16 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 }
 
 
-#' Plot of pmf
-#'
-#' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
-#'
-#' @param x A \code{outlier_model} object
-#' @param ... Not used (for S3 compatibility)
-#' @export
-plot.outlier_model <- function(x, ...) {
-  graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
-}
+## #' Plot of pmf
+## #'
+## #' A plot method to show the pmf of the approximated pmf of \code{T(Y)}
+## #'
+## #' @param x A \code{outlier_model} object
+## #' @param ... Not used (for S3 compatibility)
+## #' @export
+## plot.outlier_model <- function(x, ...) {
+##   graphics::hist(x$sims, breaks = 30, xlab = "Deviance",  freq = FALSE, main = " ")
+## }
 
 
 #' Empirical distribution function

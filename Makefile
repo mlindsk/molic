@@ -17,28 +17,14 @@ check_fast:
 install:
 	Rscript -e "devtools::install()"
 
-build_site:
-	Rscript -e "pkgdown::build_site()"
-
-run_main:
-	Rscript src/mainR.R
-
 test:
 	Rscript -e "devtools::test('~/Documents/phd/publications/molic')"
 
 readme:
-	Rscript -e "rmarkdown::render('README.Rmd')" #; \
-	# convert man/figures/README-gengraph-1.png -gravity south -chop 0x100 man/figures/README-gengraph-1.png; \
-	# convert man/figures/README-gengraph-1.png -gravity north -chop 0x80 man/figures/README-gengraph-1.png; \
-	# convert man/figures/README-acc-1.png -gravity south -chop 0x100 man/figures/README-acc-1.png; \
-	# convert man/figures/README-acc-1.png -gravity north -chop 0x80 man/figures/README-acc-1.png; \
-	# convert man/figures/README-unacc-1.png -gravity south -chop 0x100 man/figures/README-unacc-1.png; \
-	# convert man/figures/README-unacc-1.png -gravity north -chop 0x80 man/figures/README-unacc-1.png; \
-	# convert man/figures/README-var-select1-1.png -gravity south -chop 0x100 man/figures/README-var-select1-1.png; \
-	# convert man/figures/README-var-select1-1.png -gravity north -chop 0x80 man/figures/README-var-select1-1.png; \
-	# convert man/figures/README-var-select2-1.png -gravity south -chop 0x100 man/figures/README-var-select2-1.png; \
-	# convert man/figures/README-var-select2-1.png -gravity north -chop 0x80 man/figures/README-var-select2-1.png; \
-	firefox README.html
+	Rscript -e "rmarkdown::render('README.Rmd')"
+
+build_site:
+	Rscript -e "pkgdown::build_site()"
 
 clean:
 	rm -f README.html
