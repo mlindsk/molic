@@ -4,7 +4,9 @@
 \name{tgp_dat}
 \alias{tgp_dat}
 \title{A data frame with genetic data from the 1000 genomes project}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5008 rows and 304 columns.}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5008 rows and 304 columns.
+}
 \usage{
 tgp_dat
 }

@@ -2,16 +2,6 @@
 #define OUTLIER_UTILS_H
 
 #include "molic_types.h"
-// #include <Rcpp.h>
-// #include <vector>
-// // [[Rcpp::plugins(cpp11)]]
-
-// using VD  = std::vector<double>;
-// using VS  = std::vector<std::string>;
-// using RL  = Rcpp::List;
-// using RIV = Rcpp::IntegerVector;
-// using RCV = Rcpp::CharacterVector;
-// using RCM = Rcpp::CharacterMatrix;
 
 VS     matpr(Rcpp::CharacterMatrix A);
 RIV    n_a(RCM & A);

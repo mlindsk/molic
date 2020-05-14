@@ -4,13 +4,15 @@
 \name{derma}
 \alias{derma}
 \title{Dermatology Database}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 358 rows and 35 columns.}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 358 rows and 35 columns.
+}
 \usage{
 derma
 }
 \description{
-This data set contains 358 observations (we have removed 8 with missing values).
-It contains 12 clinical attributes and 21 histopathological attributes. The age
+We have removed 8 observations with missing values.
+Data contains 12 clinical attributes and 21 histopathological attributes. The age
 attribute has been discretized. The class variable has six levels; each
 describing a skin disease.
 }

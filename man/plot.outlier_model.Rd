@@ -2,15 +2,26 @@
 % Please edit documentation in R/helper_outlier.R
 \name{plot.outlier_model}
 \alias{plot.outlier_model}
-\title{Plot of pmf}
+\title{Plot Distribution of Test Statistic}
 \usage{
-\method{plot}{outlier_model}(x, ...)
+\method{plot}{outlier_model}(x, sig_col = "#FF0000A0", ...)
 }
 \arguments{
-\item{x}{A \code{outlier_model} object}
+\item{x}{An object returned from \code{fit_outlier}}
 
-\item{...}{Not used (for S3 compatibility)}
+\item{sig_col}{Color of the significance level area (default is red)}
+
+\item{...}{Not used. For S3 compatability.}
 }
 \description{
-A plot method to show the pmf of the approximated pmf of \code{T(Y)}
+A plot method to show the approximated distribution of the deviance test statistic
+}
+\details{
+The dotted line represents the observed test statistic of \code{z}
+and the colored (red is default) area under the graph represents the significance level.
+
+Thus, if \code{z} is supplied and the dotted line is to the left of the colored area,
+the hypothesis that the observation is an outlier cannot be rejected. Notice however,
+if there is no dotted line, this simply means, that the observed test statistic is
+larger than all values and it would disturb the plot if included.
 }

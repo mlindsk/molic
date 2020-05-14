@@ -2,69 +2,125 @@
 % Please edit documentation in R/api_fit_outlier.R
 \name{fit_outlier}
 \alias{fit_outlier}
-\title{Fit Outlier}
+\title{Outlier detection}
 \usage{
 fit_outlier(
   A,
-  z,
   adj,
+  z = NULL,
   alpha = 0.05,
   nsim = 10000,
   ncores = 1,
-  trace = FALSE,
   validate = TRUE
 )
 }
 \arguments{
-\item{A}{Character Matrix (data) - without the new observation \code{z} appended}
+\item{A}{Character matrix or data.frame. All values must be limited to a single character.}
 
-\item{z}{Named vector (same names as \code{colnames(A)})}
+\item{adj}{Adjacency list or \code{gengraph} object of a decomposable graph. See package \code{ess} for \code{gengraph} objects.}
 
-\item{adj}{Adjacency list or gengraph object of a decomposable graph
-without the observation of interest. See details}
+\item{z}{Named vector (same names as \code{colnames(A)}) or \code{NULL}. See details. Values must be limited to a single character.}
 
-\item{alpha}{The significance level}
+\item{alpha}{Significance level}
 
 \item{nsim}{Number of simulations}
 
 \item{ncores}{Number of cores to use in parallelization}
 
-\item{trace}{Logical indicating whether or not to trace the procedure}
-
-\item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
+\item{validate}{Logical. If true, it checks if \code{A} only has single character values and converts it if not.}
 }
 \description{
-A convenient wrapper for doing outlier test
+Detecting outliers within a dataset or test if a new (novel) observation is an outlier.
 }
 \details{
-The \code{adj} object is most typically found using \code{fit_graph}. But the user can supply
+If the goal is to detect outliers within \code{A} set \code{z} to \code{NULL}; this procedure is most
+often just referred to as outlier detection. Once \code{fit_outlier} has been called in this situation, one can
+exploit the \code{outliers} function to get the indicies for which observations in \code{A} that are outliers.
+See the examples.
+
+On the other hand, if the goal is test if the new unseen observation \code{z} is an outlier in\code{A},
+then supply a named vector to \code{z}.
+
+All values must be limited to a single character representation; if not, the function will internally convert to one such
+representation. The reason for this, is a speedup in runtime performance. One can also use the exported
+function \code{to_single_chars} on \code{A} in advance and set \code{validate} to \code{FALSE}. 
+
+The \code{adj} object is most typically found using \code{fit_graph} from the ess package. But the user can supply
 an adjacency list, just a named \code{list}, of their own choice if needed.
 }
 \examples{
 \dontrun{
+
 library(dplyr)
+library(ess) # For the fit_graph function
 
-# All handwritten digits that have true class equal to a "1".
-d <- digits \%>\%
-  filter(class == "1") \%>\%
-  select(-class)
+# Psoriasis patients
+d <- derma \%>\%
+  filter(ES == "psoriasis") \%>\%
+  select(-ES) \%>\%
+  as_tibble()
 
-# A handwritten digit with true class equal to "7"
-z <- digits \%>\%
-  filter(class == "7") \%>\%
-  select(-class) \%>\%
+# Fitting the interaction graph
+g <- fit_graph(d, trace = FALSE) # see package ess for details
+
+# -----------------------------------------------------------
+#                        EXAMPLE 1
+#    Testing which observations within d are outliers
+# -----------------------------------------------------------
+
+m1 <- fit_outlier(d, g)
+print(m1)
+outs  <- outliers(m1, d)
+douts <- d[which(outs), ]
+douts
+
+# Notice that m1 is of class 'outlier'. This means, that the procedure has tested which observations
+# _within_ the data are outliers. This method is most often just referred to as outlier detection.
+# The following plot is the distribution of the test statistic. Think of a simple t-test, where the
+# distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one
+# finds the critical value and verify if the test statistic is greater or less than this.
+
+# Retrieving the test statistic for the individual observations
+x1 <- douts[1, ] \%>\% unlist()
+x2 <- d[1, ] \%>\% unlist()
+dev1 <- deviance(m1, x1) # falls within the critical region in the plot (the red area)
+dev2 <- deviance(m1, x2) # falls within the acceptable region in the plot
+
+dev1
+dev2
+
+
+# Retrieving the pvalues
+pval(m1, dev1)
+pval(m1, dev2)
+
+# -----------------------------------------------------------
+#                        EXAMPLE 2
+#         Testing if a new observation is an outlier
+# -----------------------------------------------------------
+
+# An observation from class "chronic dermatitis"
+z <- derma \%>\%
+  filter(ES == "chronic dermatitis") \%>\%
+  select(-ES) \%>\%
   slice(1) \%>\%
   unlist()
 
-# Fitting the interaction graph
-g <- fit_graph(d, trace = FALSE)
+# Test if z is an outlier in class "psoriasis"
+m2 <- fit_outlier(d, g, z)
+print(m2)
+plot(m2) # The vertical dotted line indicates the (deviance) test statistic of z
 
-# Test if z is an outlier in class "1"
-m <- fit_outlier(as.matrix(d), z, g)
-print(m)
-plot(m)
+# Notice that m2 is of class 'novelty'. The term novelty detection
+# is sometimes used in the litterature when the goal is to verify
+# if a new unseen observation is an outlier in a homogen dataset.
+
+# Retrieving the test statistic and pvalue for z
+dz <- deviance(m2, z)
+pval(m2, dz)
+
 }
 }
 \seealso{
-\code{\link{outlier_model}}, \code{\link{fit_graph}}
+\code{\link{fit_mixed_outlier}}, \code{\link{fit_multiple_models}}, \code{\link{outliers}}
 }

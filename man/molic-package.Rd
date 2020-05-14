@@ -6,8 +6,15 @@
 \alias{molic-package}
 \title{molic: Multivariate Ouliterdetection In Contingency Tables}
 \description{
-The molic package has two main functionalities: outlier detection in contingency tables and model selection in decomposable grahs.
-#'
+The molic package is designed for outlier detection in, possibly highdimensional, categorical data
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/mlindsk/molic}
+  \item Report bugs at \url{https://github.com/mlindsk/molic/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Mads Lindskou \email{mads@math.aau.dk}

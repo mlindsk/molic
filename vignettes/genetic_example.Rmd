@@ -32,7 +32,8 @@ We show how to test that an unknown DNA profile `z` can be assumed to originate 
 
 
 ```{r e}
-library(molic)
+library(molic) # fit_outlier
+library(ess)   # fit_components
 library(dplyr)
 
 # The components - here microhaplotypes
@@ -52,9 +53,6 @@ eur_b <- eur %>%
   filter(grepl("b$", sample_name)) %>%
   select(-c(1:2))
 
-mat_eur_a <- eur_a %>% as.matrix()
-mat_eur_b <- eur_b %>% as.matrix()
-
 # Fitting the interaction graphs on the EUR data 
 ga <- fit_components(eur_a, comp = haps, trace = FALSE)
 gb <- fit_components(eur_b, comp = haps, trace = FALSE)
@@ -70,19 +68,18 @@ amr <- tgp_dat %>%
 z1  <- amr %>%
   filter(grepl("a$", sample_name)) %>% 
   select(unname(unlist(haps))) %>%
-  slice(1) %>%
+  dplyr::slice(1) %>%
   unlist()
 
 z2  <- amr %>%
   filter(grepl("b$", sample_name)) %>% 
   select(unname(unlist(haps))) %>%
-  slice(1) %>%
+  dplyr::slice(1) %>%
   unlist()
 
-
 # The following takes a couple of minutes
-m1 <- fit_outlier(mat_eur_a, z1, ga) # consider using more cores (ncores argument)
-m2 <- fit_outlier(mat_eur_b, z2, gb) # consider using more cores (ncores argument)
+m1 <- fit_outlier(eur_a, ga, z1) # consider using more cores (ncores argument)
+m2 <- fit_outlier(eur_b, gb, z2) # consider using more cores (ncores argument)
 m  <- fit_mixed_outlier(m1,m2)
 ```
 

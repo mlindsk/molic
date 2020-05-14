@@ -12,7 +12,7 @@ test_that("an observation is an outlier", {
     slice(7) %>%
     unlist()
 
-  g <- fit_graph(eur, trace = FALSE)$G_adj
+  g <- ess::fit_graph(eur, trace = FALSE)$G_adj
   m <- fit_outlier(as.matrix(eur), z, g)
   
   expect_true(m$pval <= 0.05)
