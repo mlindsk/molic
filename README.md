@@ -66,10 +66,10 @@ print(m1)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 111 
-#>   Estimated mean: 43.38 
-#>   Estimated variance: 34.71 
+#>   Estimated mean: 42.53 
+#>   Estimated variance: 34.1 
 #>  --------------------------------
-#>   Critical value: 53.83284 
+#>   Critical value: 52.96809 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
 #>  --------------------------------
@@ -118,9 +118,9 @@ Retrieving the p-values:
 
 ``` r
 pval(m1, dev1)
-#> [1] 0.0113
+#> [1] 0.0086
 pval(m1, dev2)
-#> [1] 0.1009
+#> [1] 0.0786
 ```
 
 Example 2 - Testing if a new observation is an outlier
@@ -146,12 +146,12 @@ print(m2)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 112 
-#>   Estimated mean: 48.12 
-#>   Estimated variance: 36.68 
+#>   Estimated mean: 43.82 
+#>   Estimated variance: 35.84 
 #>  --------------------------------
-#>   Critical value: 59.11945 
+#>   Critical value: 54.5736 
 #>   Deviance: 77.92978 
-#>   P-value: 0 
+#>   P-value: 2e-04 
 #>   Alpha: 0.05 
 #>   <novelty, outlier_model, list> 
 #>  --------------------------------
@@ -165,7 +165,7 @@ Notice that m2 is of class 'novelty'. The term *novelty detection* is sometimes 
 ``` r
 dz <- deviance(m2, z)
 pval(m2, dz)
-#> [1] 0
+#> [1] 2e-04
 ```
 
 How To Cite

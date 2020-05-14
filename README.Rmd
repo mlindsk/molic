@@ -27,7 +27,7 @@ An **R** package to perform outlier detection in contingency tables (i.e. catego
 
 ## Installation
 
-You can install the current stable release of the package by using the `devtools` package:
+You can install the current stable release of the package by using the `devtools` package: 
 
 ```{r, eval = FALSE}
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
