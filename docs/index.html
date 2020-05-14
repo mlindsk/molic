@@ -140,10 +140,10 @@
 <span class="co">#&gt;   Simulations: 10000 </span>
 <span class="co">#&gt;   Variables: 34 </span>
 <span class="co">#&gt;   Observations: 111 </span>
-<span class="co">#&gt;   Estimated mean: 43.38 </span>
-<span class="co">#&gt;   Estimated variance: 34.71 </span>
+<span class="co">#&gt;   Estimated mean: 42.53 </span>
+<span class="co">#&gt;   Estimated variance: 34.1 </span>
 <span class="co">#&gt;  --------------------------------</span>
-<span class="co">#&gt;   Critical value: 53.83284 </span>
+<span class="co">#&gt;   Critical value: 52.96809 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;outlier, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span>
@@ -179,9 +179,9 @@
 <span class="co">#&gt; [1] 51.05233</span></pre></div>
 <p>Retrieving the p-values:</p>
 <div class="sourceCode"><pre class="r"><span class="fu"><a href="reference/pval.html">pval</a></span>(<span class="no">m1</span>, <span class="no">dev1</span>)
-<span class="co">#&gt; [1] 0.0113</span>
+<span class="co">#&gt; [1] 0.0086</span>
 <span class="fu"><a href="reference/pval.html">pval</a></span>(<span class="no">m1</span>, <span class="no">dev2</span>)
-<span class="co">#&gt; [1] 0.1009</span></pre></div>
+<span class="co">#&gt; [1] 0.0786</span></pre></div>
 </div>
 <div id="example-2---testing-if-a-new-observation-is-an-outlier" class="section level2">
 <h2 class="hasAnchor">
@@ -200,12 +200,12 @@
 <span class="co">#&gt;   Simulations: 10000 </span>
 <span class="co">#&gt;   Variables: 34 </span>
 <span class="co">#&gt;   Observations: 112 </span>
-<span class="co">#&gt;   Estimated mean: 48.12 </span>
-<span class="co">#&gt;   Estimated variance: 36.68 </span>
+<span class="co">#&gt;   Estimated mean: 43.82 </span>
+<span class="co">#&gt;   Estimated variance: 35.84 </span>
 <span class="co">#&gt;  --------------------------------</span>
-<span class="co">#&gt;   Critical value: 59.11945 </span>
+<span class="co">#&gt;   Critical value: 54.5736 </span>
 <span class="co">#&gt;   Deviance: 77.92978 </span>
-<span class="co">#&gt;   P-value: 0 </span>
+<span class="co">#&gt;   P-value: 2e-04 </span>
 <span class="co">#&gt;   Alpha: 0.05 </span>
 <span class="co">#&gt;   &lt;novelty, outlier_model, list&gt; </span>
 <span class="co">#&gt;  --------------------------------</span>
@@ -214,7 +214,7 @@
 <p>Notice that m2 is of class ‘novelty’. The term <em>novelty detection</em> is sometimes used in the litterature when the goal is to verify if a new unseen observation is an outlier in a homogeneous dataset. Retrieving the test statistic and p-value for <code>z</code></p>
 <div class="sourceCode"><pre class="r"><span class="no">dz</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/deviance.html">deviance</a></span>(<span class="no">m2</span>, <span class="no">z</span>)
 <span class="fu"><a href="reference/pval.html">pval</a></span>(<span class="no">m2</span>, <span class="no">dz</span>)
-<span class="co">#&gt; [1] 0</span></pre></div>
+<span class="co">#&gt; [1] 2e-04</span></pre></div>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2 class="hasAnchor">
