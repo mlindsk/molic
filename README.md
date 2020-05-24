@@ -15,7 +15,6 @@ Installation
 You can install the current stable release of the package by using the `devtools` package:
 
 ``` r
-devtools::install_github("mlindsk/ess", build_vignettes = FALSE)   # ess will soon be on CRAN and this will not be needed then
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
@@ -67,34 +66,33 @@ print(m1)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 111 
-#>   Estimated mean: 43.4 
-#>   Estimated variance: 34.4 
+#>   Estimated mean: 43.37 
+#>   Estimated variance: 34.38 
 #>  --------------------------------
-#>   Critical value: 53.83349 
+#>   Critical value: 53.97784 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
 #>  --------------------------------
 outs  <- outliers(m1, d)
 douts <- d[which(outs), ]
 douts
-#> # A tibble: 8 x 34
+#> # A tibble: 7 x 34
 #>   c1    c2    c3    c4    c5    c6    c7    c8    c9    c10   c11   h12   h13  
 #>   <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
 #> 1 2     1     2     2     2     0     0     0     0     0     0     0     1    
 #> 2 2     2     2     3     3     0     0     0     0     2     0     0     1    
 #> 3 3     3     2     2     1     0     0     0     0     1     0     0     2    
-#> 4 1     1     1     1     1     0     0     0     1     1     0     0     0    
-#> 5 3     2     1     2     2     0     0     0     2     2     0     0     0    
-#> 6 1     1     1     1     1     0     0     0     2     2     0     0     0    
-#> 7 2     3     1     2     1     0     0     0     0     0     0     0     0    
-#> 8 3     2     3     0     0     0     0     0     3     0     0     0     0    
+#> 4 3     2     1     2     2     0     0     0     2     2     0     0     0    
+#> 5 1     1     1     1     1     0     0     0     2     2     0     0     0    
+#> 6 2     3     1     2     1     0     0     0     0     0     0     0     0    
+#> 7 3     2     3     0     0     0     0     0     3     0     0     0     0    
 #> # … with 21 more variables: h14 <chr>, h15 <chr>, h16 <chr>, h17 <chr>,
 #> #   h18 <chr>, h19 <chr>, h20 <chr>, h21 <chr>, h22 <chr>, h23 <chr>,
 #> #   h24 <chr>, h25 <chr>, h26 <chr>, h27 <chr>, h28 <chr>, h29 <chr>,
 #> #   h30 <chr>, h31 <chr>, h32 <chr>, h33 <chr>, age <chr>
 ```
 
-Notice that m1 is of class 'outlier'. This means, that the procedure has tested which observations *within* the data are outliers. This method is most often just referred to as outlier detection. The following plot is the distribution of the test statistic. Think of a simple t-test, where the distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one finds the critical value and verify if the test statistic is greater or less than this.
+Notice that `m1` is of class 'outlier'. This means, that the procedure has tested which observations *within* the data are outliers. This method is most often just referred to as outlier detection. The following plot is the distribution of the test statistic. Think of a simple t-test, where the distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one finds the critical value and verify if the test statistic is greater or less than this.
 
 ``` r
 plot(m1) 
@@ -119,9 +117,9 @@ Retrieving the p-values:
 
 ``` r
 pval(m1, dev1)
-#> [1] 0.0112
+#> [1] 0.0103
 pval(m1, dev2)
-#> [1] 0.1
+#> [1] 0.1041
 ```
 
 Example 2 - Testing if a new observation is an outlier
@@ -147,10 +145,10 @@ print(m2)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 112 
-#>   Estimated mean: 42.89 
-#>   Estimated variance: 35.94 
+#>   Estimated mean: 42.86 
+#>   Estimated variance: 36.39 
 #>  --------------------------------
-#>   Critical value: 53.75469 
+#>   Critical value: 53.78714 
 #>   Deviance: 77.92978 
 #>   P-value: 0 
 #>   Alpha: 0.05 

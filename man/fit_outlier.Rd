@@ -74,11 +74,12 @@ outs  <- outliers(m1, d)
 douts <- d[which(outs), ]
 douts
 
-# Notice that m1 is of class 'outlier'. This means, that the procedure has tested which observations
-# _within_ the data are outliers. This method is most often just referred to as outlier detection.
-# The following plot is the distribution of the test statistic. Think of a simple t-test, where the
-# distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one
-# finds the critical value and verify if the test statistic is greater or less than this.
+# Notice that m1 is of class 'outlier'. This means, that the procedure has tested which
+observations _within_ the data are outliers. This method is most often just referred to
+as outlier detection. The following plot is the distribution of the test statistic. Think
+of a simple t-test, where the distribution of the test statistic is a t-distribution.
+In order to conclude on the hypothesis, one finds the critical value and verify if the
+test statistic is greater or less than this.
 
 # Retrieving the test statistic for the individual observations
 x1 <- douts[1, ] \%>\% unlist()

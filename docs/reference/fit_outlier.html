@@ -199,77 +199,7 @@ an adjacency list, just a named <code>list</code>, of their own choice if needed
     <div class='dont-index'><p><code><a href='fit_mixed_outlier.html'>fit_mixed_outlier</a></code>, <code><a href='fit_multiple_models.html'>fit_multiple_models</a></code>, <code><a href='outliers.html'>outliers</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ess</span>) <span class='co'># For the fit_graph function</span>
-
-<span class='co'># Psoriasis patients</span>
-<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>derma</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>ES</span> <span class='kw'>==</span> <span class='st'>"psoriasis"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>ES</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>as_tibble</a></span>()
-
-<span class='co'># Fitting the interaction graph</span>
-<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ess/man/fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='co'># see package ess for details</span>
-
-<span class='co'># -----------------------------------------------------------</span>
-<span class='co'>#                        EXAMPLE 1</span>
-<span class='co'>#    Testing which observations within d are outliers</span>
-<span class='co'># -----------------------------------------------------------</span>
-
-<span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m1</span>)
-<span class='no'>outs</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='outliers.html'>outliers</a></span>(<span class='no'>m1</span>, <span class='no'>d</span>)
-<span class='no'>douts</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>outs</span>), ]
-<span class='no'>douts</span>
-
-<span class='co'># Notice that m1 is of class 'outlier'. This means, that the procedure has tested which observations</span>
-<span class='co'># _within_ the data are outliers. This method is most often just referred to as outlier detection.</span>
-<span class='co'># The following plot is the distribution of the test statistic. Think of a simple t-test, where the</span>
-<span class='co'># distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one</span>
-<span class='co'># finds the critical value and verify if the test statistic is greater or less than this.</span>
-
-<span class='co'># Retrieving the test statistic for the individual observations</span>
-<span class='no'>x1</span> <span class='kw'>&lt;-</span> <span class='no'>douts</span>[<span class='fl'>1</span>, ] <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>()
-<span class='no'>x2</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>[<span class='fl'>1</span>, ] <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>()
-<span class='no'>dev1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m1</span>, <span class='no'>x1</span>) <span class='co'># falls within the critical region in the plot (the red area)</span>
-<span class='no'>dev2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m1</span>, <span class='no'>x2</span>) <span class='co'># falls within the acceptable region in the plot</span>
-
-<span class='no'>dev1</span>
-<span class='no'>dev2</span>
-
-
-<span class='co'># Retrieving the pvalues</span>
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev1</span>)
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev2</span>)
-
-<span class='co'># -----------------------------------------------------------</span>
-<span class='co'>#                        EXAMPLE 2</span>
-<span class='co'>#         Testing if a new observation is an outlier</span>
-<span class='co'># -----------------------------------------------------------</span>
-
-<span class='co'># An observation from class "chronic dermatitis"</span>
-<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='no'>derma</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>ES</span> <span class='kw'>==</span> <span class='st'>"chronic dermatitis"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>ES</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>()
-
-<span class='co'># Test if z is an outlier in class "psoriasis"</span>
-<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>, <span class='no'>z</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m2</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m2</span>) <span class='co'># The vertical dotted line indicates the (deviance) test statistic of z</span>
-
-<span class='co'># Notice that m2 is of class 'novelty'. The term novelty detection</span>
-<span class='co'># is sometimes used in the litterature when the goal is to verify</span>
-<span class='co'># if a new unseen observation is an outlier in a homogen dataset.</span>
-
-<span class='co'># Retrieving the test statistic and pvalue for z</span>
-<span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m2</span>, <span class='no'>z</span>)
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m2</span>, <span class='no'>dz</span>)
-
-}</div></pre>
+    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
