@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Fit Multiple Models — fit_multiple_models" />
-<meta property="og:description" content="A convenient wrapper function to conduct multiple novelty tests for a new observation" />
+<meta property="og:description" content="Conduct multiple novelty tests for a new observation" />
 
 
 
@@ -135,7 +135,7 @@
     </div>
 
     <div class="ref-description">
-    <p>A convenient wrapper function to conduct multiple novelty tests for a new observation</p>
+    <p>Conduct multiple novelty tests for a new observation</p>
     </div>
 
     <pre class="usage"><span class='fu'>fit_multiple_models</span>(
@@ -201,10 +201,24 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of type <code>multiple_models</code>; a list of of <code>novely</code> objects from which one
+can query pvalues etc. for outlierdetection.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='fit_outlier.html'>fit_outlier</a></code>, <code><a href='fit_mixed_outlier.html'>fit_mixed_outlier</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># TBA</span>
-<span class='fl'>1L</span></div><div class='output co'>#&gt; [1] 1</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='no'>derma</span>[<span class='fl'>1</span>, -<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>derma</span>) <span class='kw'>==</span> <span class='st'>"ES"</span>)])
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_multiple_models</span>(<span class='no'>derma</span>, <span class='no'>z</span>, <span class='st'>"ES"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>validate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -14,6 +14,9 @@ cdf(x, ...)
 
 \item{...}{Not used (for S3 compatibility)}
 }
+\value{
+The cumulative distribution of deviance test statistic of \code{x}
+}
 \description{
 The empirical cdf of \code{T(Y)}
 }

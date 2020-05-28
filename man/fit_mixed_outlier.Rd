@@ -11,23 +11,33 @@ fit_mixed_outlier(m1, m2)
 
 \item{m2}{An object returned from \code{fit_outlier}}
 }
+\value{
+An object of type \code{mixed_outlier} with \code{novelty} or \code{outlier}
+as child classes. These are used for different purposes. See \code{fit_outlier}.
+}
 \description{
-A convenient function for outlier detection with mixed information
+A function for outlier detection with mixed, but independen, information
+}
+\details{
+It is assumed that the input data to \code{m1} and \code{m2}
+holds information about the same observation in corresponding rows.
+Thus, the two datasets must also be of same dimension.
 }
 \examples{
-\dontrun{
 
-# See the package vignette "Outlier Detection in Genetic Data"
-for an introduction to the genetic data used here
+\dontrun{
 
 library(dplyr)
 library(ess)  # for fit_components
+set.seed(7)   # for reproducibility
+
+## Data
 
 # The components - here microhaplotypes
 haps <- tgp_haps
 
 # All the Europeans
-eur  <- tgp_dat \%>\%
+eur <- tgp_dat \%>\%
   as_tibble() \%>\%
   filter(pop_meta == "EUR")
 
@@ -42,20 +52,51 @@ eur_b <- eur \%>\%
 
 
 # Fitting the interaction graphs on the EUR data 
-ga <- fit_components(eur_a, comp = haps, trace = FALSE, as_gen = TRUE)
-gb <- fit_components(eur_b, comp = haps, trace = FALSE, as_gen = TRUE)
-
-# as_gen = TRUE converts the graph to a gengraph,
-# the main object for graphs in the ess package.
-# This enables plotting and print info of the graph:
+ga <- fit_components(eur_a, comp = haps, trace = FALSE)
+gb <- fit_components(eur_b, comp = haps, trace = FALSE)
 print(ga)
 plot(ga, vertex.size = 1)
+
+## ---------------------------------------------------------
+##                       EXAMPLE 1
+##   Testing which observations within data are outliers
+## ---------------------------------------------------------
+
+# Only 500 simulations is used here to exeplify
+# The default number of simulations is 10,000
+m1 <- fit_outlier(eur_a, ga, nsim = 500) # consider using more cores (ncores argument)
+m2 <- fit_outlier(eur_b, gb, nsim = 500) # consider using more cores (ncores argument)
+m  <- fit_mixed_outlier(m1, m2)
+print(m)
+plot(m)
+
+outs <- outliers(m)
+eur_a_outs <- eur_a[which(outs), ]
+eur_b_outs <- eur_b[which(outs), ]
+
+# Retrieving the test statistic for individual observations
+x1 <- rbind(eur_a_outs[1, ], eur_b_outs[1, ])
+x2 <- rbind(eur_a[1, ], eur_b[1, ])
+dev1 <- deviance(m, x1) # falls within the critical region in the plot (the red area)
+dev2 <- deviance(m, x2) # falls within the acceptable region in the plot
+
+dev1
+dev2
+
+# Retrieving the pvalues
+pval(m, dev1)
+pval(m, dev2)
+
+
+## ---------------------------------------------------------
+##                       EXAMPLE 2
+##      Testing if a new observation is an outlier
+## ---------------------------------------------------------
 
 # Testing if an American is an outlier in Europe
 amr <- tgp_dat \%>\%
   as_tibble() \%>\%
   filter(pop_meta == "AMR")
-
 
 z1  <- amr \%>\%
   filter(grepl("a$", sample_name)) \%>\% 
@@ -69,10 +110,18 @@ z2  <- amr \%>\%
   slice(1) \%>\%
   unlist()
 
-m1 <- fit_outlier(eur_a, ga, z1) # consider using more cores (ncores argument)
-m2 <- fit_outlier(eur_b, gb, z2) # consider using more cores (ncores argument)
-m  <- fit_mixed_outlier(m1,m2)
-plot(m)
+# Only 500 simulations is used here to exemplify
+# The default number of simulations is 10,000
+m3 <- fit_outlier(eur_a, ga, z1, nsim = 500) # consider using more cores (ncores argument)
+m4 <- fit_outlier(eur_b, gb, z2, nsim = 500) # consider using more cores (ncores argument)
+m5  <- fit_mixed_outlier(m3, m4)
+print(m5)
+plot(m5)
 
 }
+
+}
+\seealso{
+\code{\link{fit_outlier}}, \code{\link{fit_multiple_models}},
+\code{\link{outliers}}, \code{\link{pval}}, \code{\link{deviance}}
 }

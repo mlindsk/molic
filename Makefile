@@ -26,6 +26,11 @@ readme:
 build_site:
 	Rscript -e "pkgdown::build_site()"
 
+build:
+	Rscript -e "devtools::build()"; \
+	cd /home/mads/Documents/phd/software/; \
+	R CMD check --as-cran molic_2.0.0.tar.gz
+
 clean:
 	rm -f README.html
 	cd src/ && rm -f *.o && rm -f *.so

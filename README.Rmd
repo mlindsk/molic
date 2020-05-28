@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 ```
 
 [![R build status](https://github.com/mlindsk/molic/workflows/R-CMD-check/badge.svg)](https://github.com/mlindsk/molic/actions)
+![](https://www.r-pkg.org/badges/version/molic?color=green)](https://cran.r-project.org/package=molic)
 [![status](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8/status.svg)](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8)
 [![DOI](https://zenodo.org/badge/177729633.svg)](https://zenodo.org/badge/latestdoi/177729633)
 
@@ -47,6 +48,7 @@ The following examples are from the documentation of `fit_outlier`.
 library(dplyr)
 library(molic)
 library(ess)   # For the fit_graph function
+set.seed(7)    # For reproducibility
 ```
 
 Psoriasis patients
@@ -72,7 +74,7 @@ This plot shows how the variables are 'associated' in the psoriasis class; see [
 ```{r}
 m1 <- fit_outlier(d, g)
 print(m1)
-outs  <- outliers(m1, d)
+outs  <- outliers(m1)
 douts <- d[which(outs), ]
 douts
 ```
@@ -118,7 +120,7 @@ Test if z is an outlier in class "psoriasis":
 ```{r}
 m2 <- fit_outlier(d, g, z)
 print(m2)
-plot(m2) # The vertical dotted line indicates the (deviance) test statistic of z
+plot(m2)
 ```
 
 Notice that m2 is of class 'novelty'. The term _novelty detection_ is sometimes used in the litterature when the goal is to verify if a new unseen observation is an outlier in a homogeneous dataset. Retrieving the test statistic and p-value for `z`

@@ -14,6 +14,9 @@ critval(m, alpha = 0.05)
 
 \item{alpha}{Significance level (between \code{0} and \code{1})}
 }
+\value{
+The critical value in the distribution of deviance test statistic of \code{m}
+}
 \description{
 Calculate the critical value for test statistic under \code{H_0}
 }

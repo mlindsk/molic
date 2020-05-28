@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Detect Outliers — outliers" />
-<meta property="og:description" content="Find the outliers in some data given an outlier model" />
+<meta property="og:description" content="Find the outliers some given data based on an outlier model" />
 
 
 
@@ -135,13 +135,16 @@
     </div>
 
     <div class="ref-description">
-    <p>Find the outliers in some data given an outlier model</p>
+    <p>Find the outliers some given data based on an outlier model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>outliers</span>(<span class='no'>x</span>, <span class='no'>d</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)
+    <pre class="usage"><span class='fu'>outliers</span>(<span class='no'>x</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)
 
 <span class='co'># S3 method for outlier</span>
-<span class='fu'>outliers</span>(<span class='no'>x</span>, <span class='no'>d</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)</pre>
+<span class='fu'>outliers</span>(<span class='no'>x</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)
+
+<span class='co'># S3 method for mixed_outlier</span>
+<span class='fu'>outliers</span>(<span class='no'>x</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,15 +154,15 @@
       <td><p>A <code>outlier</code> object</p></td>
     </tr>
     <tr>
-      <th>d</th>
-      <td><p>Character matrix (data)</p></td>
-    </tr>
-    <tr>
       <th>alpha</th>
       <td><p>Sigficance level</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Vector of logicals referring to the indicies in the data
+used to call <code>x</code> for which the observations are outliers.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

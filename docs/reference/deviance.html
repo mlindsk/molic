@@ -141,6 +141,9 @@
     <pre class="usage"><span class='fu'>deviance</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for outlier_model</span>
+<span class='fu'>deviance</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for mixed_outlier</span>
 <span class='fu'>deviance</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -152,7 +155,8 @@
     </tr>
     <tr>
       <th>y</th>
-      <td><p>An observation (name character vector)</p></td>
+      <td><p>An observation (named character vector). If <code>x</code> is of class <code>mixed_outlier</code>
+it should be a <code>data.frame</code> with two rows.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -160,6 +164,9 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The deviance test statistic of <code>y</code> based on the model <code>x</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

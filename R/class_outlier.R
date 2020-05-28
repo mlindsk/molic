@@ -31,11 +31,17 @@ new_outlier <- function(m, cv, a) {
   return(m)
 }
 
-new_mixed_outlier <- function(m, dev, pv, cv, a) {
+new_mixed_outlier <- function(m, type, alpha, dev = NULL) {
   # m : outlier_model object
-  m <- new_novelty(m, dev, pv, cv, a)
-  class(m) <- c("mixed_outlier", class(m))
-  return(m)
+
+  out <- if (type == "novelty") {
+    new_novelty(m, dev, pval(m, dev), critval(m, alpha), alpha)
+  } else {
+    new_outlier(m, critval(m, alpha), alpha)
+  }
+
+  class(out) <- c("mixed_outlier", class(out))
+  return(out)
 }
 
 convolute <- function(m1, m2) {
@@ -44,6 +50,13 @@ convolute <- function(m1, m2) {
   .cdf  <- stats::ecdf(.sims)
   .mu   <- m1$mu + m2$mu
   .sig  <- m1$sigma + m2$sigma
-  m     <- new_outlier_model(rbind(m1$A, m2$A), .sims, .mu, .sig, .cdf, NULL, NULL)
-  return(m)
+  new_outlier_model(
+    A = list(A1 = m1$A, A2 = m2$A),
+    .sims,
+    .mu,
+    .sig,
+    .cdf,
+    cms = list(cms1 = m1$cms, cms2 = m2$cms),
+    sms = list(sms1 = m1$sms, sms2 = m2$sms)
+  )
 }

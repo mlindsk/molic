@@ -103,21 +103,22 @@
 <h1 class="hasAnchor">
 <a href="#the-1000-genomes-project-data" class="anchor"></a>The 1000 Genomes Project Data</h1>
 <p>The outlier detection method <span class="citation">(Lindskou, Svante Eriksen, and Tvedebrink 2019)</span> arose from a problem in the forensic science community where it is of great interest to make statements about the geographical origin of a DNA sample. This is in general a very complicated matter. More over, when DNA markers are in linkage disequilibrium things get even more complicated. The 1000 Genomes Project set out to provide a comprehensive description of common human genetic variation by applying whole-genome sequencing to a diverse set of individuals from multiple populations <span class="citation">(The 1000 Genomes Project Consortium 2015)</span>. In the <strong>molic</strong> package we include the final data from the project which includes <span class="math inline">\(2504\)</span> DNA profiles coming from five different continental regions; Europe (EUR), Africa (AFR), America (AMR), East Asia (EAS), South Asia (SAS). Each DNA profile is the compound of two rows in the data <code>tgp_dat</code>, one for each chromosome copy. This makes the outlier procedure slightly more complicated since we must fit a model to each copy and aggregate the information (but we shall see in a moment that it is not hard to do using the <strong>molic</strong> package).</p>
-<p>The data includes <span class="math inline">\(276\)</span> SNP markers grouped in <span class="math inline">\(97\)</span> microhaplotypes; in other words, the SNPs within a microhaplotype are so close that they cannot be assumed to be in linkage disequilibrium and we must take into account their mutal dependencies. We do this with the use of decomposable graphical models. See the <code>outlier_intro</code> for more details on the model. The microhaplotype grouping is provided is the list <code>tgp_haps</code>.</p>
-</div>
-<div id="an-outlier-test" class="section level1">
-<h1 class="hasAnchor">
-<a href="#an-outlier-test" class="anchor"></a>An Outlier Test</h1>
-<p>We show how to test that an unknown DNA profile <code>z</code> can be assumed to originate from the European database. We shall pick a random DNA profile from the American database and assume we do not know the origin.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">molic</span>) <span class="co"># fit_outlier</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ess</span>)   <span class="co"># fit_components</span>
+<p>The data includes <span class="math inline">\(276\)</span> SNP markers grouped in <span class="math inline">\(97\)</span> microhaplotypes; in other words, the SNPs within a microhaplotype are so close that they cannot be assumed to be in linkage disequilibrium and we must take into account their mutual dependencies. We do this with the use of decomposable graphical models. See the <code>outlier_intro</code> for more details on the model. The microhaplotype grouping is provided is the list <code>tgp_haps</code>.</p>
+<div id="setup-and-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#setup-and-data" class="anchor"></a>Setup and Data</h2>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">molic</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ess</span>)   <span class="co"># for fit_components</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">7</span>)    <span class="co"># for reproducibility</span>
+
+<span class="co">## Data</span>
 
 <span class="co"># The components - here microhaplotypes</span>
 <span class="no">haps</span> <span class="kw">&lt;-</span> <span class="no">tgp_haps</span>
 
 <span class="co"># All the Europeans</span>
-<span class="no">eur</span>  <span class="kw">&lt;-</span> <span class="no">tgp_dat</span> <span class="kw">%&gt;%</span>
+<span class="no">eur</span> <span class="kw">&lt;-</span> <span class="no">tgp_dat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">pop_meta</span> <span class="kw">==</span> <span class="st">"EUR"</span>)
 
@@ -128,53 +129,154 @@
 
 <span class="no">eur_b</span> <span class="kw">&lt;-</span> <span class="no">eur</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"b$"</span>, <span class="no">sample_name</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">2</span>))
-
-<span class="co"># Fitting the interaction graphs on the EUR data </span>
-<span class="no">ga</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ess/man/fit_components.html">fit_components</a></span>(<span class="no">eur_a</span>, <span class="kw">comp</span> <span class="kw">=</span> <span class="no">haps</span>, <span class="kw">trace</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">2</span>))</pre></body></html></div>
+<p>We peak at data:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">eur</span>, <span class="kw">n_extra</span> <span class="kw">=</span> <span class="fl">0</span>)</pre></body></html></div>
+<pre><code>## # A tibble: 1,006 x 304
+##    sample_name pop_meta rs28529526 rs10134526 rs260694 rs11123719 rs11691107
+##    &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;     
+##  1 HG00096a    EUR      G          C          T        T          C         
+##  2 HG00097a    EUR      G          T          T        C          C         
+##  3 HG00099a    EUR      G          C          T        T          C         
+##  4 HG00100a    EUR      G          C          T        T          C         
+##  5 HG00101a    EUR      G          C          T        T          C         
+##  6 HG00102a    EUR      G          C          T        T          C         
+##  7 HG00103a    EUR      G          C          T        C          C         
+##  8 HG00105a    EUR      G          T          T        C          C         
+##  9 HG00106a    EUR      G          C          T        C          C         
+## 10 HG00107a    EUR      G          C          T        T          C         
+## # … with 996 more rows, and 297 more variables</code></pre>
+<p>We now fit the interaction graphs for each chromosome copy. We use <code>fit_components</code> since we know, that SNPs between haplotypes are independent. This also makes the procedure much faster.</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">ga</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ess/man/fit_components.html">fit_components</a></span>(<span class="no">eur_a</span>, <span class="kw">comp</span> <span class="kw">=</span> <span class="no">haps</span>, <span class="kw">trace</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="no">gb</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ess/man/fit_components.html">fit_components</a></span>(<span class="no">eur_b</span>, <span class="kw">comp</span> <span class="kw">=</span> <span class="no">haps</span>, <span class="kw">trace</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="co"># print(ga)</span>
-<span class="co"># plot(ga, vertex.size = 1)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">ga</span>)</pre></body></html></div>
+<pre><code>##  A Decomposable Graph With 
+##  ------------------------- 
+##   Nodes: 302 
+##   Edges: 234 / 45451 
+##   Cliques: 161 
+##    - max: 4 
+##    - min: 1 
+##    - avg: 2.18 
+##   &lt;gengraph, list&gt; 
+##  -------------------------</code></pre>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">ga</span>, <span class="kw">vertex.size</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">vertex.label</span> <span class="kw">=</span> <span class="fl">NA</span>)</pre></body></html></div>
+<p><img src="genetic_example_files/figure-html/unnamed-chunk-2-1.png" width="576" style="display: block; margin: auto;"></p>
+</div>
+<div id="example-1---testing-which-observations-within-data-are-outliers" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example-1---testing-which-observations-within-data-are-outliers" class="anchor"></a>Example 1 - Testing which observations within data are outliers</h2>
+<p>Fitting the model:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="co"># Only 500 simulations is used here to exeplify</span>
+<span class="co"># The default number of simulations is 10,000</span>
+<span class="no">m1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_a</span>, <span class="no">ga</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="fl">500</span>) <span class="co"># consider using more cores (ncores argument)</span>
+<span class="no">m2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_b</span>, <span class="no">gb</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="fl">500</span>) <span class="co"># consider using more cores (ncores argument)</span>
+<span class="no">m</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_mixed_outlier.html">fit_mixed_outlier</a></span>(<span class="no">m1</span>, <span class="no">m2</span>)</pre></body></html></div>
+<p>Model information:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">m</span>)</pre></body></html></div>
+<pre><code>## 
+##  -------------------------------- 
+##   Simulations: 500 
+##   Variables: 302 
+##   Observations: 503 
+##   Estimated mean: 482.36 
+##   Estimated variance: 345.85 
+##  --------------------------------
+##   Critical value: 516.8367 
+##   Alpha: 0.05 
+##   &lt;mixed_outlier, outlier, outlier_model, list&gt; 
+##  --------------------------------</code></pre>
+<p>The distribution of the test statistic:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">m</span>)</pre></body></html></div>
+<p><img src="genetic_example_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>Locating the outliers:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">outs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/outliers.html">outliers</a></span>(<span class="no">m</span>)
+<span class="no">eur_a_outs</span> <span class="kw">&lt;-</span> <span class="no">eur_a</span>[<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="no">outs</span>), ]
+<span class="no">eur_b_outs</span> <span class="kw">&lt;-</span> <span class="no">eur_b</span>[<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="no">outs</span>), ]
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">eur_a_outs</span>, <span class="kw">n_extra</span> <span class="kw">=</span> <span class="fl">0</span>)</pre></body></html></div>
+<pre><code>## # A tibble: 19 x 302
+##    rs28529526 rs10134526 rs260694 rs11123719 rs11691107 rs12469721 rs3101043
+##    &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;    
+##  1 G          C          T        T          C          A          C        
+##  2 G          C          T        C          C          T          T        
+##  3 G          C          T        T          C          T          T        
+##  4 G          C          T        C          C          A          T        
+##  5 G          T          T        T          C          A          T        
+##  6 G          C          T        C          C          T          T        
+##  7 G          T          T        T          C          A          C        
+##  8 G          C          T        C          C          A          C        
+##  9 G          C          T        T          C          A          C        
+## 10 G          C          T        C          C          T          C        
+## 11 G          C          T        T          C          T          C        
+## 12 G          C          T        C          C          A          T        
+## 13 G          C          T        T          C          T          T        
+## 14 G          C          T        T          T          T          T        
+## 15 G          C          T        T          C          A          C        
+## 16 G          C          T        T          C          T          T        
+## 17 G          C          T        T          C          T          C        
+## 18 G          T          T        T          C          T          C        
+## 19 G          T          T        T          C          A          T        
+## # … with 295 more variables</code></pre>
+<p>Retrieving the deviance test statistic for individual observations:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">x1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">eur_a_outs</span>[<span class="fl">1</span>, ], <span class="no">eur_b_outs</span>[<span class="fl">1</span>, ])
+<span class="no">x2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">eur_a</span>[<span class="fl">1</span>, ], <span class="no">eur_b</span>[<span class="fl">1</span>, ])
+<span class="no">dev1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/deviance.html">deviance</a></span>(<span class="no">m</span>, <span class="no">x1</span>) <span class="co"># falls within the critical region in the plot (the red area)</span>
+<span class="no">dev2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/deviance.html">deviance</a></span>(<span class="no">m</span>, <span class="no">x2</span>) <span class="co"># falls within the acceptable region in the plot</span>
 
-<span class="co"># Testing if an American is an outlier in Europe</span>
-
-<span class="no">amr</span> <span class="kw">&lt;-</span> <span class="no">tgp_dat</span> <span class="kw">%&gt;%</span>
+<span class="no">dev1</span></pre></body></html></div>
+<pre><code>## [1] 537.9733</code></pre>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">dev2</span></pre></body></html></div>
+<pre><code>## [1] 496.799</code></pre>
+<div class="sourceCode"><html><body><pre class="r"><span class="co"># Retrieving the pvalues</span>
+<span class="fu"><a href="../reference/pval.html">pval</a></span>(<span class="no">m</span>, <span class="no">dev1</span>)</pre></body></html></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/pval.html">pval</a></span>(<span class="no">m</span>, <span class="no">dev2</span>)</pre></body></html></div>
+<pre><code>## [1] 0.208</code></pre>
+</div>
+<div id="example-2---testing-if-a-new-observation-is-an-outlier" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example-2---testing-if-a-new-observation-is-an-outlier" class="anchor"></a>Example 2 - Testing if a new observation is an outlier</h2>
+<p>Testing if an American is an outlier in Europe:</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">amr</span> <span class="kw">&lt;-</span> <span class="no">tgp_dat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">pop_meta</span> <span class="kw">==</span> <span class="st">"AMR"</span>)
 
 <span class="no">z1</span>  <span class="kw">&lt;-</span> <span class="no">amr</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"a$"</span>, <span class="no">sample_name</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">haps</span>))) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>()
 
 <span class="no">z2</span>  <span class="kw">&lt;-</span> <span class="no">amr</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"b$"</span>, <span class="no">sample_name</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">haps</span>))) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>()
 
-<span class="co"># The following takes a couple of minutes</span>
-<span class="no">m1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_a</span>, <span class="no">ga</span>, <span class="no">z1</span>) <span class="co"># consider using more cores (ncores argument)</span>
-<span class="no">m2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_b</span>, <span class="no">gb</span>, <span class="no">z2</span>) <span class="co"># consider using more cores (ncores argument)</span>
-<span class="no">m</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_mixed_outlier.html">fit_mixed_outlier</a></span>(<span class="no">m1</span>,<span class="no">m2</span>)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">m</span>)</pre></body></html></div>
+<span class="co"># Only 500 simulations is used here to exemplify</span>
+<span class="co"># The default number of simulations is 10,000</span>
+<span class="no">m3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_a</span>, <span class="no">ga</span>, <span class="no">z1</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="fl">500</span>) <span class="co"># consider using more cores (ncores argument)</span>
+<span class="no">m4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_outlier.html">fit_outlier</a></span>(<span class="no">eur_b</span>, <span class="no">gb</span>, <span class="no">z2</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="fl">500</span>) <span class="co"># consider using more cores (ncores argument)</span>
+<span class="no">m5</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_mixed_outlier.html">fit_mixed_outlier</a></span>(<span class="no">m3</span>, <span class="no">m4</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">m5</span>)</pre></body></html></div>
 <pre><code>## 
 ##  -------------------------------- 
-##   Simulations: 10000 
+##   Simulations: 500 
 ##   Variables: 302 
-##   Observations: 1008 
-##   Estimated mean: 481.87 
-##   Estimated variance: 323.94 
+##   Observations: 504 
+##   Estimated mean: 483.14 
+##   Estimated variance: 341.9 
 ##  --------------------------------
-##   Critical value: 512.4727 
+##   Critical value: 516.6007 
 ##   Deviance: 508.0499 
-##   P-value: 0.0784 
+##   P-value: 0.098 
 ##   Alpha: 0.05 
 ##   &lt;mixed_outlier, novelty, outlier_model, list&gt; 
 ##  --------------------------------</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">m</span>)</pre></body></html></div>
-<p><img src="genetic_example_files/figure-html/unnamed-chunk-1-1.png" width="700"> Thus, <code>z</code> does not deviate significantly from the Europe database. The red area depicts the <span class="math inline">\(0.05\)</span> significance level and the dotted line is the observed deviance of <code>z</code> (508.0498712). This is not a surprise, since Americans and Europeans have many similarities.</p>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">m5</span>)</pre></body></html></div>
+<p><img src="genetic_example_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>Thus, <code>z</code> does not deviate significantly from the Europe database. The red area depicts the <span class="math inline">\(0.05\)</span> significance level and the dotted line is the observed deviance of <code>z</code> (508.0498712). This is not a complete surprise, since Americans and Europeans have many similarities.</p>
+</div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

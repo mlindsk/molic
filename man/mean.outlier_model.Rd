@@ -11,6 +11,9 @@
 
 \item{...}{Not used (for S3 compatibility)}
 }
+\value{
+The mean of the deviance test statistic of \code{x}
+}
 \description{
 Estimated mean of deviance statistic \code{T(Y)}
 }

@@ -83,16 +83,20 @@ make_observation_info <- function(models) {
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatability)
+#' @return No return value, called for side effects
 #' @export
 print.outlier_model <- function(x, ...) {
 
   cls <- paste0("<", paste0(class(x), collapse = ", "), ">")
 
+  nc <- if (inherits(x, "mixed_outlier")) ncol(x$A$A1) else ncol(x$A)
+  nr <- if (inherits(x, "mixed_outlier")) nrow(x$A$A1) else nrow(x$A)
+  
   cat(
     "\n --------------------------------",
     "\n  Simulations:",         length(x$sims),
-    "\n  Variables:",           ncol(x$A),
-    "\n  Observations:",        nrow(x$A),
+    "\n  Variables:",           nc,
+    "\n  Observations:",        nr,
     "\n  Estimated mean:",      round(x$mu, 2),
     "\n  Estimated variance:",  round(x$sigma, 2),
     "\n --------------------------------\n"
@@ -124,8 +128,10 @@ print.outlier_model <- function(x, ...) {
 #' This function calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic which is also called the deviance
 #'
 #' @param x A \code{outlier_model} object
-#' @param y An observation (name character vector)
+#' @param y An observation (named character vector). If \code{x} is of class \code{mixed_outlier}
+#' it should be a \code{data.frame} with two rows.
 #' @param ... Not used (for S3 compatibility)
+#' @return The deviance test statistic of \code{y} based on the model \code{x}
 #' @export
 deviance <- function(x, y, ...) {
   UseMethod("deviance")
@@ -137,26 +143,48 @@ deviance.outlier_model <- function(x, y,...) {
   2 * (TY(y, x$cms, x$sms) - Hx_(nrow(x$A))) # D(y)
 }
 
+#' @rdname deviance
+#' @export
+deviance.mixed_outlier <- function(x, y,...) {
+  y1  <- unlist(y[1, ])
+  y2  <- unlist(y[2, ])
+  TY1 <- 2 * (TY(y1, x$cms$cms1, x$sms$sms1) - Hx_(nrow(x$A$A1)))
+  TY2 <- 2 * (TY(y2, x$cms$cms2, x$sms$sms2) - Hx_(nrow(x$A$A2)))
+  TY1 + TY2
+}
+
 
 #' Detect Outliers
 #'
-#' Find the outliers in some data given an outlier model
+#' Find the outliers some given data based on an outlier model
 #'
 #' @param x A \code{outlier} object
-#' @param d Character matrix (data)
 #' @param alpha Sigficance level
+#' @return Vector of logicals referring to the indicies in the data
+#' used to call \code{x} for which the observations are outliers.
 #' @export
-outliers <- function(x, d, alpha = 0.05) UseMethod("outliers")
+outliers <- function(x, alpha = 0.05) UseMethod("outliers")
 
 #' @rdname outliers
 #' @export
-outliers.outlier <- function(x, d, alpha = 0.05) {
-  .map_lgl(1:nrow(d), function(i) {
-    zi <- unlist(d[i, ])
+outliers.outlier <- function(x, alpha = 0.05) {
+  .map_lgl(1:nrow(x$A), function(i) {
+    zi <- unlist(x$A[i, ])
     pv <- pval(x, deviance(x, zi))
     pv <= alpha
   })  
 }
+
+#' @rdname outliers
+#' @export
+outliers.mixed_outlier <- function(x, alpha = 0.05) {
+  .map_lgl(1:nrow(x$A$A1), function(i) {
+    dev <- deviance(x, rbind(x$A$A1[i, ], x$A$A2[i, ]))
+    pv <- pval(x, dev)
+    pv <= alpha
+  })  
+}
+
 
 #' Plot Distribution of Test Statistic
 #'
@@ -172,6 +200,7 @@ outliers.outlier <- function(x, d, alpha = 0.05) {
 #' the hypothesis that the observation is an outlier cannot be rejected. Notice however,
 #' if there is no dotted line, this simply means, that the observed test statistic is
 #' larger than all values and it would disturb the plot if included.
+#' @return No return value, called for side effects
 #' @export
 plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
 
@@ -218,9 +247,7 @@ plot.outlier_model <- function(x, sig_col = "#FF0000A0", ...) {
 #' that the observed deviance is larger than all values and it would disturb the plot if included.
 #'
 #' No extra arguments \code{...} are implement at the moment.
-#' @examples
-#' # TBA
-#' 1L
+#' @return No return value, called for side effects
 #' @export
 plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
   z_dev_pval <- make_observation_info(x)
@@ -282,6 +309,7 @@ plot.multiple_models <- function(x, sig_col = "#FF0000A0", ...) {
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatibility)
+#' @return The cumulative distribution of deviance test statistic of \code{x}
 #' @export
 cdf <- function(x, ...) UseMethod("cdf")
 
@@ -297,6 +325,7 @@ cdf.outlier_model <- function(x, ...) return(x$cdf)
 #' @param dz The deviance of the observation \code{z}.
 #' @param ... Not used (for S3 compatibility)
 #' @details The value \code{dz} can be obtained used the \code{deviance} function.
+#' @return The p-value of deviance test statistic of \code{x}
 #' @seealso \code{\link{deviance}}
 #' @export
 pval <- function(x, dz, ...) UseMethod("pval")
@@ -313,6 +342,7 @@ pval.outlier_model <- function(x, dz, ...) return(1 - x$cdf(dz))
 #' @param m A \code{outlier_model} object
 #' @param alpha Significance level (between \code{0} and \code{1})
 #' @details The value \code{dz} can be obtained used the \code{deviance} function.
+#' @return The critical value in the distribution of deviance test statistic of \code{m}
 #' @seealso \code{\link{deviance}}
 #' @export
 critval <- function(m, alpha = 0.05) UseMethod("critval")
@@ -326,12 +356,14 @@ critval.outlier_model <- function(m, alpha = 0.05) {
     tol = 0.0001)$root
 }
 
+
 #' Mean
 #'
 #' Estimated mean of deviance statistic \code{T(Y)}
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatibility)
+#' @return The mean of the deviance test statistic of \code{x}
 #' @export
 mean.outlier_model <- function(x, ...) return(x$mu)
 
@@ -341,6 +373,7 @@ mean.outlier_model <- function(x, ...) return(x$mu)
 #'
 #' @param x A \code{outlier_model} object
 #' @param ... Not used (for S3 compatibility)
+#' @return The variance of the deviance test statistic of \code{x}
 #' @export
 variance <- function(x) UseMethod("variance")
 

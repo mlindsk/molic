@@ -13,6 +13,9 @@
 
 \item{...}{Extra arguments. See details.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 A plot method to show the approximated deviance distribution of multiple models
 }
@@ -24,8 +27,4 @@ is an outlier cannot be rejected. Notice however, if there is no dotted line, th
 that the observed deviance is larger than all values and it would disturb the plot if included.
 
 No extra arguments \code{...} are implement at the moment.
-}
-\examples{
-# TBA
-1L
 }

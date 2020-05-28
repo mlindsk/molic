@@ -3,18 +3,25 @@
 \name{deviance}
 \alias{deviance}
 \alias{deviance.outlier_model}
+\alias{deviance.mixed_outlier}
 \title{Calculate deviance}
 \usage{
 deviance(x, y, ...)
 
 \method{deviance}{outlier_model}(x, y, ...)
+
+\method{deviance}{mixed_outlier}(x, y, ...)
 }
 \arguments{
 \item{x}{A \code{outlier_model} object}
 
-\item{y}{An observation (name character vector)}
+\item{y}{An observation (named character vector). If \code{x} is of class \code{mixed_outlier}
+it should be a \code{data.frame} with two rows.}
 
 \item{...}{Not used (for S3 compatibility)}
+}
+\value{
+The deviance test statistic of \code{y} based on the model \code{x}
 }
 \description{
 This function calculates the affine value \code{T(y)} of \code{-2 log} likelihood-ratio statistic which is also called the deviance

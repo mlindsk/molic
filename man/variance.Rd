@@ -14,6 +14,9 @@ variance(x)
 
 \item{...}{Not used (for S3 compatibility)}
 }
+\value{
+The variance of the deviance test statistic of \code{x}
+}
 \description{
 Estimated variance of the deviance statistic \code{T(Y)}
 }

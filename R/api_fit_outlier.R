@@ -25,32 +25,42 @@ outlier_model <- function(A,
 #' Detecting outliers within a dataset or test if a new (novel) observation is an outlier.
 #'
 #' @param A Character matrix or data.frame. All values must be limited to a single character.
-#' @param adj Adjacency list or \code{gengraph} object of a decomposable graph. See package \code{ess} for \code{gengraph} objects.
-#' @param z Named vector (same names as \code{colnames(A)}) or \code{NULL}. See details. Values must be limited to a single character.
+#' @param adj Adjacency list or \code{gengraph} object of a decomposable graph.
+#' See package \code{ess} for \code{gengraph} objects.
+#' @param z Named vector (same names as \code{colnames(A)}) or \code{NULL}. See details.
+#' Values must be limited to a single character.
 #' @param alpha Significance level
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
-#' @param validate Logical. If true, it checks if \code{A} only has single character values and converts it if not.
-#' @details If the goal is to detect outliers within \code{A} set \code{z} to \code{NULL}; this procedure is most
-#' often just referred to as outlier detection. Once \code{fit_outlier} has been called in this situation, one can
-#' exploit the \code{outliers} function to get the indicies for which observations in \code{A} that are outliers.
-#' See the examples.
+#' @param validate Logical. If true, it checks if \code{A} only has single character
+#' values and converts it if not.
+#' @return A \code{outlier_model} object with either \code{novelty} or \code{outlier}
+#' as child classes. These are used for different purposes. See the details
+#' @details If the goal is to detect outliers within \code{A} set \code{z} to \code{NULL};
+#' this procedure is most often just referred to as outlier detection. Once \code{fit_outlier}
+#' has been called in this situation, one can exploit the \code{outliers} function to get the
+#' indicies for which observations in \code{A} that are outliers. See the examples.
 #'
-#' On the other hand, if the goal is test if the new unseen observation \code{z} is an outlier in\code{A},
-#' then supply a named vector to \code{z}.
+#' On the other hand, if the goal is test if the new unseen observation \code{z} is an outlier
+#' in\code{A}, then supply a named vector to \code{z}.
 #'
-#' All values must be limited to a single character representation; if not, the function will internally convert to one such
-#' representation. The reason for this, is a speedup in runtime performance. One can also use the exported
-#' function \code{to_single_chars} on \code{A} in advance and set \code{validate} to \code{FALSE}. 
+#' All values must be limited to a single character representation; if not, the function will
+#' internally convert to one such representation. The reason for this, is a speedup in runtime
+#' performance. One can also use the exported function \code{to_single_chars} on \code{A} in
+#' advance and set \code{validate} to \code{FALSE}. 
 #'
-#' The \code{adj} object is most typically found using \code{fit_graph} from the ess package. But the user can supply
-#' an adjacency list, just a named \code{list}, of their own choice if needed.
-#' @seealso \code{\link{fit_mixed_outlier}}, \code{\link{fit_multiple_models}}, \code{\link{outliers}}
+#' The \code{adj} object is most typically found using \code{fit_graph} from the \code{ess}
+#' package. But the user can supply an adjacency list, just a named \code{list}, of their own
+#' choice if needed.
+#' @seealso \code{\link{fit_mixed_outlier}}, \code{\link{fit_multiple_models}},
+#' \code{\link{outliers}}, \code{\link{pval}}, \code{\link{deviance}}
 #' @examples
+#'
 #' \dontrun{
 #'
 #' library(dplyr)
 #' library(ess) # For the fit_graph function
+#' set.seed(7)   # For reproducibility
 #' 
 #' # Psoriasis patients
 #' d <- derma %>%
@@ -60,15 +70,18 @@ outlier_model <- function(A,
 #'
 #' # Fitting the interaction graph
 #' g <- fit_graph(d, trace = FALSE) # see package ess for details
+#' plot(g)
 #'
 #' # -----------------------------------------------------------
 #' #                        EXAMPLE 1
 #' #    Testing which observations within d are outliers
 #' # -----------------------------------------------------------
 #'
-#' m1 <- fit_outlier(d, g)
+#' # Only 1000 simulations is used here to exeplify
+#' # The default number of simulations is 10,000
+#' m1 <- fit_outlier(d, g, nsim = 1000)
 #' print(m1)
-#' outs  <- outliers(m1, d)
+#' outs  <- outliers(m1)
 #' douts <- d[which(outs), ]
 #' douts
 #'
@@ -79,7 +92,7 @@ outlier_model <- function(A,
 #' # In order to conclude on the hypothesis, one finds the critical value and verify if the
 #' # test statistic is greater or less than this.
 #'
-#' # Retrieving the test statistic for the individual observations
+#' # Retrieving the test statistic for individual observations
 #' x1 <- douts[1, ] %>% unlist()
 #' x2 <- d[1, ] %>% unlist()
 #' dev1 <- deviance(m1, x1) # falls within the critical region in the plot (the red area)
@@ -88,7 +101,6 @@ outlier_model <- function(A,
 #' dev1
 #' dev2
 #'
-#' 
 #' # Retrieving the pvalues
 #' pval(m1, dev1)
 #' pval(m1, dev2)
@@ -106,9 +118,11 @@ outlier_model <- function(A,
 #'   unlist()
 #' 
 #' # Test if z is an outlier in class "psoriasis"
-#' m2 <- fit_outlier(d, g, z)
+#' # Only 1000 simulations is used here to exeplify
+#' # The default number of simulations is 10,000
+#' m2 <- fit_outlier(d, g, z, nsim = 1000)
 #' print(m2)
-#' plot(m2) # The vertical dotted line indicates the (deviance) test statistic of z
+#' plot(m2)
 #'
 #' # Notice that m2 is of class 'novelty'. The term novelty detection
 #' # is sometimes used in the litterature when the goal is to verify
@@ -117,8 +131,9 @@ outlier_model <- function(A,
 #' # Retrieving the test statistic and pvalue for z
 #' dz <- deviance(m2, z)
 #' pval(m2, dz)
-#' 
+#'
 #' }
+#' 
 #' @export
 fit_outlier <- function(A,
                         adj,
@@ -138,7 +153,7 @@ fit_outlier <- function(A,
   novelty_detection <- !is.null(z)
   
   if (novelty_detection) {
-    if (all(colnames(A) != names(z))) {
+    if (!identical(colnames(A), names(z))) {
       stop("Variables in A and the names of z is not in agreement!")
     }
   }
@@ -172,24 +187,32 @@ fit_outlier <- function(A,
 
 #' Mixed Outlier Test
 #'
-#' A convenient function for outlier detection with mixed information
+#' A function for outlier detection with mixed, but independen, information
 #'
 #' @param m1 An object returned from \code{fit_outlier}
 #' @param m2 An object returned from \code{fit_outlier}
+#' @details It is assumed that the input data to \code{m1} and \code{m2}
+#' holds information about the same observation in corresponding rows.
+#' Thus, the two datasets must also be of same dimension.
+#' @return An object of type \code{mixed_outlier} with \code{novelty} or \code{outlier}
+#' as child classes. These are used for different purposes. See \code{fit_outlier}.
+#' @seealso \code{\link{fit_outlier}}, \code{\link{fit_multiple_models}},
+#' \code{\link{outliers}}, \code{\link{pval}}, \code{\link{deviance}}
 #' @examples
-#' \dontrun{
 #'
-#' # See the package vignette "Outlier Detection in Genetic Data"
-#' for an introduction to the genetic data used here
+#' \dontrun{
 #' 
 #' library(dplyr)
 #' library(ess)  # for fit_components
+#' set.seed(7)   # for reproducibility
+#'
+#' ## Data
 #'
 #' # The components - here microhaplotypes
 #' haps <- tgp_haps
 #' 
 #' # All the Europeans
-#' eur  <- tgp_dat %>%
+#' eur <- tgp_dat %>%
 #'   as_tibble() %>%
 #'   filter(pop_meta == "EUR")
 #' 
@@ -202,22 +225,53 @@ fit_outlier <- function(A,
 #'   filter(grepl("b$", sample_name)) %>%
 #'   select(-c(1:2))
 #'
-#' 
-#' # Fitting the interaction graphs on the EUR data 
-#' ga <- fit_components(eur_a, comp = haps, trace = FALSE, as_gen = TRUE)
-#' gb <- fit_components(eur_b, comp = haps, trace = FALSE, as_gen = TRUE)
 #'
-#' # as_gen = TRUE converts the graph to a gengraph,
-#' # the main object for graphs in the ess package.
-#' # This enables plotting and print info of the graph:
+#' # Fitting the interaction graphs on the EUR data 
+#' ga <- fit_components(eur_a, comp = haps, trace = FALSE)
+#' gb <- fit_components(eur_b, comp = haps, trace = FALSE)
 #' print(ga)
 #' plot(ga, vertex.size = 1)
+#' 
+#' ## ---------------------------------------------------------
+#' ##                       EXAMPLE 1
+#' ##   Testing which observations within data are outliers
+#' ## ---------------------------------------------------------
 #'
+#' # Only 500 simulations is used here to exeplify
+#' # The default number of simulations is 10,000
+#' m1 <- fit_outlier(eur_a, ga, nsim = 500) # consider using more cores (ncores argument)
+#' m2 <- fit_outlier(eur_b, gb, nsim = 500) # consider using more cores (ncores argument)
+#' m  <- fit_mixed_outlier(m1, m2)
+#' print(m)
+#' plot(m)
+#'
+#' outs <- outliers(m)
+#' eur_a_outs <- eur_a[which(outs), ]
+#' eur_b_outs <- eur_b[which(outs), ]
+#'
+#' # Retrieving the test statistic for individual observations
+#' x1 <- rbind(eur_a_outs[1, ], eur_b_outs[1, ])
+#' x2 <- rbind(eur_a[1, ], eur_b[1, ])
+#' dev1 <- deviance(m, x1) # falls within the critical region in the plot (the red area)
+#' dev2 <- deviance(m, x2) # falls within the acceptable region in the plot
+#'
+#' dev1
+#' dev2
+#'
+#' # Retrieving the pvalues
+#' pval(m, dev1)
+#' pval(m, dev2)
+#' 
+#'
+#' ## ---------------------------------------------------------
+#' ##                       EXAMPLE 2
+#' ##      Testing if a new observation is an outlier
+#' ## ---------------------------------------------------------
+#' 
 #' # Testing if an American is an outlier in Europe
 #' amr <- tgp_dat %>%
 #'   as_tibble() %>%
 #'   filter(pop_meta == "AMR")
-#'
 #' 
 #' z1  <- amr %>%
 #'   filter(grepl("a$", sample_name)) %>% 
@@ -230,26 +284,31 @@ fit_outlier <- function(A,
 #'   select(unname(unlist(haps))) %>%
 #'   slice(1) %>%
 #'   unlist()
-#' 
-#' m1 <- fit_outlier(eur_a, ga, z1) # consider using more cores (ncores argument)
-#' m2 <- fit_outlier(eur_b, gb, z2) # consider using more cores (ncores argument)
-#' m  <- fit_mixed_outlier(m1,m2)
-#' plot(m)
-#' 
+#'
+#' # Only 500 simulations is used here to exemplify
+#' # The default number of simulations is 10,000
+#' m3 <- fit_outlier(eur_a, ga, z1, nsim = 500) # consider using more cores (ncores argument)
+#' m4 <- fit_outlier(eur_b, gb, z2, nsim = 500) # consider using more cores (ncores argument)
+#' m5  <- fit_mixed_outlier(m3, m4)
+#' print(m5)
+#' plot(m5)
+#'
 #' }
+#' 
 #' @export
 fit_mixed_outlier <- function(m1, m2) {
-  if (m1$alpha != m2$alpha) warning("Significance levels are different for model m1 and m2!")
-  m     <- convolute(m1, m2)
-  dev   <- m1$dev + m2$dev
-  m     <- new_mixed_outlier(m, dev, pval(m, dev), critval(m, m1$alpha), m1$alpha)
-  return(m)
+  if (!identical(class(m1), class(m2))) stop("m1 and m2 are different models")
+  if (!identical(dim(m1$A), dim(m2$A))) stop("m1 and m2 was generated from data with different dimensixons")
+  m        <- convolute(m1, m2)
+  type     <- ifelse(inherits(m1, "novelty"), "novelty", "outlier")
+  dev      <- if (type == "novelty") m1$dev + m2$dev else NULL
+  new_mixed_outlier(m, type, m1$alpha, dev)
 }
 
 
 #' Fit Multiple Models
 #'
-#' A convenient wrapper function to conduct multiple novelty tests for a new observation
+#' Conduct multiple novelty tests for a new observation
 #'
 #' @param A A character matrix or data.frame
 #' @param z Named vector (same names as \code{colnames(A)} but without the class variable)
@@ -262,9 +321,20 @@ fit_mixed_outlier <- function(m1, m2) {
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
 #' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
+#' @return An object of type \code{multiple_models}; a list of of \code{novely} objects from which one
+#' can query pvalues etc. for outlierdetection.
+#' @seealso \code{\link{fit_outlier}}, \code{\link{fit_mixed_outlier}}
 #' @examples
-#' # TBA
-#' 1L
+#'
+#' \dontrun{
+#' 
+#' z <- unlist(derma[1, -which(colnames(derma) == "ES")])
+#' m <- fit_multiple_models(derma, z, "ES", nsim = 500, trace = FALSE, validate = FALSE)
+#' plot(m)
+#' print(m)
+#'
+#' }
+#' 
 #' @export
 fit_multiple_models <- function(A,
                                 z,
@@ -281,7 +351,7 @@ fit_multiple_models <- function(A,
 
   if (!(is.data.frame(A) || is.matrix(A))) stop("A must be either a matrix or a data.frame", call. = FALSE)
   if (is.matrix(A)) A <- as.data.frame(A)
-  
+
   res_vec  <- A[, response, drop = TRUE]
   res_lvls <- unique(res_vec)
   

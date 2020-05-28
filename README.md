@@ -2,7 +2,7 @@ molic: Multivariate OutLIerdetection In Contingency tables
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![R build status](https://github.com/mlindsk/molic/workflows/R-CMD-check/badge.svg)](https://github.com/mlindsk/molic/actions) [![status](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8/status.svg)](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8) [![DOI](https://zenodo.org/badge/177729633.svg)](https://zenodo.org/badge/latestdoi/177729633)
+[![R build status](https://github.com/mlindsk/molic/workflows/R-CMD-check/badge.svg)](https://github.com/mlindsk/molic/actions) ![](https://www.r-pkg.org/badges/version/molic?color=green)\](<https://cran.r-project.org/package=molic>) [![status](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8/status.svg)](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8) [![DOI](https://zenodo.org/badge/177729633.svg)](https://zenodo.org/badge/latestdoi/177729633)
 
 About molic
 -----------
@@ -33,6 +33,7 @@ The following examples are from the documentation of `fit_outlier`.
 library(dplyr)
 library(molic)
 library(ess)   # For the fit_graph function
+set.seed(7)    # For reproducibility
 ```
 
 Psoriasis patients
@@ -66,26 +67,27 @@ print(m1)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 111 
-#>   Estimated mean: 43.37 
-#>   Estimated variance: 34.38 
+#>   Estimated mean: 42.49 
+#>   Estimated variance: 33.29 
 #>  --------------------------------
-#>   Critical value: 53.97784 
+#>   Critical value: 52.80927 
 #>   Alpha: 0.05 
 #>   <outlier, outlier_model, list> 
 #>  --------------------------------
-outs  <- outliers(m1, d)
+outs  <- outliers(m1)
 douts <- d[which(outs), ]
 douts
-#> # A tibble: 7 x 34
+#> # A tibble: 8 x 34
 #>   c1    c2    c3    c4    c5    c6    c7    c8    c9    c10   c11   h12   h13  
 #>   <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
 #> 1 2     1     2     2     2     0     0     0     0     0     0     0     1    
 #> 2 2     2     2     3     3     0     0     0     0     2     0     0     1    
 #> 3 3     3     2     2     1     0     0     0     0     1     0     0     2    
-#> 4 3     2     1     2     2     0     0     0     2     2     0     0     0    
-#> 5 1     1     1     1     1     0     0     0     2     2     0     0     0    
-#> 6 2     3     1     2     1     0     0     0     0     0     0     0     0    
-#> 7 3     2     3     0     0     0     0     0     3     0     0     0     0    
+#> 4 1     1     1     1     1     0     0     0     1     1     0     0     0    
+#> 5 3     2     1     2     2     0     0     0     2     2     0     0     0    
+#> 6 1     1     1     1     1     0     0     0     2     2     0     0     0    
+#> 7 2     3     1     2     1     0     0     0     0     0     0     0     0    
+#> 8 3     2     3     0     0     0     0     0     3     0     0     0     0    
 #> # … with 21 more variables: h14 <chr>, h15 <chr>, h16 <chr>, h17 <chr>,
 #> #   h18 <chr>, h19 <chr>, h20 <chr>, h21 <chr>, h22 <chr>, h23 <chr>,
 #> #   h24 <chr>, h25 <chr>, h26 <chr>, h27 <chr>, h28 <chr>, h29 <chr>,
@@ -117,9 +119,9 @@ Retrieving the p-values:
 
 ``` r
 pval(m1, dev1)
-#> [1] 0.0103
+#> [1] 0.0091
 pval(m1, dev2)
-#> [1] 0.1041
+#> [1] 0.0781
 ```
 
 Example 2 - Testing if a new observation is an outlier
@@ -145,16 +147,16 @@ print(m2)
 #>   Simulations: 10000 
 #>   Variables: 34 
 #>   Observations: 112 
-#>   Estimated mean: 42.86 
-#>   Estimated variance: 36.39 
+#>   Estimated mean: 43.73 
+#>   Estimated variance: 36.53 
 #>  --------------------------------
-#>   Critical value: 53.78714 
+#>   Critical value: 54.61947 
 #>   Deviance: 77.92978 
 #>   P-value: 0 
 #>   Alpha: 0.05 
 #>   <novelty, outlier_model, list> 
 #>  --------------------------------
-plot(m2) # The vertical dotted line indicates the (deviance) test statistic of z
+plot(m2)
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />

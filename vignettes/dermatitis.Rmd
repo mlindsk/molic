@@ -108,13 +108,20 @@ plot(m)
 ```
 The red area is the critical region (here 5%) and the dotted line is the observed test statistic (the deviance) of $y$. Since the dotted line is outside the critical region, we cannot reject that $y$ has psoriasis.
 
+## Testing all Hypothesis Simultaneously
+
 We can use the `fit_multiple_models` function to test all six hypothesis as follows.
 
-```{r fit_multiple_models, fig.align='center', message = FALSE, warning = FALSE, fig.width=5, fig.height=2.8,fig.show='hold'}
+```{r echo = TRUE, eval = FALSE, fit_multiple_models, fig.align='center', message = FALSE, warning = FALSE, fig.width=5, fig.height=2.8,fig.show='hold'}
 set.seed(300718)
 mm <- fit_multiple_models(derma, y, "ES", q = 0,trace = FALSE) 
 plot(mm)
 ```
+
+```{r mult_models, echo = FALSE, out.width = "70%", fig.align = 'center'}
+knitr::include_graphics("multiple_models.png")
+```
+
 Thus, we cannot reject that $y$ has either psoriasis, seboreic dermatitis or pityriasis rosea. This is conservative compared to classification methods and hence a little safer. The medical expert should proceed the investigation from here.
 
 ## References

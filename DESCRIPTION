@@ -6,7 +6,9 @@ Authors@R:
            family = "Lindskou",
            role = c("aut", "cre"),
            email = "mads@math.aau.dk")
-Description: The molic package is designed fo outlier detection in, possibly high-dimensional, categorical data.
+Description: The molic package is designed for outlier detection in, possibly
+	     high-dimensional, categorical data following Mads Lindskou et al.
+	     (2019) <doi:10.1111/sjos.12407>.
 Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
@@ -15,10 +17,8 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp,
-    Matrix,
     doParallel,
     foreach,
-    igraph,
     ggplot2,
     ggridges,
     ess
@@ -27,7 +27,8 @@ Suggests:
     rmarkdown,
     pander,
     dplyr,
-    testthat
+    testthat,
+    igraph
 VignetteBuilder: knitr
 RoxygenNote: 7.1.0
 SystemRequirements: C++11

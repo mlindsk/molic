@@ -3,19 +3,24 @@
 \name{outliers}
 \alias{outliers}
 \alias{outliers.outlier}
+\alias{outliers.mixed_outlier}
 \title{Detect Outliers}
 \usage{
-outliers(x, d, alpha = 0.05)
+outliers(x, alpha = 0.05)
 
-\method{outliers}{outlier}(x, d, alpha = 0.05)
+\method{outliers}{outlier}(x, alpha = 0.05)
+
+\method{outliers}{mixed_outlier}(x, alpha = 0.05)
 }
 \arguments{
 \item{x}{A \code{outlier} object}
 
-\item{d}{Character matrix (data)}
-
 \item{alpha}{Sigficance level}
 }
+\value{
+Vector of logicals referring to the indicies in the data
+used to call \code{x} for which the observations are outliers.
+}
 \description{
-Find the outliers in some data given an outlier model
+Find the outliers some given data based on an outlier model
 }

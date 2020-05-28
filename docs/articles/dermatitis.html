@@ -193,11 +193,16 @@ H_6: &amp; y \text{ has pityriasis rubra pilaris}
 <a href="#plotting-the-approximated-density-of-the-test-statistic" class="anchor"></a>Plotting the Approximated Density of the Test Statistic</h2>
 <div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">m</span>)</pre></body></html></div>
 <p><img src="dermatitis_files/figure-html/plot_outlier-1.png" width="480" style="display: block; margin: auto;"> The red area is the critical region (here 5%) and the dotted line is the observed test statistic (the deviance) of <span class="math inline">\(y\)</span>. Since the dotted line is outside the critical region, we cannot reject that <span class="math inline">\(y\)</span> has psoriasis.</p>
+</div>
+<div id="testing-all-hypothesis-simultaneously" class="section level2">
+<h2 class="hasAnchor">
+<a href="#testing-all-hypothesis-simultaneously" class="anchor"></a>Testing all Hypothesis Simultaneously</h2>
 <p>We can use the <code>fit_multiple_models</code> function to test all six hypothesis as follows.</p>
 <div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">300718</span>)
 <span class="no">mm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fit_multiple_models.html">fit_multiple_models</a></span>(<span class="no">derma</span>, <span class="no">y</span>, <span class="st">"ES"</span>, <span class="kw">q</span> <span class="kw">=</span> <span class="fl">0</span>,<span class="kw">trace</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">mm</span>)</pre></body></html></div>
-<p><img src="dermatitis_files/figure-html/fit_multiple_models-1.png" width="480" style="display: block; margin: auto;"> Thus, we cannot reject that <span class="math inline">\(y\)</span> has either psoriasis, seboreic dermatitis or pityriasis rosea. This is conservative compared to classification methods and hence a little safer. The medical expert should proceed the investigation from here.</p>
+<p><img src="multiple_models.png" width="70%" style="display: block; margin: auto;"></p>
+<p>Thus, we cannot reject that <span class="math inline">\(y\)</span> has either psoriasis, seboreic dermatitis or pityriasis rosea. This is conservative compared to classification methods and hence a little safer. The medical expert should proceed the investigation from here.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">

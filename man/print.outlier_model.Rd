@@ -11,6 +11,9 @@
 
 \item{...}{Not used (for S3 compatability)}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 A print method for \code{outlier_model} objects
 }

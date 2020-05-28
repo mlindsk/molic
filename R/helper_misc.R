@@ -23,7 +23,8 @@ only_single_chars <- function(A) {
 ## ---------------------------------------------------------
 #' Convert discrete values into a single character representation
 #'
-#' Convert all values in a data frame or matrix of characters to a single character representation
+#' Convert all values in a data frame or matrix of characters to a single
+#' character representation
 #'
 #' @param x Data frame or matrix of characters
 #' @examples

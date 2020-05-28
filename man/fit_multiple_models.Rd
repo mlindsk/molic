@@ -41,10 +41,25 @@ fit_multiple_models(
 
 \item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
 }
+\value{
+An object of type \code{multiple_models}; a list of of \code{novely} objects from which one
+can query pvalues etc. for outlierdetection.
+}
 \description{
-A convenient wrapper function to conduct multiple novelty tests for a new observation
+Conduct multiple novelty tests for a new observation
 }
 \examples{
-# TBA
-1L
+
+\dontrun{
+
+z <- unlist(derma[1, -which(colnames(derma) == "ES")])
+m <- fit_multiple_models(derma, z, "ES", nsim = 500, trace = FALSE, validate = FALSE)
+plot(m)
+print(m)
+
+}
+
+}
+\seealso{
+\code{\link{fit_outlier}}, \code{\link{fit_mixed_outlier}}
 }

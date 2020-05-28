@@ -16,6 +16,9 @@ pval(x, dz, ...)
 
 \item{...}{Not used (for S3 compatibility)}
 }
+\value{
+The p-value of deviance test statistic of \code{x}
+}
 \description{
 Calculate the p-value for obtaining \code{ty_new} under \code{H_0}
 }

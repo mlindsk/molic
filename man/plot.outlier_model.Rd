@@ -13,6 +13,9 @@
 
 \item{...}{Not used. For S3 compatability.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 A plot method to show the approximated distribution of the deviance test statistic
 }
