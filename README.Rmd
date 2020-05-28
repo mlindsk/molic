@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 ```
 
 [![R build status](https://github.com/mlindsk/molic/workflows/R-CMD-check/badge.svg)](https://github.com/mlindsk/molic/actions)
-![](https://www.r-pkg.org/badges/version/molic?color=green)](https://cran.r-project.org/package=molic)
+[![](https://www.r-pkg.org/badges/version/molic?color=green)](https://cran.r-project.org/package=molic)
 [![status](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8/status.svg)](https://joss.theoj.org/papers/9fa65ced7bf3db01343d68b4488196d8)
 [![DOI](https://zenodo.org/badge/177729633.svg)](https://zenodo.org/badge/latestdoi/177729633)
 
