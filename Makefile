@@ -18,7 +18,7 @@ install:
 	Rscript -e "devtools::install()"
 
 test:
-	Rscript -e "devtools::test('~/Documents/phd/publications/molic')"
+	Rscript -e "devtools::test('~/Documents/phd/software/molic')"
 
 readme:
 	Rscript -e "rmarkdown::render('README.Rmd')"

@@ -119,7 +119,7 @@ RIV n_b(RIV & na, RIV & b) {
 
 // [[Rcpp::export]]
 VD subtract_one(VD x) {
-  std::transform(x.begin(), x.end(), x.begin(), [](int i) {
+  std::transform(x.begin(), x.end(), x.begin(), [](double i) {
     return i - 1.0;
   });
   return x;
@@ -127,9 +127,9 @@ VD subtract_one(VD x) {
 
 // [[Rcpp::export]]
 VD Gx_(VD x) {
-  std::transform(x.begin(), x.end(), x.begin(), [](int j) {
+  std::transform(x.begin(), x.end(), x.begin(), [](double j) {
     if ( j > 0 ) {
-      return j*log(j);
+      return j*std::log(j);
     } else {
       return 0.0;
     }

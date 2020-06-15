@@ -59,29 +59,29 @@ choice if needed.
 }
 \examples{
 
-\dontrun{
-
 library(dplyr)
-library(ess) # For the fit_graph function
+library(ess)  # For the fit_graph function
 set.seed(7)   # For reproducibility
 
 # Psoriasis patients
 d <- derma \%>\%
   filter(ES == "psoriasis") \%>\%
-  select(-ES) \%>\%
+  select(1:20) \%>\% # only a subset of data is used to exemplify
   as_tibble()
 
 # Fitting the interaction graph
-g <- fit_graph(d, trace = FALSE) # see package ess for details
+# see package ess for details
+g <- fit_graph(d, trace = FALSE) 
+plot(g)
 
 # -----------------------------------------------------------
 #                        EXAMPLE 1
 #    Testing which observations within d are outliers
 # -----------------------------------------------------------
 
-# Only 1000 simulations is used here to exeplify
+# Only 500 simulations is used here to exeplify
 # The default number of simulations is 10,000
-m1 <- fit_outlier(d, g, nsim = 1000)
+m1 <- fit_outlier(d, g, nsim = 500)
 print(m1)
 outs  <- outliers(m1)
 douts <- d[which(outs), ]
@@ -115,16 +115,16 @@ pval(m1, dev2)
 # An observation from class "chronic dermatitis"
 z <- derma \%>\%
   filter(ES == "chronic dermatitis") \%>\%
-  select(-ES) \%>\%
+  select(1:20) \%>\%
   slice(1) \%>\%
   unlist()
 
 # Test if z is an outlier in class "psoriasis"
-# Only 1000 simulations is used here to exeplify
+# Only 500 simulations is used here to exeplify
 # The default number of simulations is 10,000
-m2 <- fit_outlier(d, g, z, nsim = 1000)
+m2 <- fit_outlier(d, g, z, nsim = 500)
 print(m2)
-plot(m2)
+plot(m2) # Try using more simulations and the complete derma data
 
 # Notice that m2 is of class 'novelty'. The term novelty detection
 # is sometimes used in the litterature when the goal is to verify
@@ -133,8 +133,6 @@ plot(m2)
 # Retrieving the test statistic and pvalue for z
 dz <- deviance(m2, z)
 pval(m2, dz)
-
-}
 
 }
 \seealso{

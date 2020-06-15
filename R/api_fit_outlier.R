@@ -56,20 +56,19 @@ outlier_model <- function(A,
 #' \code{\link{outliers}}, \code{\link{pval}}, \code{\link{deviance}}
 #' @examples
 #'
-#' \dontrun{
-#'
 #' library(dplyr)
-#' library(ess) # For the fit_graph function
+#' library(ess)  # For the fit_graph function
 #' set.seed(7)   # For reproducibility
 #' 
 #' # Psoriasis patients
 #' d <- derma %>%
 #'   filter(ES == "psoriasis") %>%
-#'   select(-ES) %>%
+#'   select(1:20) %>% # only a subset of data is used to exemplify
 #'   as_tibble()
 #'
 #' # Fitting the interaction graph
-#' g <- fit_graph(d, trace = FALSE) # see package ess for details
+#' # see package ess for details
+#' g <- fit_graph(d, trace = FALSE) 
 #' plot(g)
 #'
 #' # -----------------------------------------------------------
@@ -77,9 +76,9 @@ outlier_model <- function(A,
 #' #    Testing which observations within d are outliers
 #' # -----------------------------------------------------------
 #'
-#' # Only 1000 simulations is used here to exeplify
+#' # Only 500 simulations is used here to exeplify
 #' # The default number of simulations is 10,000
-#' m1 <- fit_outlier(d, g, nsim = 1000)
+#' m1 <- fit_outlier(d, g, nsim = 500)
 #' print(m1)
 #' outs  <- outliers(m1)
 #' douts <- d[which(outs), ]
@@ -113,16 +112,16 @@ outlier_model <- function(A,
 #' # An observation from class "chronic dermatitis"
 #' z <- derma %>%
 #'   filter(ES == "chronic dermatitis") %>%
-#'   select(-ES) %>%
+#'   select(1:20) %>%
 #'   slice(1) %>%
 #'   unlist()
 #' 
 #' # Test if z is an outlier in class "psoriasis"
-#' # Only 1000 simulations is used here to exeplify
+#' # Only 500 simulations is used here to exeplify
 #' # The default number of simulations is 10,000
-#' m2 <- fit_outlier(d, g, z, nsim = 1000)
+#' m2 <- fit_outlier(d, g, z, nsim = 500)
 #' print(m2)
-#' plot(m2)
+#' plot(m2) # Try using more simulations and the complete derma data
 #'
 #' # Notice that m2 is of class 'novelty'. The term novelty detection
 #' # is sometimes used in the litterature when the goal is to verify
@@ -132,8 +131,6 @@ outlier_model <- function(A,
 #' dz <- deviance(m2, z)
 #' pval(m2, dz)
 #'
-#' }
-#' 
 #' @export
 fit_outlier <- function(A,
                         adj,
@@ -200,8 +197,6 @@ fit_outlier <- function(A,
 #' \code{\link{outliers}}, \code{\link{pval}}, \code{\link{deviance}}
 #' @examples
 #'
-#' \dontrun{
-#' 
 #' library(dplyr)
 #' library(ess)  # for fit_components
 #' set.seed(7)   # for reproducibility
@@ -209,10 +204,12 @@ fit_outlier <- function(A,
 #' ## Data
 #'
 #' # The components - here microhaplotypes
-#' haps <- tgp_haps
+#' haps <- tgp_haps[1:5] # only a subset of data is used to exemplify
+#' dat <- tgp_dat %>%
+#'        select(pop_meta, sample_name, all_of(unname(unlist(haps))))
 #' 
 #' # All the Europeans
-#' eur <- tgp_dat %>%
+#' eur <- dat %>%
 #'   as_tibble() %>%
 #'   filter(pop_meta == "EUR")
 #' 
@@ -263,13 +260,15 @@ fit_outlier <- function(A,
 #' pval(m, dev2)
 #' 
 #'
+#' \donttest{
+#'  
 #' ## ---------------------------------------------------------
 #' ##                       EXAMPLE 2
 #' ##      Testing if a new observation is an outlier
 #' ## ---------------------------------------------------------
 #' 
 #' # Testing if an American is an outlier in Europe
-#' amr <- tgp_dat %>%
+#' amr <- dat %>%
 #'   as_tibble() %>%
 #'   filter(pop_meta == "AMR")
 #' 
@@ -289,7 +288,7 @@ fit_outlier <- function(A,
 #' # The default number of simulations is 10,000
 #' m3 <- fit_outlier(eur_a, ga, z1, nsim = 500) # consider using more cores (ncores argument)
 #' m4 <- fit_outlier(eur_b, gb, z2, nsim = 500) # consider using more cores (ncores argument)
-#' m5  <- fit_mixed_outlier(m3, m4)
+#' m5 <- fit_mixed_outlier(m3, m4)
 #' print(m5)
 #' plot(m5)
 #'
@@ -326,15 +325,20 @@ fit_mixed_outlier <- function(m1, m2) {
 #' @seealso \code{\link{fit_outlier}}, \code{\link{fit_mixed_outlier}}
 #' @examples
 #'
-#' \dontrun{
+#' library(dplyr)
+#' set.seed(1)
 #' 
-#' z <- unlist(derma[1, -which(colnames(derma) == "ES")])
-#' m <- fit_multiple_models(derma, z, "ES", nsim = 500, trace = FALSE, validate = FALSE)
+#' # A patient with psoriasis
+#' z <- unlist(derma[2, 1:10])
+#' 
+#' d <- derma[, c(names(z), "ES")] %>%
+#'      filter(ES %in% c("chronic dermatitis", "psoriasis"))
+#' 
+#' m <- fit_multiple_models(d, z, "ES", nsim = 1000, trace = FALSE, validate = FALSE)
+#'
 #' plot(m)
 #' print(m)
 #'
-#' }
-#' 
 #' @export
 fit_multiple_models <- function(A,
                                 z,

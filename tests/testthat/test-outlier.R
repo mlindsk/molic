@@ -4,7 +4,7 @@ test_that("an observation is an outlier", {
   vars <- sample(3:300, 15)
   eur  <- tgp_dat %>%
     filter(pop_meta == "EUR") %>%
-    select(vars) 
+    select(all_of(vars)) 
 
   z  <- tgp_dat %>%
     filter(pop_meta == "AFR") %>%
@@ -13,7 +13,7 @@ test_that("an observation is an outlier", {
     unlist()
 
   g <- ess::fit_graph(eur, trace = FALSE)$G_adj
-  m <- fit_outlier(as.matrix(eur), z, g)
+  m <- fit_outlier(eur, g, z)
   
   expect_true(m$pval <= 0.05)
 })

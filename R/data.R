@@ -7,7 +7,7 @@
 #' 
 #' @docType data
 #' 
-#' @references \href{https://archive.ics.uci.edu/ml/datasets/dermatology}{Dermatology Data Set}
+#' @references \url{https://archive.ics.uci.edu/ml/datasets/dermatology}
 "derma"
 
 

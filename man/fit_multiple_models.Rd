@@ -50,14 +50,19 @@ Conduct multiple novelty tests for a new observation
 }
 \examples{
 
-\dontrun{
+library(dplyr)
+set.seed(1)
 
-z <- unlist(derma[1, -which(colnames(derma) == "ES")])
-m <- fit_multiple_models(derma, z, "ES", nsim = 500, trace = FALSE, validate = FALSE)
+# A patient with psoriasis
+z <- unlist(derma[2, 1:10])
+
+d <- derma[, c(names(z), "ES")] \%>\%
+     filter(ES \%in\% c("chronic dermatitis", "psoriasis"))
+
+m <- fit_multiple_models(d, z, "ES", nsim = 1000, trace = FALSE, validate = FALSE)
+
 plot(m)
 print(m)
-
-}
 
 }
 \seealso{

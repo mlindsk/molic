@@ -1,14 +1,13 @@
 Package: molic
-Title: Multivariate Oulier Detection in Contingency Tables
+Title: Multivariate Outlier Detection in Contingency Tables
 Version: 2.0.0
 Authors@R: 
     person(given = "Mads",
            family = "Lindskou",
            role = c("aut", "cre"),
            email = "mads@math.aau.dk")
-Description: The molic package is designed for outlier detection in, possibly
-	     high-dimensional, categorical data following Mads Lindskou et al.
-	     (2019) <doi:10.1111/sjos.12407>.
+Description: Outlier detection in, possibly high-dimensional, categorical data following
+	     Mads Lindskou et al. (2019) <doi:10.1111/sjos.12407>.
 Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8

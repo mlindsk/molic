@@ -34,15 +34,14 @@ You can install the current stable release of the package by using the `devtools
 devtools::install_github("mlindsk/molic", build_vignettes = FALSE)
 ```
 
-## Getting Started
+## Articles
 
-See the following:
-
- - [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html): The "behind the scenes" of the model.
+ - [The Outlier Model](https://mlindsk.github.io/molic/articles/outlier_intro.html): The "behind the scenes" of the outlier model.
  - [Detecting Skin Diseases](https://mlindsk.github.io/molic/articles/dermatitis.html): An example of using the outlier model to detect skin diseases. 
  - [Outlier Detection in Genetic Data](https://mlindsk.github.io/molic/articles/genetic_example.html): An example of how to conduct an outlier analysis in genetic data.
 
-The following examples are from the documentation of `fit_outlier`.
+
+## Example of Usage
 
 ```{r}
 library(dplyr)
@@ -71,25 +70,32 @@ This plot shows how the variables are 'associated' in the psoriasis class; see [
 
 ## Example 1 - Testing which observations within the psoriasis class are outliers
 
+We start by fitting an outlier model taking advantage of the fittet graph `g` which holds information about the psoriasis patients. The print method prints information about the distribution of the (deviance) test statistic.
+
 ```{r}
 m1 <- fit_outlier(d, g)
 print(m1)
+```
+
+Notice that `m1` is of class 'outlier'. This means, that the procedure has tested which observations _within_ the data are outliers. This method is most often just referred to as outlier detection. The outliers, on a 5% significance level, can now be extracted as follows:
+
+```{r}
 outs  <- outliers(m1)
 douts <- d[which(outs), ]
 douts
 ```
 
-Notice that `m1` is of class 'outlier'. This means, that the procedure has tested which observations _within_ the data are outliers. This method is most often just referred to as outlier detection. The following plot is the distribution of the test statistic. Think of a simple t-test, where the distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one finds the critical value and verify if the test statistic is greater or less than this.
+The following plot is the distribution of the test statistic corresponding to the information retrieved using the print method. One can think of a simple t-test, where the distribution of the test statistic is a t-distribution. In order to conclude on the hypothesis, one finds the critical value and verify if the test statistic is greater or less than this.
 
 ```{r}
 plot(m1) 
 ```
 
-Retrieving the test statistic for the individual observations:
+Retrieving the observed test statistics for the individual observations:
 
 ```{r}
-x1 <- douts[1, ] %>% unlist()
-x2 <- d[1, ] %>% unlist()
+x1   <- douts[1, ] %>% unlist() # an outlier
+x2   <- d[1, ] %>% unlist()     # an inliner
 dev1 <- deviance(m1, x1) # falls within the critical region in the plot (the red area)
 dev2 <- deviance(m1, x2) # falls within the acceptable region in the plot
 dev1
@@ -105,7 +111,7 @@ pval(m1, dev2)
 
 ## Example 2 - Testing if a new observation is an outlier
  
-An observation from class "chronic dermatitis": 
+An observation from class chronic dermatitis: 
 
 ```{r}
 z <- derma %>%
@@ -115,7 +121,7 @@ z <- derma %>%
   unlist()
 ```
 
-Test if z is an outlier in class "psoriasis":
+Test if z is an outlier in class psoriasis:
 
 ```{r}
 m2 <- fit_outlier(d, g, z)
@@ -123,7 +129,7 @@ print(m2)
 plot(m2)
 ```
 
-Notice that m2 is of class 'novelty'. The term _novelty detection_ is sometimes used in the litterature when the goal is to verify if a new unseen observation is an outlier in a homogeneous dataset. Retrieving the test statistic and p-value for `z`
+Notice that `m2` is of class 'novelty'. The term _novelty detection_ is sometimes used in the litterature when the goal is to verify if a new unseen observation is an outlier in a homogeneous dataset. Retrieving the test statistic and p-value for `z`
 
 ```{r}
 dz <- deviance(m2, z)

@@ -211,14 +211,52 @@ can query pvalues etc. for outlierdetection.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
 
-<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='no'>derma</span>[<span class='fl'>1</span>, -<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>derma</span>) <span class='kw'>==</span> <span class='st'>"ES"</span>)])
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_multiple_models</span>(<span class='no'>derma</span>, <span class='no'>z</span>, <span class='st'>"ES"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>validate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m</span>)
+<span class='co'># A patient with psoriasis</span>
+<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='no'>derma</span>[<span class='fl'>2</span>, <span class='fl'>1</span>:<span class='fl'>10</span>])
 
-}</div></pre>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>derma</span>[, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>z</span>), <span class='st'>"ES"</span>)] <span class='kw'>%&gt;%</span>
+     <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>ES</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"chronic dermatitis"</span>, <span class='st'>"psoriasis"</span>))
+
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_multiple_models</span>(<span class='no'>d</span>, <span class='no'>z</span>, <span class='st'>"ES"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>validate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; <span class='message'>Picking joint bandwidth of 0.619</span></div><div class='img'><img src='fit_multiple_models-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; $psoriasis
+#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 1000 
+#&gt;   Variables: 10 
+#&gt;   Observations: 112 
+#&gt;   Estimated mean: 13.79 
+#&gt;   Estimated variance: 10.17 
+#&gt;  --------------------------------
+#&gt;   Critical value: 19.44595 
+#&gt;   Deviance: 17.96901 
+#&gt;   P-value: 0.092 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;novelty, outlier_model, list&gt; 
+#&gt;  --------------------------------
+#&gt; 
+#&gt; $`chronic dermatitis`
+#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 1000 
+#&gt;   Variables: 10 
+#&gt;   Observations: 49 
+#&gt;   Estimated mean: 10.61 
+#&gt;   Estimated variance: 9.64 
+#&gt;  --------------------------------
+#&gt;   Critical value: 18.83373 
+#&gt;   Deviance: 34.74245 
+#&gt;   P-value: 0 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;novelty, outlier_model, list&gt; 
+#&gt;  --------------------------------
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "multiple_models" "list"           </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

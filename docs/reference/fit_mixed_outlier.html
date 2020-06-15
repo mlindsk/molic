@@ -169,19 +169,24 @@ Thus, the two datasets must also be of same dimension.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ess</span>)  <span class='co'># for fit_components</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>7</span>)   <span class='co'># for reproducibility</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ess</span>)  <span class='co'># for fit_components</span></div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'ess':</span>
+#&gt; <span class='message'>  method     from</span>
+#&gt; <span class='message'>  print.tree cli </span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>7</span>)   <span class='co'># for reproducibility</span>
 
 <span class='co'>## Data</span>
 
 <span class='co'># The components - here microhaplotypes</span>
-<span class='no'>haps</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_haps</span>
+<span class='no'>haps</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_haps</span>[<span class='fl'>1</span>:<span class='fl'>5</span>] <span class='co'># only a subset of data is used to exemplify</span>
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span> <span class='kw'>%&gt;%</span>
+       <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>pop_meta</span>, <span class='no'>sample_name</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>all_of</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unname.html'>unname</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='no'>haps</span>))))
 
 <span class='co'># All the Europeans</span>
-<span class='no'>eur</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span> <span class='kw'>%&gt;%</span>
+<span class='no'>eur</span> <span class='kw'>&lt;-</span> <span class='no'>dat</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>as_tibble</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"EUR"</span>)
 
@@ -198,9 +203,16 @@ Thus, the two datasets must also be of same dimension.</p>
 <span class='co'># Fitting the interaction graphs on the EUR data </span>
 <span class='no'>ga</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ess/man/fit_components.html'>fit_components</a></span>(<span class='no'>eur_a</span>, <span class='kw'>comp</span> <span class='kw'>=</span> <span class='no'>haps</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 <span class='no'>gb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ess/man/fit_components.html'>fit_components</a></span>(<span class='no'>eur_b</span>, <span class='kw'>comp</span> <span class='kw'>=</span> <span class='no'>haps</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>ga</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ga</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>ga</span>)</div><div class='output co'>#&gt;  A Decomposable Graph With 
+#&gt;  ------------------------- 
+#&gt;   Nodes: 17 
+#&gt;   Edges: 18 / 136 
+#&gt;   Cliques: 7 
+#&gt;    - max: 4 
+#&gt;    - min: 1 
+#&gt;    - avg: 2.57 
+#&gt;   &lt;gengraph, list&gt; 
+#&gt;  -------------------------</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ga</span>, <span class='kw'>vertex.size</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='input'>
 <span class='co'>## ---------------------------------------------------------</span>
 <span class='co'>##                       EXAMPLE 1</span>
 <span class='co'>##   Testing which observations within data are outliers</span>
@@ -211,9 +223,18 @@ Thus, the two datasets must also be of same dimension.</p>
 <span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_outlier.html'>fit_outlier</a></span>(<span class='no'>eur_a</span>, <span class='no'>ga</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>) <span class='co'># consider using more cores (ncores argument)</span>
 <span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_outlier.html'>fit_outlier</a></span>(<span class='no'>eur_b</span>, <span class='no'>gb</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>) <span class='co'># consider using more cores (ncores argument)</span>
 <span class='no'>m</span>  <span class='kw'>&lt;-</span> <span class='fu'>fit_mixed_outlier</span>(<span class='no'>m1</span>, <span class='no'>m2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m</span>)
-
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 500 
+#&gt;   Variables: 17 
+#&gt;   Observations: 503 
+#&gt;   Estimated mean: 25.95 
+#&gt;   Estimated variance: 20.47 
+#&gt;  --------------------------------
+#&gt;   Critical value: 34.03098 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;mixed_outlier, outlier, outlier_model, list&gt; 
+#&gt;  --------------------------------</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m</span>)</div><div class='img'><img src='fit_mixed_outlier-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='fit_mixed_outlier-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='no'>outs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='outliers.html'>outliers</a></span>(<span class='no'>m</span>)
 <span class='no'>eur_a_outs</span> <span class='kw'>&lt;-</span> <span class='no'>eur_a</span>[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>outs</span>), ]
 <span class='no'>eur_b_outs</span> <span class='kw'>&lt;-</span> <span class='no'>eur_b</span>[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>outs</span>), ]
@@ -224,13 +245,11 @@ Thus, the two datasets must also be of same dimension.</p>
 <span class='no'>dev1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m</span>, <span class='no'>x1</span>) <span class='co'># falls within the critical region in the plot (the red area)</span>
 <span class='no'>dev2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m</span>, <span class='no'>x2</span>) <span class='co'># falls within the acceptable region in the plot</span>
 
-<span class='no'>dev1</span>
-<span class='no'>dev2</span>
-
+<span class='no'>dev1</span></div><div class='output co'>#&gt; [1] 39.01466</div><div class='input'><span class='no'>dev2</span></div><div class='output co'>#&gt; [1] 27.03032</div><div class='input'>
 <span class='co'># Retrieving the pvalues</span>
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m</span>, <span class='no'>dev1</span>)
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m</span>, <span class='no'>dev2</span>)
+<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m</span>, <span class='no'>dev1</span>)</div><div class='output co'>#&gt; [1] 0.008</div><div class='input'><span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m</span>, <span class='no'>dev2</span>)</div><div class='output co'>#&gt; [1] 0.372</div><div class='input'>
 
+<span class='co'># \donttest{</span>
 
 <span class='co'>## ---------------------------------------------------------</span>
 <span class='co'>##                       EXAMPLE 2</span>
@@ -238,7 +257,7 @@ Thus, the two datasets must also be of same dimension.</p>
 <span class='co'>## ---------------------------------------------------------</span>
 
 <span class='co'># Testing if an American is an outlier in Europe</span>
-<span class='no'>amr</span> <span class='kw'>&lt;-</span> <span class='no'>tgp_dat</span> <span class='kw'>%&gt;%</span>
+<span class='no'>amr</span> <span class='kw'>&lt;-</span> <span class='no'>dat</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>as_tibble</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>pop_meta</span> <span class='kw'>==</span> <span class='st'>"AMR"</span>)
 
@@ -258,11 +277,24 @@ Thus, the two datasets must also be of same dimension.</p>
 <span class='co'># The default number of simulations is 10,000</span>
 <span class='no'>m3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_outlier.html'>fit_outlier</a></span>(<span class='no'>eur_a</span>, <span class='no'>ga</span>, <span class='no'>z1</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>) <span class='co'># consider using more cores (ncores argument)</span>
 <span class='no'>m4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_outlier.html'>fit_outlier</a></span>(<span class='no'>eur_b</span>, <span class='no'>gb</span>, <span class='no'>z2</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>) <span class='co'># consider using more cores (ncores argument)</span>
-<span class='no'>m5</span>  <span class='kw'>&lt;-</span> <span class='fu'>fit_mixed_outlier</span>(<span class='no'>m3</span>, <span class='no'>m4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m5</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m5</span>)
+<span class='no'>m5</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_mixed_outlier</span>(<span class='no'>m3</span>, <span class='no'>m4</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m5</span>)</div><div class='output co'>#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 500 
+#&gt;   Variables: 17 
+#&gt;   Observations: 504 
+#&gt;   Estimated mean: 26.74 
+#&gt;   Estimated variance: 22.3 
+#&gt;  --------------------------------
+#&gt;   Critical value: 35.1841 
+#&gt;   Deviance: 38.50607 
+#&gt;   P-value: 0.016 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;mixed_outlier, novelty, outlier_model, list&gt; 
+#&gt;  --------------------------------</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m5</span>)</div><div class='img'><img src='fit_mixed_outlier-3.png' alt='' width='700' height='433' /></div><div class='input'>
+# }
 
-}</div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

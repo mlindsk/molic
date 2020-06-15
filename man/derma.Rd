@@ -17,6 +17,6 @@ attribute has been discretized. The class variable has six levels; each
 describing a skin disease.
 }
 \references{
-\href{https://archive.ics.uci.edu/ml/datasets/dermatology}{Dermatology Data Set}
+\url{https://archive.ics.uci.edu/ml/datasets/dermatology}
 }
 \keyword{datasets}

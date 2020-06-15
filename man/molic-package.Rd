@@ -6,7 +6,8 @@
 \alias{molic-package}
 \title{molic: Multivariate Ouliterdetection In Contingency Tables}
 \description{
-The molic package is designed for outlier detection in, possibly highdimensional, categorical data
+Outlier detection in, possibly highdimensional, categorical data following
+Mads Lindskou et al. (2019) <doi:10.1111/sjos.12407>.
 }
 \seealso{
 Useful links:

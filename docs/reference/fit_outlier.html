@@ -210,34 +210,58 @@ choice if needed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ess</span>) <span class='co'># For the fit_graph function</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ess</span>)  <span class='co'># For the fit_graph function</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>7</span>)   <span class='co'># For reproducibility</span>
 
 <span class='co'># Psoriasis patients</span>
 <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>derma</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>ES</span> <span class='kw'>==</span> <span class='st'>"psoriasis"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>ES</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fl'>1</span>:<span class='fl'>20</span>) <span class='kw'>%&gt;%</span> <span class='co'># only a subset of data is used to exemplify</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>as_tibble</a></span>()
 
 <span class='co'># Fitting the interaction graph</span>
-<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ess/man/fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='co'># see package ess for details</span>
-
+<span class='co'># see package ess for details</span>
+<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ess/man/fit_graph.html'>fit_graph</a></span>(<span class='no'>d</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>g</span>)</div><div class='img'><img src='fit_outlier-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># -----------------------------------------------------------</span>
 <span class='co'>#                        EXAMPLE 1</span>
 <span class='co'>#    Testing which observations within d are outliers</span>
 <span class='co'># -----------------------------------------------------------</span>
 
-<span class='co'># Only 1000 simulations is used here to exeplify</span>
+<span class='co'># Only 500 simulations is used here to exeplify</span>
 <span class='co'># The default number of simulations is 10,000</span>
-<span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1000</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m1</span>)
-<span class='no'>outs</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='outliers.html'>outliers</a></span>(<span class='no'>m1</span>)
+<span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m1</span>)</div><div class='output co'>#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 500 
+#&gt;   Variables: 20 
+#&gt;   Observations: 111 
+#&gt;   Estimated mean: 26.3 
+#&gt;   Estimated variance: 23.7 
+#&gt;  --------------------------------
+#&gt;   Critical value: 35.35006 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;outlier, outlier_model, list&gt; 
+#&gt;  --------------------------------</div><div class='input'><span class='no'>outs</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='outliers.html'>outliers</a></span>(<span class='no'>m1</span>)
 <span class='no'>douts</span> <span class='kw'>&lt;-</span> <span class='no'>d</span>[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>outs</span>), ]
-<span class='no'>douts</span>
-
+<span class='no'>douts</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 12 x 20</span><span>
+#&gt;    c1    c2    c3    c4    c5    c6    c7    c8    c9    c10   c11   h12   h13  
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> 2     1     2     2     2     0     0     0     0     0     0     0     1    
+#&gt; </span><span style='color: #555555;'> 2</span><span> 2     2     2     3     3     0     0     0     0     2     0     0     1    
+#&gt; </span><span style='color: #555555;'> 3</span><span> 3     3     2     2     1     0     0     0     0     1     0     0     2    
+#&gt; </span><span style='color: #555555;'> 4</span><span> 1     1     1     1     1     0     0     0     1     1     0     0     0    
+#&gt; </span><span style='color: #555555;'> 5</span><span> 1     1     1     1     1     0     0     0     2     2     0     0     0    
+#&gt; </span><span style='color: #555555;'> 6</span><span> 1     1     1     1     1     0     1     0     2     3     0     0     0    
+#&gt; </span><span style='color: #555555;'> 7</span><span> 2     3     1     2     1     0     0     0     0     0     0     0     0    
+#&gt; </span><span style='color: #555555;'> 8</span><span> 3     3     2     2     0     0     0     0     2     0     0     0     0    
+#&gt; </span><span style='color: #555555;'> 9</span><span> 1     3     1     0     0     0     0     0     0     0     0     0     0    
+#&gt; </span><span style='color: #555555;'>10</span><span> 3     2     3     0     1     0     0     0     1     2     0     0     0    
+#&gt; </span><span style='color: #555555;'>11</span><span> 3     2     3     2     0     0     0     0     0     2     1     0     0    
+#&gt; </span><span style='color: #555555;'>12</span><span> 2     2     1     1     0     0     0     0     0     2     1     0     0    
+#&gt; </span><span style='color: #555555;'># … with 7 more variables: h14 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, h15 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, h16 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, h17 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   h18 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, h19 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, h20 </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span></div><div class='input'>
 <span class='co'># Notice that m1 is of class 'outlier'. This means, that the procedure has tested which</span>
 <span class='co'># observations _within_ the data are outliers. This method is most often just referred to</span>
 <span class='co'># as outlier detection. The following plot is the distribution of the test statistic. Think</span>
@@ -251,13 +275,9 @@ choice if needed.</p>
 <span class='no'>dev1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m1</span>, <span class='no'>x1</span>) <span class='co'># falls within the critical region in the plot (the red area)</span>
 <span class='no'>dev2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m1</span>, <span class='no'>x2</span>) <span class='co'># falls within the acceptable region in the plot</span>
 
-<span class='no'>dev1</span>
-<span class='no'>dev2</span>
-
+<span class='no'>dev1</span></div><div class='output co'>#&gt; [1] 37.71912</div><div class='input'><span class='no'>dev2</span></div><div class='output co'>#&gt; [1] 34.03639</div><div class='input'>
 <span class='co'># Retrieving the pvalues</span>
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev1</span>)
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev2</span>)
-
+<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev1</span>)</div><div class='output co'>#&gt; [1] 0.01</div><div class='input'><span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m1</span>, <span class='no'>dev2</span>)</div><div class='output co'>#&gt; [1] 0.076</div><div class='input'>
 <span class='co'># -----------------------------------------------------------</span>
 <span class='co'>#                        EXAMPLE 2</span>
 <span class='co'>#         Testing if a new observation is an outlier</span>
@@ -266,26 +286,36 @@ choice if needed.</p>
 <span class='co'># An observation from class "chronic dermatitis"</span>
 <span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='no'>derma</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>ES</span> <span class='kw'>==</span> <span class='st'>"chronic dermatitis"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>ES</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fl'>1</span>:<span class='fl'>20</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>()
 
 <span class='co'># Test if z is an outlier in class "psoriasis"</span>
-<span class='co'># Only 1000 simulations is used here to exeplify</span>
+<span class='co'># Only 500 simulations is used here to exeplify</span>
 <span class='co'># The default number of simulations is 10,000</span>
-<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>, <span class='no'>z</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1000</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m2</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m2</span>)
-
+<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_outlier</span>(<span class='no'>d</span>, <span class='no'>g</span>, <span class='no'>z</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>500</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>m2</span>)</div><div class='output co'>#&gt; 
+#&gt;  -------------------------------- 
+#&gt;   Simulations: 500 
+#&gt;   Variables: 20 
+#&gt;   Observations: 112 
+#&gt;   Estimated mean: 26.79 
+#&gt;   Estimated variance: 25.16 
+#&gt;  --------------------------------
+#&gt;   Critical value: 36.70118 
+#&gt;   Deviance: 55.14169 
+#&gt;   P-value: 0 
+#&gt;   Alpha: 0.05 
+#&gt;   &lt;novelty, outlier_model, list&gt; 
+#&gt;  --------------------------------</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>m2</span>) <span class='co'># Try using more simulations and the complete derma data</span></div><div class='img'><img src='fit_outlier-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Notice that m2 is of class 'novelty'. The term novelty detection</span>
 <span class='co'># is sometimes used in the litterature when the goal is to verify</span>
 <span class='co'># if a new unseen observation is an outlier in a homogen dataset.</span>
 
 <span class='co'># Retrieving the test statistic and pvalue for z</span>
 <span class='no'>dz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='deviance.html'>deviance</a></span>(<span class='no'>m2</span>, <span class='no'>z</span>)
-<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m2</span>, <span class='no'>dz</span>)
-
-}</div></pre>
+<span class='fu'><a href='pval.html'>pval</a></span>(<span class='no'>m2</span>, <span class='no'>dz</span>)</div><div class='output co'>#&gt; [1] 0</div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

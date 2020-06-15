@@ -25,8 +25,6 @@ Thus, the two datasets must also be of same dimension.
 }
 \examples{
 
-\dontrun{
-
 library(dplyr)
 library(ess)  # for fit_components
 set.seed(7)   # for reproducibility
@@ -34,10 +32,12 @@ set.seed(7)   # for reproducibility
 ## Data
 
 # The components - here microhaplotypes
-haps <- tgp_haps
+haps <- tgp_haps[1:5] # only a subset of data is used to exemplify
+dat <- tgp_dat \%>\%
+       select(pop_meta, sample_name, all_of(unname(unlist(haps))))
 
 # All the Europeans
-eur <- tgp_dat \%>\%
+eur <- dat \%>\%
   as_tibble() \%>\%
   filter(pop_meta == "EUR")
 
@@ -88,13 +88,15 @@ pval(m, dev1)
 pval(m, dev2)
 
 
+\donttest{
+ 
 ## ---------------------------------------------------------
 ##                       EXAMPLE 2
 ##      Testing if a new observation is an outlier
 ## ---------------------------------------------------------
 
 # Testing if an American is an outlier in Europe
-amr <- tgp_dat \%>\%
+amr <- dat \%>\%
   as_tibble() \%>\%
   filter(pop_meta == "AMR")
 
@@ -114,7 +116,7 @@ z2  <- amr \%>\%
 # The default number of simulations is 10,000
 m3 <- fit_outlier(eur_a, ga, z1, nsim = 500) # consider using more cores (ncores argument)
 m4 <- fit_outlier(eur_b, gb, z2, nsim = 500) # consider using more cores (ncores argument)
-m5  <- fit_mixed_outlier(m3, m4)
+m5 <- fit_mixed_outlier(m3, m4)
 print(m5)
 plot(m5)
 
