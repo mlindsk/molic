@@ -50,7 +50,7 @@ in\code{A}, then supply a named vector to \code{z}.
 
 All values must be limited to a single character representation; if not, the function will
 internally convert to one such representation. The reason for this, is a speedup in runtime
-performance. One can also use the exported function \code{to_single_chars} on \code{A} in
+performance. One can also use the exported function \code{to_chars} on \code{A} in
 advance and set \code{validate} to \code{FALSE}. 
 
 The \code{adj} object is most typically found using \code{fit_graph} from the \code{ess}

@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 ## About molic
 
-An **R** package to perform outlier detection in contingency tables (i.e. categorical data) using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** also offers algorithms for fitting undirected decomposable graphs. Compute-intensive procedures are implemented using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
+An **R** package to perform outlier detection in contingency tables (i.e. categorical data) using decomposable graphical models (DGMs); models for which the underlying association between all variables can be depicted by an undirected graph. **molic** are designed to work with undirected decomposable graphs returned from `fit_graph` in the [ess](https://github.com/mlindsk/ess) package. Compute-intensive procedures are implemented using [Rcpp](http://www.rcpp.org/)/C++ for better run-time performance.
 
 ## Installation
 

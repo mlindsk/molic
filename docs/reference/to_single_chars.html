@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert discrete values into a single character representation — to_single_chars • molic</title>
+<title>Convert discrete values into a single character representation — to_chars • molic</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Convert discrete values into a single character representation — to_single_chars" />
+<meta property="og:title" content="Convert discrete values into a single character representation — to_chars" />
 <meta property="og:description" content="Convert all values in a data frame or matrix of characters to a single
 character representation" />
 
@@ -132,7 +132,7 @@ character representation" />
     <div class="page-header">
     <h1>Convert discrete values into a single character representation</h1>
     <small class="dont-index">Source: <a href='https://github.com/mlindsk/molic/blob/master/R/helper_misc.R'><code>R/helper_misc.R</code></a></small>
-    <div class="hidden name"><code>to_single_chars.Rd</code></div>
+    <div class="hidden name"><code>to_chars.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -140,7 +140,7 @@ character representation" />
 character representation</p>
     </div>
 
-    <pre class="usage"><span class='fu'>to_single_chars</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>to_chars</span>(<span class='no'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,7 +154,7 @@ character representation</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"11"</span>, <span class='st'>"2"</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2"</span>, <span class='st'>"11"</span>))
-<span class='fu'>to_single_chars</span>(<span class='no'>d</span>)</div><div class='output co'>#&gt;      x   y  
+<span class='fu'>to_chars</span>(<span class='no'>d</span>)</div><div class='output co'>#&gt;      x   y  
 #&gt; [1,] "a" "b"
 #&gt; [2,] "b" "a"</div></pre>
   </div>

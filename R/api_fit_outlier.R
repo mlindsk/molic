@@ -8,7 +8,7 @@ outlier_model <- function(A,
   if (inherits(adj, "gengraph")) adj <- ess::adj_lst(adj)
   if (validate ) {
     if (any(is.na(A))) message("  Note: A has NA values. These have been treated as ordinay values.")
-    if( !only_single_chars(A)) stop("All values in A must be represented as a single character. Use to_single_chars(A)")
+    if( !only_chars(A)) stop("All values in A must be represented as a single character. Use to_chars(A)")
   }
   RIP   <- ess::rip(adj) # the rip (or actually mcs) will check for decomposability here
   cms   <- a_marginals(A, RIP$C)
@@ -46,7 +46,7 @@ outlier_model <- function(A,
 #'
 #' All values must be limited to a single character representation; if not, the function will
 #' internally convert to one such representation. The reason for this, is a speedup in runtime
-#' performance. One can also use the exported function \code{to_single_chars} on \code{A} in
+#' performance. One can also use the exported function \code{to_chars} on \code{A} in
 #' advance and set \code{validate} to \code{FALSE}. 
 #'
 #' The \code{adj} object is most typically found using \code{fit_graph} from the \code{ess}
@@ -162,9 +162,9 @@ fit_outlier <- function(A,
   Az <- if (novelty_detection) rbind(A, z) else A
 
   if (validate) {
-    if( !only_single_chars(Az) ) {
-      message("A has values longer than a single character. to_single_chars() was used to correct this.")
-      Az <- to_single_chars(Az)
+    if( !only_chars(Az) ) {
+      # message("A has values longer than a single character. to_chars() was used to correct this.")
+      Az <- to_chars(Az)
       if (novelty_detection) z <- Az[nrow(Az), ]
     }    
   }

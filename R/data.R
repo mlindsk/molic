@@ -21,7 +21,7 @@
 ## #' In the final version of the data in molic, we have a data frame (of characters)
 ## #' where the last column is the true class of the handwritten digit. All the remaining cells in the first 64 columns was
 ## #' converted to values in {a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p} corresponding to the 16 possibilities. This is needed
-## #' in the outlier model. The to_single_chars() function can be exploited to achieve this for other data sets.
+## #' in the outlier model. The to_chars() function can be exploited to achieve this for other data sets.
 ## #' 
 ## #' @docType data
 ## #' 

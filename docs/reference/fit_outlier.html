@@ -198,7 +198,7 @@ indicies for which observations in <code>A</code> that are outliers. See the exa
 in<code>A</code>, then supply a named vector to <code>z</code>.</p>
 <p>All values must be limited to a single character representation; if not, the function will
 internally convert to one such representation. The reason for this, is a speedup in runtime
-performance. One can also use the exported function <code>to_single_chars</code> on <code>A</code> in
+performance. One can also use the exported function <code>to_chars</code> on <code>A</code> in
 advance and set <code>validate</code> to <code>FALSE</code>.</p>
 <p>The <code>adj</code> object is most typically found using <code>fit_graph</code> from the <code>ess</code>
 package. But the user can supply an adjacency list, just a named <code>list</code>, of their own
