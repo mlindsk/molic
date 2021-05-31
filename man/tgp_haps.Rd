@@ -17,6 +17,6 @@ to colnames of tgp_dat. In other words, tgp_haps is a "haplotype-grouping"
 of the variables in tgp_dat.
 }
 \references{
-\href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
+\href{https://pubmed.ncbi.nlm.nih.gov/26432245/}{1000 Genomes Project}
 }
 \keyword{datasets}

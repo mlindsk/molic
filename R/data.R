@@ -36,7 +36,7 @@
 #' 
 #' @docType data
 #' 
-#' @references \href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
+#' @references \href{https://pubmed.ncbi.nlm.nih.gov/26432245/}{1000 Genomes Project}
 "tgp_dat"
 
 
@@ -49,5 +49,5 @@
 #' 
 #' @docType data
 #' 
-#' @references \href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
+#' @references \href{https://pubmed.ncbi.nlm.nih.gov/26432245/}{1000 Genomes Project}
 "tgp_haps"

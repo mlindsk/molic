@@ -51,11 +51,9 @@ eur_b <- eur \%>\%
   select(-c(1:2))
 
 
-# Fitting the interaction graphs on the EUR data 
+# Fitting the interaction graphs on the EUR data
 ga <- fit_components(eur_a, comp = haps, trace = FALSE)
 gb <- fit_components(eur_b, comp = haps, trace = FALSE)
-print(ga)
-plot(ga, vertex.size = 1)
 
 ## ---------------------------------------------------------
 ##                       EXAMPLE 1

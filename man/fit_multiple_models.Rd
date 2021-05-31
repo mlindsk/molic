@@ -21,17 +21,21 @@ fit_multiple_models(
 \arguments{
 \item{A}{A character matrix or data.frame}
 
-\item{z}{Named vector (same names as \code{colnames(A)} but without the class variable)}
+\item{z}{Named vector. Same names as \code{colnames(A)} but without the
+class variable}
 
 \item{response}{A character with the name of the class variable of interest}
 
 \item{alpha}{The significance level}
 
-\item{type}{Character ("fwd", "bwd", "tree" or "tfwd") - the type of interaction graph to be used}
+\item{type}{Character ("fwd", "bwd", "tree" or "tfwd") - the type of
+interaction graph to be used}
 
-\item{q}{Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)}
+\item{q}{Penalty term in the stopping criterion when fitting the interaction
+graph (\code{0} = AIC and \code{1} = BIC)}
 
-\item{comp}{A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)}
+\item{comp}{A list with character vectors. Each element in the list is a
+component in the graph (using expert knowledge)}
 
 \item{nsim}{Number of simulations}
 
@@ -39,10 +43,12 @@ fit_multiple_models(
 
 \item{trace}{Logical indicating whether or not to trace the procedure}
 
-\item{validate}{Logical. If true, it checks if \code{A} has only single character values and converts it if not.}
+\item{validate}{Logical. If true, it checks if \code{A} has only single
+character values and converts it if not.}
 }
 \value{
-An object of type \code{multiple_models}; a list of of \code{novely} objects from which one
+An object of type \code{multiple_models}; a list of of \code{novely}
+objects from which one
 can query pvalues etc. for outlierdetection.
 }
 \description{

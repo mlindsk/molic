@@ -15,6 +15,6 @@ The data consists of \code{2504} DNA profiles, each genotyped on 304 SNPs (binar
 The data frame has \code{5008} rows, since each profile has two copies.
 }
 \references{
-\href{https://www.ncbi.nlm.nih.gov/pubmed/26432245}{1000 Genomes Project}
+\href{https://pubmed.ncbi.nlm.nih.gov/26432245/}{1000 Genomes Project}
 }
 \keyword{datasets}

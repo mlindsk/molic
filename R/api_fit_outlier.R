@@ -10,6 +10,7 @@ outlier_model <- function(A,
     if (any(is.na(A))) message("  Note: A has NA values. These have been treated as ordinay values.")
     if( !only_chars(A)) stop("All values in A must be represented as a single character. Use to_chars(A)")
   }
+  browser()
   RIP   <- ess::rip(adj) # the rip (or actually mcs) will check for decomposability here
   cms   <- a_marginals(A, RIP$C)
   sms   <- a_marginals(A, RIP$S)
@@ -223,11 +224,9 @@ fit_outlier <- function(A,
 #'   select(-c(1:2))
 #'
 #'
-#' # Fitting the interaction graphs on the EUR data 
+#' # Fitting the interaction graphs on the EUR data
 #' ga <- fit_components(eur_a, comp = haps, trace = FALSE)
 #' gb <- fit_components(eur_b, comp = haps, trace = FALSE)
-#' print(ga)
-#' plot(ga, vertex.size = 1)
 #' 
 #' ## ---------------------------------------------------------
 #' ##                       EXAMPLE 1
@@ -310,17 +309,23 @@ fit_mixed_outlier <- function(m1, m2) {
 #' Conduct multiple novelty tests for a new observation
 #'
 #' @param A A character matrix or data.frame
-#' @param z Named vector (same names as \code{colnames(A)} but without the class variable)
+#' @param z Named vector. Same names as \code{colnames(A)} but without the
+#' class variable
 #' @param response A character with the name of the class variable of interest
 #' @param alpha The significance level
-#' @param type Character ("fwd", "bwd", "tree" or "tfwd") - the type of interaction graph to be used
-#' @param q Penalty term in the stopping criterion when fitting the interaction graph (\code{0} = AIC and \code{1} = BIC)
-#' @param comp A list with character vectors. Each element in the list is a component in the graph (using expert knowledge)
+#' @param type Character ("fwd", "bwd", "tree" or "tfwd") - the type of
+#' interaction graph to be used
+#' @param q Penalty term in the stopping criterion when fitting the interaction
+#' graph (\code{0} = AIC and \code{1} = BIC)
+#' @param comp A list with character vectors. Each element in the list is a
+#' component in the graph (using expert knowledge)
 #' @param nsim Number of simulations
 #' @param ncores Number of cores to use in parallelization
 #' @param trace Logical indicating whether or not to trace the procedure
-#' @param validate Logical. If true, it checks if \code{A} has only single character values and converts it if not.
-#' @return An object of type \code{multiple_models}; a list of of \code{novely} objects from which one
+#' @param validate Logical. If true, it checks if \code{A} has only single
+#' character values and converts it if not.
+#' @return An object of type \code{multiple_models}; a list of of \code{novely}
+#' objects from which one
 #' can query pvalues etc. for outlierdetection.
 #' @seealso \code{\link{fit_outlier}}, \code{\link{fit_mixed_outlier}}
 #' @examples
@@ -365,10 +370,15 @@ fit_multiple_models <- function(A,
 
     Ai <- A[res_vec == res_lvls[i], -which(colnames(A) == response)]
 
-    if (!is.null(comp)) {
-      gi <- ess::fit_components(Ai, comp = comp, type = type, q = q, trace = FALSE)
+    gi <- if (!is.null(comp)) {
+      # TODO: Fix!
+      # ess::fit_components(Ai, comp = comp, type = type, q = q, trace = FALSE)$adj_list
+      adj <- lapply(unname(comp), function(x) {
+        fit_graph(df[, x, drop = FALSE], type = type,  q = q, trace = trace, thres = thres, wrap = wrap)
+      })
+      unlist(lapply(adj, adj_lst), recursive = FALSE)
     } else {
-      gi <- ess::fit_graph(Ai, type = type, q = q, trace = FALSE)
+      ess::fit_graph(Ai, type = type, q = q, trace = FALSE)$adj_list
     }
 
     fit_outlier(A = Ai,
@@ -378,7 +388,6 @@ fit_multiple_models <- function(A,
       nsim        = nsim,
       ncores      = ncores,
       validate    = validate)
-    
   })
   
   names(models) <- res_lvls

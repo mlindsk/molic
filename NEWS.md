@@ -1,3 +1,7 @@
+# molic 2.0.2
+
+ * Small fixes that arose from api changes in package **ess**
+
 # molic 2.0.0
 
 The package has undergone a major make-over. A slight, but breakable, change in the api of `fit_outlier`. The documentation of `fit_outlier` has been updated and now includes more and better examples of how and when to use the function. The `fit_graph` function is no longer a part of **molic**. It now lives in its own package at [ess](https://github.com/mlindsk/ess) and **molic** is now dependend on **ess**. It is therefore now required to run `include(ess)` to have access to `fit_graph`. 

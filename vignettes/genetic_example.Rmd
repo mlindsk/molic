@@ -65,8 +65,6 @@ We now fit the interaction graphs for each chromosome copy. We use `fit_componen
 ```{r fig.align='center', fig.width = 6, fig.height = 6,fig.show='hold'}
 ga <- fit_components(eur_a, comp = haps, trace = FALSE)
 gb <- fit_components(eur_b, comp = haps, trace = FALSE)
-print(ga)
-plot(ga, vertex.size = 3, vertex.label = NA)
 ```
 
 ## Example 1 - Testing which observations within data are outliers
