@@ -10,7 +10,6 @@ outlier_model <- function(A,
     if (any(is.na(A))) message("  Note: A has NA values. These have been treated as ordinay values.")
     if( !only_chars(A)) stop("All values in A must be represented as a single character. Use to_chars(A)")
   }
-  browser()
   RIP   <- ess::rip(adj) # the rip (or actually mcs) will check for decomposability here
   cms   <- a_marginals(A, RIP$C)
   sms   <- a_marginals(A, RIP$S)
@@ -374,9 +373,9 @@ fit_multiple_models <- function(A,
       # TODO: Fix!
       # ess::fit_components(Ai, comp = comp, type = type, q = q, trace = FALSE)$adj_list
       adj <- lapply(unname(comp), function(x) {
-        fit_graph(df[, x, drop = FALSE], type = type,  q = q, trace = trace, thres = thres, wrap = wrap)
+        ess::fit_graph(Ai[, x, drop = FALSE], type = type,  q = q, trace = trace)$adj_list
       })
-      unlist(lapply(adj, adj_lst), recursive = FALSE)
+      unlist(adj, recursive = FALSE)
     } else {
       ess::fit_graph(Ai, type = type, q = q, trace = FALSE)$adj_list
     }

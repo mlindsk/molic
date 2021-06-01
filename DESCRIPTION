@@ -1,6 +1,6 @@
 Package: molic
 Title: Multivariate Outlier Detection in Contingency Tables
-Version: 2.0.2
+Version: 2.0.3
 Authors@R: 
     person(given = "Mads",
            family = "Lindskou",

@@ -1,4 +1,4 @@
-# molic 2.0.2
+# molic 2.0.2 - 2.0.3
 
  * Small fixes that arose from api changes in package **ess**
 
