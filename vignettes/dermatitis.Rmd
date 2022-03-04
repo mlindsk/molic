@@ -3,7 +3,6 @@ title: "Detecting Skin Diseases"
 author: "Mads Lindskou"
 output: 
   rmarkdown::html_vignette:
-    highligh: zenburn
     toc: true
     fig_height: 4
     fig_width: 4
